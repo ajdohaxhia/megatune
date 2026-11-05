@@ -1,5 +1,23 @@
 # Mechanics and evidence
 
+## 0.1.5 long-run stability pass — 2026-11-05
+
+Two editor-side long-run hazards were removed:
+
+- The 30 Hz timer no longer repaints the whole 1480×1060 editor. It repaints only
+  the monitor card and footer; individual keys repaint themselves. This cuts the
+  graphics workload substantially and avoids sustained full-surface redraws in
+  the host.
+- `PresetBrowser` now destroys its `Viewport` before its content component and
+  detaches the viewed component in its destructor, removing a dangling raw
+  pointer during editor teardown. The preset dropdown is also updated only when
+  the current program actually changes instead of every timer tick.
+
+A new `--soak` mode drives 50,000 audio blocks while opening/closing the Why
+panel and preset browser, stepping presets and capturing the full editor. It
+passes in the release build and under AddressSanitizer/UndefinedBehaviorSanitizer.
+The normal CTest suite, VST3 host probe and AU `auval` still pass.
+
 ## 0.1.4 reference-layout pass — 2026-11-05
 
 The editor now uses the 1480×1060 reference composition:

@@ -4,14 +4,14 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four
 selectable pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.1.4 (experimental).** Pitch correction, latency reporting,
+> **Status: 0.1.5 (experimental).** Pitch correction, latency reporting,
 > presets, automation and the exclude/undo workflow are verified. **Formant preservation is
 > unvalidated** and the build is **ad-hoc signed, not notarized**. See [Status](#status)
 > before shipping anything.
 >
-> 0.1.4 brings the editor to the new 1480×1060 layout: side-by-side Why panel, painted
-> 210 px knobs, a full-width keyboard, a factory-preset browser with search and detailed
-> preview, and a matching footer/legend. It keeps AUv2 + VST3 and all 0.1.3 behavior.
+> 0.1.5 is a stability pass over the 1480×1060 editor: the 30 Hz full-window repaint is
+> replaced with targeted monitor/footer repaints, the preset-browser viewport is destroyed
+> safely, and a 50k-block UI/audio soak passed native and under ASan. It keeps AUv2 + VST3.
 
 ---
 
@@ -81,9 +81,9 @@ Declared latency matches measured impulse onset and cross-correlation lag at 44.
 
 ## Install
 
-Version 0.1.4 (universal arm64 + x86_64, VST3 + AUv2):
+Version 0.1.5 (universal arm64 + x86_64, VST3 + AUv2):
 
-https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.4
+https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.5
 
 ```bash
 # from the release archive or app/dist

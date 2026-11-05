@@ -18,7 +18,33 @@ void operator delete(void* p)noexcept{std::free(p);}
 void operator delete[](void* p)noexcept{std::free(p);}
 void operator delete(void* p,std::size_t)noexcept{std::free(p);}
 void operator delete[](void* p,std::size_t)noexcept{std::free(p);}
-int main(){
+int main(int argc,char** argv){
+ if(argc>1&&juce::String(argv[1])=="--soak"){
+  juce::ScopedJuceInitialiser_GUI init;
+  std::unique_ptr<juce::AudioProcessor> p(createPluginFilter());
+  std::unique_ptr<juce::AudioProcessorEditor> editor(p->createEditorAndMakeActive());
+  if(!editor)return 1;
+  p->setRateAndBufferSizeDetails(48000,512);p->prepareToPlay(48000,512);
+  juce::AudioBuffer<float> b(2,512);juce::MidiBuffer mb;double phase=0;
+  for(int i=0;i<50000;++i){
+   for(int n=0;n<512;++n){const float v=.2f*std::sin(phase);phase+=juce::MathConstants<double>::twoPi*220/48000;b.setSample(0,n,v);b.setSample(1,n,v);}
+   p->processBlock(b,mb);
+   if(i%5==0)megatune::tickEditor(*editor);
+   if(i%1000==0){
+    auto* panel=editor->findChildWithID("history-panel");
+    if(panel&&panel->isVisible()){if(auto* c=panel->findChildWithID("history-close"))dynamic_cast<juce::Button*>(c)->onClick();}
+    else if(auto* w=editor->findChildWithID("why-button"))dynamic_cast<juce::Button*>(w)->onClick();
+   }
+   if(i%2000==1000){
+    auto* browser=editor->findChildWithID("preset-browser");
+    if(browser&&browser->isVisible()){if(auto* l=browser->findChildWithID("preset-load"))dynamic_cast<juce::Button*>(l)->onClick();}
+    else if(auto* br=editor->findChildWithID("preset-browse"))dynamic_cast<juce::Button*>(br)->onClick();
+   }
+   if(i%5000==0){auto shot=editor->createComponentSnapshot(editor->getLocalBounds());juce::ignoreUnused(shot);p->setCurrentProgram((p->getCurrentProgram()+1)%p->getNumPrograms());}
+   for(int n=0;n<512;++n)if(!std::isfinite(b.getSample(0,n))||!std::isfinite(b.getSample(1,n)))return 2;
+  }
+  return 0;
+ }
  const float neutral=megaTuneSmoothingSeconds(100,0,1);
  if (!(megaTuneSmoothingSeconds(100,100,1)<neutral && neutral<megaTuneSmoothingSeconds(100,-100,1))) { std::cerr<<"Sustain must speed up positive and slow down negative held notes\n";return 11; }
  if (megaTuneSmoothingSeconds(100,100,0)!=neutral || megaTuneSmoothingSeconds(100,-100,0)!=neutral) return 12;

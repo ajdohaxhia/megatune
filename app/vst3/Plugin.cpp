@@ -404,14 +404,15 @@ public:
   }
  }
  int selectedIndex=-1;std::function<void(int)> onLoad;std::function<void()> onClose;
+ ~PresetBrowser()override{list.setViewedComponent(nullptr,false);}
 private:
  MegaTune& proc;juce::TextButton close{"X"},cancel{"Cancel"},load{"Load preset"};juce::TextEditor search;
- juce::Viewport list;juce::Component listContent;juce::OwnedArray<PresetRow> rows;
+ juce::Component listContent;juce::Viewport list;juce::OwnedArray<PresetRow> rows;
 };
 class Editor final:public juce::AudioProcessorEditor,private juce::Timer {
  TunerLook tunerLook;MegaTune& proc;juce::Slider speed,sustain,amount,doubler,width,reference,shift,range;juce::ComboBox presets;juce::ToggleButton bypass{"Global Bypass"},stabilize{"Note Stabilizer"},lowLatency{"Low Latency"};juce::ComboBox key;int displayedKey=-1;std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> keyAttachment;juce::TextButton major{"Major"},minor{"Minor"},chromatic{"Chromatic"};
  struct Sound {std::vector<float> values;int program=0;};
- juce::TextButton previous{"<"},next{">"},undo{"Undo"},redo{"Redo"},slotA{"A"},slotB{"B"},copyAB{"A > B"};juce::TextButton why{"Why this note?"},browse{"Browse"};bool showWhy=false;int selSeq=-1,selectedPc=-1;HistoryPanel historyPanel;PresetBrowser presetBrowser;juce::Label experimental;juce::ComboBox enginePick;int shownEngine=-1;
+ juce::TextButton previous{"<"},next{">"},undo{"Undo"},redo{"Redo"},slotA{"A"},slotB{"B"},copyAB{"A > B"};juce::TextButton why{"Why this note?"},browse{"Browse"};bool showWhy=false;int selSeq=-1,selectedPc=-1,shownProgram=-1;HistoryPanel historyPanel;PresetBrowser presetBrowser;juce::Label experimental;juce::ComboBox enginePick;int shownEngine=-1;
  Sound comparison[2],observed;std::vector<Sound> past,future;int activeSlot=0;
  float animationTime=0,smoothedLevel=0;
  Sound capture()const{Sound sound;sound.program=proc.getCurrentProgram();for(auto* p:proc.getParameters())sound.values.push_back(p->getValue());return sound;}
@@ -444,7 +445,9 @@ class Editor final:public juce::AudioProcessorEditor,private juce::Timer {
  const int wantEngine=proc.value("smith")>.5f?4:proc.value("engine")>.5f?3:proc.value("lowlatency")>.5f?2:1;
  if(wantEngine!=shownEngine){shownEngine=wantEngine;enginePick.setSelectedId(wantEngine,juce::dontSendNotification);}
  experimental.setVisible(wantEngine==3||wantEngine==4);
- undo.setEnabled(!past.empty());redo.setEnabled(!future.empty());slotA.setToggleState(activeSlot==0,juce::dontSendNotification);slotB.setToggleState(activeSlot==1,juce::dontSendNotification);presets.setSelectedId(proc.getCurrentProgram()+1,juce::dontSendNotification);syncKey();repaint();}
+ undo.setEnabled(!past.empty());redo.setEnabled(!future.empty());slotA.setToggleState(activeSlot==0,juce::dontSendNotification);slotB.setToggleState(activeSlot==1,juce::dontSendNotification);
+ const int program=proc.getCurrentProgram();if(program!=shownProgram){shownProgram=program;presets.setSelectedId(program+1,juce::dontSendNotification);}
+ syncKey();repaint(31,135,(showWhy?844:1419),220);repaint(0,1028,1480,32);}
  void setScale(bool isMinor,bool all){const int scaleMajor[]={0,2,4,5,7,9,11};const int scaleMinor[]={0,2,3,5,7,8,10};for(int i=0;i<12;++i){bool selected=all;for(int j=0;j<7;++j)if(i==(isMinor?scaleMinor[j]:scaleMajor[j]))selected=true;auto* p=proc.state.getParameter("note"+juce::String(i));p->beginChangeGesture();p->setValueNotifyingHost(selected?1.f:0.f);p->endChangeGesture();}}
 public:
  void tick(){timerCallback();}
