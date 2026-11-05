@@ -1,0 +1,40 @@
+{
+  "id": "ev_02bfa7a0e8f8cdafd713c022308124b2325411961d3048bcaf26f812fc268094",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_function_disassemble",
+  "params": {
+    "function": "0xf9a84c"
+  },
+  "result": {
+    "assembly": "sub_f9a84c:\n  0xf9a84c  fd7bbfa9             stp x29, x30, [sp, #-0x10]!\n  0xf9a850  fd030091             mov x29, sp\n  0xf9a854  e103621e             scvtf d1, wzr\n  0xf9a858  1020611e             fcmpe d0, d1\n  0xf9a85c  6d010054             b.le 0xf9a888\nloc_f9a860:\n  0xf9a860  00200091             add x0, x0, #0x8\n  0xf9a864  a5631194             bl 0x13f36f8\n  0xf9a868  488981d2             mov x8, #0xc4a\n  0xf9a86c  4860a5f2             movk x8, #0x2b02, lsl #16\n  0xf9a870  e8d0c2f2             movk x8, #0x1687, lsl #32\n  0xf9a874  28fde7f2             movk x8, #0x3fe9, lsl #48\n  0xf9a878  0101679e             fmov d1, x8\n  0xf9a87c  0008611e             fmul d0, d0, d1\n  0xf9a880  fd7bc1a8             ldp x29, x30, [sp], #0x10\n  0xf9a884  c0035fd6             ret\nloc_f9a888:\n  0xf9a888  00600191             add x0, x0, #0x58\n  0xf9a88c  9b631194             bl 0x13f36f8\n  0xf9a890  08db99d2             mov x8, #0xced8\n  0xf9a894  e87eaaf2             movk x8, #0x53f7, lsl #16\n  0xf9a898  68bcd4f2             movk x8, #0xa5e3, lsl #32\n  0xf9a89c  68f9e7f2             movk x8, #0x3fcb, lsl #48\n  0xf9a8a0  0101679e             fmov d1, x8\n  0xf9a8a4  0008611e             fmul d0, d0, d1\n  0xf9a8a8  488981d2             mov x8, #0xc4a\n  0xf9a8ac  4860a5f2             movk x8, #0x2b02, lsl #16\n  0xf9a8b0  e8d0c2f2             movk x8, #0x1687, lsl #32\n  0xf9a8b4  28fde7f2             movk x8, #0x3fe9, lsl #48\n  0xf9a8b8  0101679e             fmov d1, x8\n  0xf9a8bc  2028601e             fadd d0, d1, d0\n  0xf9a8c0  fd7bc1a8             ldp x29, x30, [sp], #0x10\n  0xf9a8c4  c0035fd6             ret\n",
+    "entry": "0xf9a84c",
+    "function": "sub_f9a84c",
+    "instructions": 31
+  },
+  "summary": "31 instructions of sub_f9a84c.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 31,
+    "total": 31
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0xf9a84c"
+    }
+  ],
+  "links": []
+}

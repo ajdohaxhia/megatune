@@ -1,0 +1,68 @@
+{
+  "id": "ev_20786eb4b88d410621d7bbe1c59924f3e0349bf68e1ff5392d4b977cfc0f83d8",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_function_pseudocode",
+  "params": {
+    "function": "0xf9a798"
+  },
+  "result": {
+    "calls": [
+      "sub_13f3588"
+    ],
+    "engine": "clean-room lifter",
+    "entry": "0xf9a798",
+    "function": "sub_f9a798",
+    "gotos": 0,
+    "inline_asm": 6,
+    "pseudo_code": "int64_t sub_f9a798(int64_t x0)\n{\n    stack_30[0] = 0; stack_30[1] = 0;\n    stack_10[0] = x20; stack_10[1] = x19;\n    __asm(\"fmov d8, d1\");\n    x19 = xzr;\n    x8 += 0xe78;\n    x20 = xzr;\n    *(void*)(x20) = x8;\n    x0 += 8;\n    __asm(\"movi d1, #0x0\");\n    __asm(\"fmov d2, #25.0\");\n    sub_13f3588();\n    __asm(\"movi d0, #0x0\");\n    __asm(\"fmov d2, #-1.5\");\n    __asm(\"fmov d1, d8\");\n    sub_13f3588(xzr);\n    x0 = xzr;\n    x20 = stack_10[0]; x19 = stack_10[1];\n    0 = stack_0[0]; 0 = stack_0[1];\n    return x0;\n}\n",
+    "signature": "int64_t sub_f9a798(int64_t x0)",
+    "strings": [],
+    "structured": true
+  },
+  "summary": "Pseudo-C for sub_f9a798 (22 lines).",
+  "confidence": "inferred",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "register_level",
+      "message": "variables are machine registers and stack slots; types are not recovered"
+    },
+    {
+      "code": "calling_convention_assumed",
+      "message": "call arguments follow the usual arm64 convention and may be wrong for unusual functions"
+    },
+    {
+      "code": "conditions_from_flags",
+      "message": "branch conditions are rebuilt from the last compare and may be approximate"
+    },
+    {
+      "code": "inline_asm",
+      "message": "6 instructions have no C rule and are shown as __asm(...)"
+    },
+    {
+      "code": "deep_engine_unavailable",
+      "message": "Ghidra couldn't decompile this function (the bridge rejected the request (bridge_error): the decompiler gave no result: ). So this came from the built-in decompiler, which is less exact."
+    }
+  ],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0xf9a798"
+    }
+  ],
+  "links": [],
+  "carries_target_content": true
+}

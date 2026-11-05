@@ -1,0 +1,42 @@
+{
+  "id": "ev_8a24028b56b290088a9a698522523f9a83df0cc00c10bca6eb1461959adaa981",
+  "subject": {
+    "kind": "mach-o",
+    "sha256": "149690405ff6faaf6ddd73563f9ac686d5a2c2a8a2b93b626c3e9f93d8a9fbea",
+    "name": "MetaTune-arm64"
+  },
+  "operation": "native_bytes_show",
+  "params": {
+    "address": "0x2cdde78",
+    "length": 80
+  },
+  "result": {
+    "address": "0x2cdde78",
+    "ascii": " .......$...............L...............8.......(.......,.......X6?......6?.....",
+    "file_offset": 47046264,
+    "hex": "20a9f9000000000024a9f90000000000f8a7f900000000004ca8f90000000000000000000000000038dfcd020000000028a9f900000000002ca9f9000000000058363f0100000000f8363f0100000000",
+    "length": 80
+  },
+  "summary": "80 bytes at 0x2cdde78.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 80,
+    "total": 80
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0x2cdde78"
+    }
+  ],
+  "links": []
+}

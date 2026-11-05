@@ -1,0 +1,20 @@
+[  1%] Building VST3 manifest helper for MegaTune
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/vst3_helpers/MegaTune
+make[3]: warning: jobserver unavailable: using -j1.  Add `+' to parent make rule.
+[100%] Built target vst3_helper
+[  1%] Built target MegaTune_vst3_helper
+[ 40%] Built target MegaTune
+[ 62%] Built target MegaTune_VST3
+[ 63%] Building CXX object CMakeFiles/MegaTuneTests.dir/Tests.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 65%] Linking CXX executable MegaTuneTests_artefacts/Release/MegaTuneTests
+[100%] Built target MegaTuneTests

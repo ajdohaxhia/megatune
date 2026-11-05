@@ -1,0 +1,68 @@
+{
+  "id": "ev_468ecb2f44f922c0749b5bb6ec359ffbfd6b8f81bf00f2782a04d24822616131",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_function_pseudocode",
+  "params": {
+    "function": "0xf9a8c8"
+  },
+  "result": {
+    "calls": [
+      "sub_13f34b8"
+    ],
+    "engine": "clean-room lifter",
+    "entry": "0xf9a8c8",
+    "function": "sub_f9a8c8",
+    "gotos": 0,
+    "inline_asm": 1,
+    "pseudo_code": "int64_t sub_f9a8c8()\n{\n    x8 = 0xc00000000000;\n    x8 = 0x4052000000000000;\n    __asm(\"fmov d2, x8\");\n    x0 = sub_13f34b8();\n    x8 += 0xea8;\n    *(void*)(x0) = x8;\n    return x0;\n}\n",
+    "signature": "int64_t sub_f9a8c8()",
+    "strings": [],
+    "structured": true
+  },
+  "summary": "Pseudo-C for sub_f9a8c8 (10 lines).",
+  "confidence": "inferred",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "register_level",
+      "message": "variables are machine registers and stack slots; types are not recovered"
+    },
+    {
+      "code": "calling_convention_assumed",
+      "message": "call arguments follow the usual arm64 convention and may be wrong for unusual functions"
+    },
+    {
+      "code": "conditions_from_flags",
+      "message": "branch conditions are rebuilt from the last compare and may be approximate"
+    },
+    {
+      "code": "inline_asm",
+      "message": "1 instructions have no C rule and are shown as __asm(...)"
+    },
+    {
+      "code": "deep_engine_unavailable",
+      "message": "Ghidra couldn't decompile this function (the bridge rejected the request (bridge_error): the decompiler gave no result: ). So this came from the built-in decompiler, which is less exact."
+    }
+  ],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0xf9a8c8"
+    }
+  ],
+  "links": [],
+  "carries_target_content": true
+}

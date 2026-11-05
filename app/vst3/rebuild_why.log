@@ -1,0 +1,105 @@
+-- Configuring juceaide
+-- Building juceaide
+-- Exporting juceaide
+-- Testing juceaide
+-- Finished setting up juceaide
+-- Configuring done (0.9s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli
+[  1%] Building VST3 manifest helper for MegaTune
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/vst3_helpers/MegaTune
+make[3]: warning: jobserver unavailable: using -j1.  Add `+' to parent make rule.
+[100%] Built target vst3_helper
+[  1%] Built target MegaTune_vst3_helper
+[  3%] Building CXX object CMakeFiles/MegaTune.dir/Plugin.cpp.o
+[  4%] Linking CXX static library MegaTune_artefacts/Release/libMegaTune_SharedCode.a
+[ 40%] Built target MegaTune
+[ 42%] Linking CXX CFBundle shared module MegaTune_artefacts/Release/VST3/MegaTune.vst3/Contents/MacOS/MegaTune
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3: code has no resources but signature indicates they must be present
+-- Replacing invalid signature with ad-hoc signature
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3: replacing existing signature
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3: code object is not signed at all
+In subcomponent: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3/Contents/PkgInfo 2
+removing moduleinfo.json
+creating /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3/Contents/Resources/moduleinfo.json
+[ 62%] Built target MegaTune_VST3
+[ 63%] Building CXX object CMakeFiles/MegaTuneTests.dir/Tests.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 65%] Linking CXX executable MegaTuneTests_artefacts/Release/MegaTuneTests
+[100%] Built target MegaTuneTests
+Test project /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli
+    Start 1: MegaTuneStreaming
+1/1 Test #1: MegaTuneStreaming ................   Passed    0.71 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.71 sec
+../MegaTune.vst3: replacing existing signature
+bundle=/Users/ade/Documents/Craft Anything/metatune/app/MegaTune.vst3
+format=VST3 types=1 name="MegaTune" vendor="Craft Anything" version="1.0.1"
+params=28 latency=0
+  [0] id="?" name="Key" min=C max=B default="E"
+  [1] id="?" name="Speed" min=200.0000000 max=-3.0000000 default="25.0000019"
+  [2] id="?" name="Sustain" min=-100.0 max=100.0 default="0.0"
+  [3] id="?" name="Amount" min=0.0000000 max=100.0000000 default="100.0000000"
+  [4] id="?" name="Global Bypass" min=Off max=On default="Off"
+  [5] id="?" name="Note Stabilizer" min=Off max=On default="On"
+  [6] id="?" name="C" min=Off max=On default="On"
+  [7] id="?" name="C#" min=Off max=On default="Off"
+  [8] id="?" name="D" min=Off max=On default="On"
+  [9] id="?" name="D#" min=Off max=On default="On"
+  [10] id="?" name="E" min=Off max=On default="Off"
+  [11] id="?" name="F" min=Off max=On default="On"
+  [12] id="?" name="F#" min=Off max=On default="Off"
+  [13] id="?" name="G" min=Off max=On default="On"
+  [14] id="?" name="G#" min=Off max=On default="On"
+  [15] id="?" name="A" min=Off max=On default="Off"
+  [16] id="?" name="A#" min=Off max=On default="On"
+  [17] id="?" name="B" min=Off max=On default="Off"
+  [18] id="?" name="Doubler" min=0.0 max=100.0 default="0.0"
+  [19] id="?" name="Width" min=0.0 max=100.0 default="0.0"
+  [20] id="?" name="Reference" min=415.0 max=466.0 default="440.0"
+  [21] id="?" name="Low Latency" min=Off max=On default="Off"
+  [22] id="?" name="Shift" min=-12 max=12 default="0"
+  [23] id="?" name="Range" min=1 max=12 default="12"
+  [24] id="?" name="TD-PSOLA" min=Off max=On default="Off"
+  [25] id="?" name="Signalsmith" min=Off max=On default="Off"
+  [26] id="?" name="Smith Comp" min=Off max=On default="On"
+  [27] id="?" name="Program" min=Default max=Spoken Word default="Default"
+programs=16
+  program[0]=Default
+  program[1]=Natural Tune
+  program[2]=Modern Pop
+  program[3]=Polished Pop
+  program[4]=R&B Smooth
+  program[5]=Hip-Hop Lead
+  program[6]=Doubler Wide
+  program[7]=Trap Robotic
+  program[8]=EDM Vocal
+  program[9]=Rock Anthem
+  program[10]=Indie Folk
+  program[11]=Lo-Fi Bed
+  program[12]=Doubler Tight
+  program[13]=Subtle Assist
+  program[14]=Extreme Tune
+  program[15]=Spoken Word
+latency_after_prepare=2048
+audio in=6638.52 out=5807.33 finite=yes
+ll_value=1
+latency_quality=2048 latency_low=128
+probe_low_latency_200Hz=201.913Hz ok=1 target A3 220
+probe_quality_200Hz=218.781Hz ok=1 target A3 220
+probe_autotune=440.326Hz (432 in), amount0=432.085Hz
+probe_negative_speed_steady=440.536Hz, slow_speed_steady=440.259Hz
+probe_doubler_stereo_diff=192.373, dry_stereo_diff=0
+RESULT PASS
+editor=860x680 created=yes

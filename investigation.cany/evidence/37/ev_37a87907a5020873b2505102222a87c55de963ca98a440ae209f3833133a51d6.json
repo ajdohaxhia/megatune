@@ -1,0 +1,119 @@
+{
+  "id": "ev_37a87907a5020873b2505102222a87c55de963ca98a440ae209f3833133a51d6",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "core_target_triage",
+  "params": {
+    "path": null
+  },
+  "result": {
+    "architecture": "arm64",
+    "bits": 64,
+    "dotnet_arch": null,
+    "entry_point": null,
+    "format": "mach-o",
+    "format_name": "Mach-O (macOS, iOS)",
+    "kind": "unknown",
+    "libraries": [
+      "/System/Library/Frameworks/AudioUnit.framework/Versions/A/AudioUnit",
+      "/System/Library/Frameworks/SystemConfiguration.framework/Versions/A/SystemConfiguration",
+      "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+      "/System/Library/Frameworks/CoreAudioKit.framework/Versions/A/CoreAudioKit",
+      "/System/Library/Frameworks/DiscRecording.framework/Versions/A/DiscRecording",
+      "/System/Library/Frameworks/CoreMIDI.framework/Versions/A/CoreMIDI",
+      "/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox",
+      "/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL",
+      "/System/Library/Frameworks/WebKit.framework/Versions/A/WebKit",
+      "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+      "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore",
+      "/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa",
+      "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+      "/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices",
+      "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+      "/System/Library/Frameworks/Metal.framework/Versions/A/Metal",
+      "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+      "/System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio",
+      "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+      "/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate",
+      "/usr/lib/libc++.1.dylib",
+      "/usr/lib/libSystem.B.dylib",
+      "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+      "/System/Library/Frameworks/CoreImage.framework/Versions/A/CoreImage",
+      "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+      "/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText",
+      "/System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO",
+      "/usr/lib/libobjc.A.dylib"
+    ],
+    "next_steps": [
+      {
+        "tool": "core_overview_show",
+        "why": "a one-page summary: sections, imports, counts"
+      },
+      {
+        "tool": "native_functions_list",
+        "why": "every function we found"
+      },
+      {
+        "tool": "native_strings_find",
+        "why": "find text the program shows or uses"
+      },
+      {
+        "tool": "native_function_study",
+        "why": "a full dossier on one function (start with main or the entry point)"
+      },
+      {
+        "tool": "core_feature_find",
+        "why": "follow a word you see in the app to the code behind it"
+      },
+      {
+        "tool": "apple_objc_classes_list",
+        "why": "Objective-C classes and their methods"
+      },
+      {
+        "tool": "apple_macho_show",
+        "why": "load commands, linked libraries, code signature"
+      }
+    ],
+    "operating_system": "Mac",
+    "plain_english": "MetaTune is a program for Mac, built for arm64 (64-bit). It looks like it was made with Objective-C.",
+    "recommended_toolsets": [
+      "core",
+      "native",
+      "apple"
+    ],
+    "stripped": false,
+    "symbol_table_stripped": false,
+    "toolchain_hints": [
+      {
+        "category": "language",
+        "evidence": "Objective-C metadata sections",
+        "id": "objc",
+        "label": "Objective-C",
+        "strength": "strong"
+      }
+    ]
+  },
+  "summary": "MetaTune is a program for Mac, built for arm64 (64-bit). It looks like it was made with Objective-C.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "heuristic_hints",
+      "message": "toolchain and packer hints come from markers that can be faked or borrowed"
+    }
+  ],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [],
+  "links": []
+}

@@ -1,0 +1,69 @@
+{
+  "id": "ev_12243f63f8af18dd116838d63a8609d06ce0089934c5ed75a9a6cd27a4f331c7",
+  "subject": {
+    "kind": "mach-o",
+    "sha256": "149690405ff6faaf6ddd73563f9ac686d5a2c2a8a2b93b626c3e9f93d8a9fbea",
+    "name": "MetaTune-arm64"
+  },
+  "operation": "native_function_pseudocode",
+  "params": {
+    "function": "0x13f34b8"
+  },
+  "result": {
+    "calls": [
+      "_log2@stub",
+      "_pow@stub"
+    ],
+    "engine": "clean-room lifter",
+    "entry": "0x13f34b8",
+    "function": "sub_13f34b8",
+    "gotos": 0,
+    "inline_asm": 19,
+    "pseudo_code": "int64_t sub_13f34b8(int64_t x0)\n{\n    stack_60[0] = 0; stack_60[1] = 0;\n    stack_10[0] = 0; stack_10[1] = 0;\n    stack_20[0] = 0; stack_20[1] = 0;\n    stack_30[0] = 0; stack_30[1] = 0;\n    stack_40[0] = x20; stack_40[1] = x19;\n    __asm(\"fmov d8, d2\");\n    __asm(\"fmov d9, d1\");\n    __asm(\"fmov d10, d0\");\n    x19 = xzr;\n    x8 += 0x530;\n    *(void*)(x0) = x8;\n    *(void*)(x0 + 8)[0] = 0; *(void*)(x0 + 8)[1] = 0;\n    __asm(\"fsub d11, d2, d0\");\n    __asm(\"fsub d12, d1, d2\");\n    *(void*)(x0 + 0x18)[0] = 0; *(void*)(x0 + 0x18)[1] = 0;\n    __asm(\"fsub d13, d12, d11\");\n    *(void*)(x0 + 0x28) = 0;\n    __asm(\"fmov d14, #2.0\");\n    __asm(\"fmov d1, #2.0\");\n    __asm(\"fmov d0, d11\");\n    _pow@stub();\n    *(void*)(x19 + 0x30) = 0;\n    __asm(\"fdiv d0, d12, d11\");\n    _log2@stub();\n    __asm(\"fmul d0, d14, d0\");\n    *(void*)(x19 + 0x38) = 0;\n    __asm(\"fmul d9, d9, d10\");\n    __asm(\"fmov d1, #2.0\");\n    __asm(\"fmov d0, d8\");\n    _pow@stub();\n    __asm(\"fsub d0, d9, d0\");\n    *(void*)(x19 + 0x40) = 0;\n    __asm(\"fabs d0, d13\");\n    x8 = 0xd695;\n    x8 = 0xe8260000;\n    x8 = 0x2e0b00000000;\n    x8 = 0x3e11000000000000;\n    __asm(\"fmov d1, x8\");\n    __asm(\"fcmpe d0, d1\");\n    __asm(\"cset w8, mi\");\n    *(void*)(x19 + 0x48) = w8;\n    x0 = xzr;\n    x20 = stack_40[0]; x19 = stack_40[1];\n    0 = stack_30[0]; 0 = stack_30[1];\n    0 = stack_20[0]; 0 = stack_20[1];\n    0 = stack_10[0]; 0 = stack_10[1];\n    0 = stack_0[0]; 0 = stack_0[1];\n    return x0;\n}\n",
+    "signature": "int64_t sub_13f34b8(int64_t x0)",
+    "strings": [],
+    "structured": true
+  },
+  "summary": "Pseudo-C for sub_13f34b8 (51 lines).",
+  "confidence": "inferred",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "register_level",
+      "message": "variables are machine registers and stack slots; types are not recovered"
+    },
+    {
+      "code": "calling_convention_assumed",
+      "message": "call arguments follow the usual arm64 convention and may be wrong for unusual functions"
+    },
+    {
+      "code": "conditions_from_flags",
+      "message": "branch conditions are rebuilt from the last compare and may be approximate"
+    },
+    {
+      "code": "inline_asm",
+      "message": "19 instructions have no C rule and are shown as __asm(...)"
+    },
+    {
+      "code": "deep_engine_unavailable",
+      "message": "Ghidra couldn't decompile this function (the bridge rejected the request (bridge_error): the decompiler gave no result: ). So this came from the built-in decompiler, which is less exact."
+    }
+  ],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0x13f34b8"
+    }
+  ],
+  "links": [],
+  "carries_target_content": true
+}

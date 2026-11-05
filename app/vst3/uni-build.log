@@ -1,0 +1,557 @@
+[  4%] Building CXX object CMakeFiles/MegaTune.dir/Plugin.cpp.o
+[  4%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_2.cpp.o
+[  4%] Building VST3 manifest helper for MegaTune
+[  6%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_3.cpp.o
+[  8%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_extra/juce_gui_extra.mm.o
+[  9%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_processors/juce_audio_processors.mm.o
+[ 11%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_4.cpp.o
+[ 13%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_5.cpp.o
+-- The CXX compiler identification is AppleClang 21.0.0.21000401
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/clang++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-universal/vst3_helpers/MegaTune
+make[3]: warning: jobserver unavailable: using -j1.  Add `+' to parent make rule.
+[ 50%] Building CXX object CMakeFiles/vst3_helper.dir/private/tmp/juce/modules/juce_audio_plugin_client/VST3/juce_VST3ManifestHelper.cpp.o
+[100%] Linking CXX executable vst3_helper
+[100%] Built target vst3_helper
+[ 13%] Built target MegaTune_vst3_helper
+[ 14%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm.o
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:257:66: warning: 'MTLResourceStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  257 |                                                                  MTLResourceStorageModeManaged
+      |                                                                  ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:177:5: note: 'MTLResourceStorageModeManaged' has been explicitly marked deprecated here
+  177 |     MTLResourceStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = MTLStorageModeManaged << MTLResourceStorageModeShift,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:269:39: warning: 'MTLStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  269 |                                       MTLStorageModeManaged;
+      |                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:85:5: note: 'MTLStorageModeManaged' has been explicitly marked deprecated here
+   85 |     MTLStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = 1,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:301:27: warning: 'didModifyRange:' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  301 |             [buffer.get() didModifyRange: { 0, buffer.get().length }];
+      |                           ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLBuffer.h:60:1: note: 'didModifyRange:' has been explicitly marked deprecated here
+   60 | - (void)didModifyRange:(NSRange)range API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios);
+      | ^
+[ 16%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_graphics/juce_graphics_Harfbuzz.cpp.o
+[ 18%] Building C object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_graphics/juce_graphics_Sheenbidi.c.o
+[ 19%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_graphics/juce_graphics.mm.o
+[ 21%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_events/juce_events.mm.o
+[ 22%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_core/juce_core_CompilationTime.cpp.o
+[ 24%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_core/juce_core.mm.o
+[ 26%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_data_structures/juce_data_structures.mm.o
+[ 27%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless_ara.cpp.o
+[ 29%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless_lv2_libs.cpp.o
+[ 31%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless.mm.o
+3 warnings generated.
+[ 32%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_basics/juce_audio_basics.mm.o
+[ 34%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_utils/juce_audio_utils.mm.o
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:257:66: warning: 'MTLResourceStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  257 |                                                                  MTLResourceStorageModeManaged
+      |                                                                  ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:177:5: note: 'MTLResourceStorageModeManaged' has been explicitly marked deprecated here
+  177 |     MTLResourceStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = MTLStorageModeManaged << MTLResourceStorageModeShift,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:269:39: warning: 'MTLStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  269 |                                       MTLStorageModeManaged;
+      |                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:85:5: note: 'MTLStorageModeManaged' has been explicitly marked deprecated here
+   85 |     MTLStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = 1,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:301:27: warning: 'didModifyRange:' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  301 |             [buffer.get() didModifyRange: { 0, buffer.get().length }];
+      |                           ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLBuffer.h:60:1: note: 'didModifyRange:' has been explicitly marked deprecated here
+   60 | - (void)didModifyRange:(NSRange)range API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios);
+      | ^
+[ 36%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_formats/juce_audio_formats.mm.o
+[ 37%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_devices/juce_audio_devices.mm.o
+3 warnings generated.
+[ 39%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_dsp/juce_dsp.mm.o
+[ 40%] Linking CXX static library MegaTune_artefacts/Release/libMegaTune_SharedCode.a
+[ 40%] Built target MegaTune
+[ 42%] Generating MegaTune_artefacts/JuceLibraryCode/MegaTune_VST3/PkgInfo
+[ 44%] Building CXX object CMakeFiles/MegaTuneTests.dir/Tests.cpp.o
+[ 45%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_utils/juce_audio_utils.mm.o
+[ 49%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_processors/juce_audio_processors.mm.o
+[ 49%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_4.cpp.o
+[ 52%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_extra/juce_gui_extra.mm.o
+[ 52%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_3.cpp.o
+[ 54%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_2.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+In file included from <built-in>:551:
+<command line>:18:9:In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATIO   18 | #define JN JucePlugin_Build warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+_   18 | #dStandalone
+      |         ^
+efine JUCE_STANDALONE_APPLIC<command line>ATION JucePluUCE_STANDALONE_APPLICATION Juce:17:9gPin_Bu: lugin_Buiild_Stlandalnote: dprevious definition is here_St
+o   17 | #definneIn file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   
+18 | #defeine  JU      C| E_        ^
+a<command line>:17:n9:J note: previous definition is here
+   17 | #dUeSdCEaTlfine _JANUoCE_STANSDALONE_APPTneDALONE
+      | _AANDALONE_APPLILCATION 1
+      |         ^
+PICATION 1
+              ^|         ^
+
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_SPLICATION JuTANDALONE_APcePlugin_Build_PLICAStandalone
+      |         ^
+<command line>:17TION 1
+      |         ^
+:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+[ 55%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX_utils.cpp.o
+[ 57%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_ARA.cpp.o
+[ 59%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_Standalone.cpp.o
+[ 60%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_Unity.cpp.o
+[ 62%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX.mm.o
+[ 63%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_1.mm.o
+[ 65%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_2.mm.o
+[ 67%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AUv3.mm.o
+[ 68%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_LV2.mm.o
+[ 70%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST2.mm.o
+[ 72%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST3.mm.o
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Tests.cpp:188:15: warning: 'createEditorIfNeeded' is deprecated: Prefer createEditorAndMakeActive() [-Wdeprecated-declarations]
+  188 |   auto* ed=r->createEditorIfNeeded();
+      |               ^
+/private/tmp/juce/modules/juce_audio_processors_headless/processors/juce_AudioProcessor.h:1062:7: note: 'createEditorIfNeeded' has been explicitly marked deprecated here
+ 1062 |     [[deprecated ("Prefer createEditorAndMakeActive()")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Tests.cpp:233:51: warning: 'createWriterFor' is deprecated: Use the function taking an AudioFormatWriterOptions instead. [-Wdeprecated-declarations]
+  233 |     std::unique_ptr<juce::AudioFormatWriter> wr(w.createWriterFor(new juce::FileOutputStream(f),sr2,1,24,{},0));if(wr)wr->writeFromAudioSampleBuffer(o,0,o.getNumSamples());};
+      |                                                   ^
+/private/tmp/juce/modules/juce_audio_formats/format/juce_AudioFormat.h:178:7: note: 'createWriterFor' has been explicitly marked deprecated here
+  178 |     [[deprecated ("Use the function taking an AudioFormatWriterOptions instead.")]]
+      |       ^
+3 warnings generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Tests.cpp:188:15: warning: 'createEditorIfNeeded' is deprecated: Prefer createEditorAndMakeActive() [-Wdeprecated-declarations]
+  188 |   auto* ed=r->createEditorIfNeeded();
+      |               ^
+/private/tmp/juce/modules/juce_audio_processors_headless/processors/juce_AudioProcessor.h:1062:7: note: 'createEditorIfNeeded' has been explicitly marked deprecated here
+ 1062 |     [[deprecated ("Prefer createEditorAndMakeActive()")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Tests.cpp:233:51: warning: 'createWriterFor' is deprecated: Use the function taking an AudioFormatWriterOptions instead. [-Wdeprecated-declarations]
+  233 |     std::unique_ptr<juce::AudioFormatWriter> wr(w.createWriterFor(new juce::FileOutputStream(f),sr2,1,24,{},0));if(wr)wr->writeFromAudioSampleBuffer(o,0,o.getNumSamples());};
+      |                                                   ^
+/private/tmp/juce/modules/juce_audio_formats/format/juce_AudioFormat.h:178:7: note: 'createWriterFor' has been explicitly marked deprecated here
+  178 |     [[deprecated ("Use the function taking an AudioFormatWriterOptions instead.")]]
+      |       ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+3 warnings generated.
+[ 73%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_5.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 75%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 77%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_graphics/juce_graphics_Harfbuzz.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 78%] Building C object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_graphics/juce_graphics_Sheenbidi.c.o
+In file included from <built-in>:484:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:447:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 80%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_graphics/juce_graphics.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 81%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_events/juce_events.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:257:66: warning: 'MTLResourceStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  257 |                                                                  MTLResourceStorageModeManaged
+      |                                                                  ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:177:5: note: 'MTLResourceStorageModeManaged' has been explicitly marked deprecated here
+  177 |     MTLResourceStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = MTLStorageModeManaged << MTLResourceStorageModeShift,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:269:39: warning: 'MTLStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  269 |                                       MTLStorageModeManaged;
+      |                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:85:5: note: 'MTLStorageModeManaged' has been explicitly marked deprecated here
+   85 |     MTLStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = 1,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:301:27: warning: 'didModifyRange:' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  301 |             [buffer.get() didModifyRange: { 0, buffer.get().length }];
+      |                           ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLBuffer.h:60:1: note: 'didModifyRange:' has been explicitly marked deprecated here
+   60 | - (void)didModifyRange:(NSRange)range API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios);
+      | ^
+1 warning generated.
+[ 83%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_core/juce_core_CompilationTime.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 85%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_core/juce_core.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 86%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_data_structures/juce_data_structures.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 88%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless_ara.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 90%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless_lv2_libs.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 91%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 93%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_basics/juce_audio_basics.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+[ 95%] Linking CXX CFBundle shared module MegaTune_artefacts/Release/VST3/MegaTune.vst3/Contents/MacOS/MegaTune
+1 warning generated.
+[ 96%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_formats/juce_audio_formats.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/build-universal/MegaTune_artefacts/Release/VST3/MegaTune.vst3: code object is not signed at all
+-- Replacing invalid signature with ad-hoc signature
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/build-universal/MegaTune_artefacts/Release/VST3/MegaTune.vst3: replacing existing signature
+removing moduleinfo.json
+creating /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-universal/MegaTune_artefacts/Release/VST3/MegaTune.vst3/Contents/Resources/moduleinfo.json
+4 warnings generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+[ 96%] Built target MegaTune_VST3
+[ 98%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_devices/juce_audio_devices.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:257:66: warning: 'MTLResourceStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  257 |                                                                  MTLResourceStorageModeManaged
+      |                                                                  ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:177:5: note: 'MTLResourceStorageModeManaged' has been explicitly marked deprecated here
+  177 |     MTLResourceStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = MTLStorageModeManaged << MTLResourceStorageModeShift,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:269:39: warning: 'MTLStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  269 |                                       MTLStorageModeManaged;
+      |                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:85:5: note: 'MTLStorageModeManaged' has been explicitly marked deprecated here
+   85 |     MTLStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = 1,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:301:27: warning: 'didModifyRange:' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  301 |             [buffer.get() didModifyRange: { 0, buffer.get().length }];
+      |                           ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLBuffer.h:60:1: note: 'didModifyRange:' has been explicitly marked deprecated here
+   60 | - (void)didModifyRange:(NSRange)range API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios);
+      | ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+4 warnings generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+1 warning generated.
+1 warning generated.
+1 warning generated.
+1 warning generated.
+[100%] Linking CXX executable MegaTuneTests_artefacts/Release/MegaTuneTests
+[100%] Built target MegaTuneTests

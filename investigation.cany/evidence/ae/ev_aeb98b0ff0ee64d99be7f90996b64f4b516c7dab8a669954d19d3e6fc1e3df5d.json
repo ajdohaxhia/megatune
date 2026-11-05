@@ -1,0 +1,59 @@
+{
+  "id": "ev_aeb98b0ff0ee64d99be7f90996b64f4b516c7dab8a669954d19d3e6fc1e3df5d",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_xrefs_list",
+  "params": {
+    "address": "0x216b512",
+    "limit": 20,
+    "offset": 0
+  },
+  "result": {
+    "address": "0x216b512",
+    "name": null,
+    "references_from": [],
+    "references_to": [
+      {
+        "from": "0xfa1e98",
+        "function": "sub_ead874",
+        "kind": "string"
+      },
+      {
+        "from": "0x2ccfcd8",
+        "function": null,
+        "kind": "string"
+      }
+    ],
+    "total_to": 2
+  },
+  "summary": "0x216b512 is referenced from 2 places and refers to 0.",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "static_references",
+      "message": "references made through computed pointers at run time are not seen"
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0x216b512"
+    }
+  ],
+  "links": []
+}

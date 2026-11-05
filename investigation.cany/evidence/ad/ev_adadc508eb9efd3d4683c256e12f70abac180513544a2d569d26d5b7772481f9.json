@@ -1,0 +1,42 @@
+{
+  "id": "ev_adadc508eb9efd3d4683c256e12f70abac180513544a2d569d26d5b7772481f9",
+  "subject": {
+    "kind": "mach-o",
+    "sha256": "149690405ff6faaf6ddd73563f9ac686d5a2c2a8a2b93b626c3e9f93d8a9fbea",
+    "name": "MetaTune-arm64"
+  },
+  "operation": "native_bytes_show",
+  "params": {
+    "address": "0x13f34b8",
+    "length": 700
+  },
+  "result": {
+    "address": "0x13f34b8",
+    "ascii": ".;.m.3.m.+.m.#.m.O...{...C..H@`.)@`..@`.....H..............mK8`.,8b....m.9k.......`...`.`A`...5.`.....k...5...`.`...).j...`..A`...5. 9`.`\"....`.........h...(.....g.. a..W..h\".9.....{E..OD..#Cm.+Bm.3Am.;.l.._..;.m.3.m.+.m.#.m.O...{...C..H@`.)@`..@`.....H..............mK8`.,8b....m.9k.......`...`.`A`...5.`.....k...5...`.`...).j...`..A`.|.5. 9`.`\"....`.........h...(.....g.. a..W..h\".9.....{E..OD..#Cm.+Bm.3Am.;.l.._..#.m.O...{........... A9...q...Tb.Am!(b.!.`.`.@.!(`.....h.Cm!.`...`.W.5...`.a\"@..(a.a.@...a.`.@.b.@.. b..Lb...b.. a..La.p a.a.a.  `.`..T  b.@.a..{B..OA..#.l.._...@m0 b.#Lb.\".b.P `.@L`.p `.`.`.. A9...q...T.8a...Am!(b...a..._..O...{...C....Bm .`.. @..8a...b.......5.a.@...a..{A..O...._.",
+    "file_offset": 20919480,
+    "hex": "ef3bba6ded33016deb2b026de923036df44f04a9fd7b05a9fd4301914840601e2940601e0a40601ef30300aa48c8009008c11491080000f90084006d4b38601e2c38621e0bb0016d8d396b1e0d1400fd0e10601e0110601e6041601eb9b73594601a00fd80196b1e11b73594c009601e601e00fd29096a1e0110601e0041601eb0b735942039601e602200fda0c1601ea8d29ad2c804bdf268c1c5f228c2e7f20101679e1020611ee8579f1a68220139e00313aafd7b45a9f44f44a9e923436deb2b426ded33416def3bc66cc0035fd6ef3bba6ded33016deb2b026de923036df44f04a9fd7b05a9fd4301914840601e2940601e0a40601ef30300aa48c8009008c11491080000f90084006d4b38601e2c38621e0bb0016d8d396b1e0d1400fd0e10601e0110601e6041601e85b73594601a00fd80196b1eddb63594c009601e601e00fd29096a1e0110601e0041601e7cb735942039601e602200fda0c1601ea8d29ad2c804bdf268c1c5f228c2e7f20101679e1020611ee8579f1a68220139e00313aafd7b45a9f44f44a9e923436deb2b426ded33416def3bc66cc0035fd6e923bd6df44f01a9fd7b02a9fd830091f30300aa082041391f050071e10000546286416d2128621e2108601e600640fd2128601e0b0000146806436d2108601e0010601e57b735940009601e612240fd0028611e611640fd0118611e600640fd620a40fd1020621e034c621e04cc621e9020611e814c611e7020611e61cc611e2020601e600000542020621e400c611efd7b42a9f44f41a9e923c36cc0035fd60188406d3020621e234c621e22cc621e5020601e404c601e7020601e60cc601e082041391f050071c10000540038611e0284416d2128621e0018611ec0035fd6f44fbea9fd7b01a9fd4300910188426d2008601e012040fd0038611e0018621ef30300aa82b63594611e40fd0018611efd7b41a9f44fc2a8c0035fd6",
+    "length": 700
+  },
+  "summary": "700 bytes at 0x13f34b8.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 700,
+    "total": 700
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0x13f34b8"
+    }
+  ],
+  "links": []
+}

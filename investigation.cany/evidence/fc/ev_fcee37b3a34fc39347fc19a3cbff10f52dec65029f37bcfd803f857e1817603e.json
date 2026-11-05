@@ -1,0 +1,1426 @@
+{
+  "id": "ev_fcee37b3a34fc39347fc19a3cbff10f52dec65029f37bcfd803f857e1817603e",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_strings_find",
+  "params": {
+    "case_sensitive": false,
+    "limit": 100,
+    "mode": "regex",
+    "offset": 0,
+    "pattern": "Speed|Sustain|Amount|Detune|Human|Scale|Note|Stereo|Tune"
+  },
+  "result": {
+    "matches": [
+      {
+        "address": "0x21678f6",
+        "references": [
+          {
+            "from": "0xbb1728",
+            "function": "_GetPluginFactory"
+          },
+          {
+            "from": "0xbb1790",
+            "function": "_GetPluginFactory"
+          },
+          {
+            "from": "0xbb17f8",
+            "function": "_GetPluginFactory"
+          },
+          {
+            "from": "0x2dbf060",
+            "function": null
+          },
+          {
+            "from": "0x2dd37c0",
+            "function": null
+          },
+          {
+            "from": "0x2dd3cc8",
+            "function": null
+          },
+          {
+            "from": "0x2dd3cd0",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "MetaTune"
+      },
+      {
+        "address": "0x216793e",
+        "references": [
+          {
+            "from": "0x2dd29a0",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "com.slatedigital.metatune"
+      },
+      {
+        "address": "0x2167958",
+        "references": [
+          {
+            "from": "0xb99ef0",
+            "function": "sub_b99e08"
+          },
+          {
+            "from": "0xb99f3c",
+            "function": "sub_b99e08"
+          },
+          {
+            "from": "0xb99f88",
+            "function": "sub_b99e08"
+          },
+          {
+            "from": "0xb99fc4",
+            "function": "sub_b99e08"
+          },
+          {
+            "from": "0xb9a000",
+            "function": "sub_b99e08"
+          },
+          {
+            "from": "0xb9a10c",
+            "function": "sub_b9a0a0"
+          },
+          {
+            "from": "0xb9a140",
+            "function": "sub_b9a0a0"
+          },
+          {
+            "from": "0xb9a174",
+            "function": "sub_b9a0a0"
+          },
+          {
+            "from": "0xb9a1b0",
+            "function": "sub_b9a0a0"
+          },
+          {
+            "from": "0xb9a340",
+            "function": "sub_b9a0a0"
+          },
+          {
+            "from": "0xb9a368",
+            "function": "sub_b9a0a0"
+          },
+          {
+            "from": "0xb9a468",
+            "function": "sub_b9a3fc"
+          },
+          {
+            "from": "0xb9a49c",
+            "function": "sub_b9a3fc"
+          },
+          {
+            "from": "0xb9a4d0",
+            "function": "sub_b9a3fc"
+          },
+          {
+            "from": "0xb9a50c",
+            "function": "sub_b9a3fc"
+          },
+          {
+            "from": "0xb9a69c",
+            "function": "sub_b9a3fc"
+          },
+          {
+            "from": "0xb9a6c4",
+            "function": "sub_b9a3fc"
+          },
+          {
+            "from": "0xb9a7bc",
+            "function": "sub_b9a758"
+          },
+          {
+            "from": "0xb9a7f0",
+            "function": "sub_b9a758"
+          },
+          {
+            "from": "0xb9a824",
+            "function": "sub_b9a758"
+          },
+          {
+            "from": "0xb9a860",
+            "function": "sub_b9a758"
+          },
+          {
+            "from": "0xb9a9dc",
+            "function": "sub_b9a758"
+          },
+          {
+            "from": "0xb9aa00",
+            "function": "sub_b9a758"
+          }
+        ],
+        "section": "__cstring",
+        "text": "/Users/eiosis/wd/env/build/autotune-Protect-x86_64-arm64/products/SlateDigital/Autotune/plugin/wrappers/aax/autotune-plugin_AaxDescribe.cpp"
+      },
+      {
+        "address": "0x21679fc",
+        "references": [
+          {
+            "from": "0xb9a43c",
+            "function": "sub_b9a3fc"
+          },
+          {
+            "from": "0xb9a794",
+            "function": "sub_b9a758"
+          },
+          {
+            "from": "0xfbb8c0",
+            "function": "sub_fbb56c"
+          },
+          {
+            "from": "0xfbbac4",
+            "function": "sub_fbb56c"
+          },
+          {
+            "from": "0xfbbb84",
+            "function": "sub_fbb56c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "stereo"
+      },
+      {
+        "address": "0x2167a22",
+        "references": [
+          {
+            "from": "0xb9f6b0",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9f6c0",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_ScalePattern"
+      },
+      {
+        "address": "0x2167a33",
+        "references": [
+          {
+            "from": "0xb9f710",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9f720",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_NoteC"
+      },
+      {
+        "address": "0x2167a4c",
+        "references": [
+          {
+            "from": "0xb9f7dc",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9f7ec",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_NoteD"
+      },
+      {
+        "address": "0x2167a65",
+        "references": [
+          {
+            "from": "0xb9f8a8",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9f8b8",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_NoteE"
+      },
+      {
+        "address": "0x2167a6f",
+        "references": [
+          {
+            "from": "0xb9f90c",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9f91c",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_NoteF"
+      },
+      {
+        "address": "0x2167a88",
+        "references": [
+          {
+            "from": "0xb9f9dc",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9f9ec",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_NoteG"
+      },
+      {
+        "address": "0x2167aa1",
+        "references": [
+          {
+            "from": "0xb9faa8",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9fab8",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_NoteA"
+      },
+      {
+        "address": "0x2167aba",
+        "references": [
+          {
+            "from": "0xb9fb74",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9fb84",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_NoteB"
+      },
+      {
+        "address": "0x2167ac4",
+        "references": [
+          {
+            "from": "0xb9fbd8",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9fbf0",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_Amount"
+      },
+      {
+        "address": "0x2167acf",
+        "references": [
+          {
+            "from": "0xb9fc40",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9fc5c",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_Sustain"
+      },
+      {
+        "address": "0x2167ae9",
+        "references": [
+          {
+            "from": "0xb9fd14",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9fd24",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_Speed"
+      },
+      {
+        "address": "0x2167d1a",
+        "references": [
+          {
+            "from": "0xba0ae4",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0af4",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_ScalePattern"
+      },
+      {
+        "address": "0x2167d2b",
+        "references": [
+          {
+            "from": "0xba0b44",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0b54",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_NoteC"
+      },
+      {
+        "address": "0x2167d44",
+        "references": [
+          {
+            "from": "0xba0c10",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0c20",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_NoteD"
+      },
+      {
+        "address": "0x2167d5d",
+        "references": [
+          {
+            "from": "0xba0cdc",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0cec",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_NoteE"
+      },
+      {
+        "address": "0x2167d67",
+        "references": [
+          {
+            "from": "0xba0d40",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0d50",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_NoteF"
+      },
+      {
+        "address": "0x2167d80",
+        "references": [
+          {
+            "from": "0xba0e00",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0e10",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_NoteG"
+      },
+      {
+        "address": "0x2167d99",
+        "references": [
+          {
+            "from": "0xba0ebc",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0ecc",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_NoteA"
+      },
+      {
+        "address": "0x2167db2",
+        "references": [
+          {
+            "from": "0xba0f78",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0f88",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_NoteB"
+      },
+      {
+        "address": "0x2167dbc",
+        "references": [
+          {
+            "from": "0xba0fd4",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0fec",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_Amount"
+      },
+      {
+        "address": "0x2167dc7",
+        "references": [
+          {
+            "from": "0xba103c",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba1058",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_Sustain"
+      },
+      {
+        "address": "0x2167de1",
+        "references": [
+          {
+            "from": "0xba1110",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba1120",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_Speed"
+      },
+      {
+        "address": "0x216813a",
+        "references": [
+          {
+            "from": "0xbc653c",
+            "function": "sub_bc5bac"
+          }
+        ],
+        "section": "__cstring",
+        "text": "autotune_layout.xml"
+      },
+      {
+        "address": "0x216819d",
+        "references": [
+          {
+            "from": "0xbcb658",
+            "function": "sub_bcb5c0"
+          },
+          {
+            "from": "0xbcb65c",
+            "function": "sub_bcb5c0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "autotune_proper"
+      },
+      {
+        "address": "0x21681b5",
+        "references": [
+          {
+            "from": "0xbcb69c",
+            "function": "sub_bcb5c0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "autotune_properties-visualizer.css"
+      },
+      {
+        "address": "0x21681f9",
+        "references": [
+          {
+            "from": "0xbcb718",
+            "function": "sub_bcb5c0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "autotune_properties-browsers.css"
+      },
+      {
+        "address": "0x216821a",
+        "references": [
+          {
+            "from": "0xbcb744",
+            "function": "sub_bcb5c0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "autotune_properties-tooltips.css"
+      },
+      {
+        "address": "0x216836b",
+        "references": [
+          {
+            "from": "0xc394d0",
+            "function": "sub_c396a0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Scale and notes changed"
+      },
+      {
+        "address": "0x2168383",
+        "references": [
+          {
+            "from": "0xc44824",
+            "function": "sub_c44634"
+          },
+          {
+            "from": "0xc7a8c4",
+            "function": "sub_c79dc4"
+          },
+          {
+            "from": "0xc7aad0",
+            "function": "sub_c79dc4"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Key and notes changed"
+      },
+      {
+        "address": "0x21683a3",
+        "references": [
+          {
+            "from": "0xc7c8c0",
+            "function": "sub_c7ac9c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Notes changed"
+      },
+      {
+        "address": "0x21683c3",
+        "references": [
+          {
+            "from": "0xd3ece8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd437d8",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "zedSpeed"
+      },
+      {
+        "address": "0x21683d4",
+        "references": [
+          {
+            "from": "0xca9e90",
+            "function": "sub_caab08"
+          },
+          {
+            "from": "0xca9e94",
+            "function": "sub_caab08"
+          }
+        ],
+        "section": "__cstring",
+        "text": "edSustain"
+      },
+      {
+        "address": "0x2168402",
+        "references": [
+          {
+            "from": "0xcb0280",
+            "function": "sub_cb0254"
+          },
+          {
+            "from": "0xd439ec",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ublerStereoWidth"
+      },
+      {
+        "address": "0x2168501",
+        "references": [
+          {
+            "from": "0xd00184",
+            "function": "sub_d0538c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "noteTracker"
+      },
+      {
+        "address": "0x216850d",
+        "references": [],
+        "section": "__cstring",
+        "text": "RetuneNo"
+      },
+      {
+        "address": "0x21685d6",
+        "references": [
+          {
+            "from": "0xd330e8",
+            "function": "sub_d39748"
+          },
+          {
+            "from": "0xd330ec",
+            "function": "sub_d39748"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ScaleText"
+      },
+      {
+        "address": "0x21685ff",
+        "references": [
+          {
+            "from": "0xd3ec30",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3ec34",
+            "function": "sub_d40404"
+          }
+        ],
+        "section": "__cstring",
+        "text": "edZeroSpeed"
+      },
+      {
+        "address": "0x216860b",
+        "references": [
+          {
+            "from": "0xd3eda4",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3eda8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd43900",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43904",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "NormalizedAmount"
+      },
+      {
+        "address": "0x2168639",
+        "references": [
+          {
+            "from": "0xd3edf8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3ee00",
+            "function": "sub_d40404"
+          }
+        ],
+        "section": "__cstring",
+        "text": "SpeedBackgrou"
+      },
+      {
+        "address": "0x216864f",
+        "references": [
+          {
+            "from": "0xd3ee5c",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3ee64",
+            "function": "sub_d40404"
+          }
+        ],
+        "section": "__cstring",
+        "text": "SustainBackgrou"
+      },
+      {
+        "address": "0x2168667",
+        "references": [
+          {
+            "from": "0xd3eeac",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3eeb0",
+            "function": "sub_d40404"
+          }
+        ],
+        "section": "__cstring",
+        "text": "AmountBackgrou"
+      },
+      {
+        "address": "0x2168686",
+        "references": [
+          {
+            "from": "0xd4384c",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43850",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "edSpeedZero"
+      },
+      {
+        "address": "0x2168692",
+        "references": [
+          {
+            "from": "0xd43aa8",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43ab0",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "RetuneMete"
+      },
+      {
+        "address": "0x2168794",
+        "references": [
+          {
+            "from": "0xd6a4a8",
+            "function": "sub_d6f874"
+          },
+          {
+            "from": "0xd6a4ac",
+            "function": "sub_d6f874"
+          }
+        ],
+        "section": "__cstring",
+        "text": "KeyScaleBrowserC"
+      },
+      {
+        "address": "0x216882a",
+        "references": [
+          {
+            "from": "0xd9d064",
+            "function": "sub_d9dfb4"
+          },
+          {
+            "from": "0xd9d068",
+            "function": "sub_d9dfb4"
+          }
+        ],
+        "section": "__cstring",
+        "text": "KeepScale"
+      },
+      {
+        "address": "0x2168a59",
+        "references": [
+          {
+            "from": "0xdad6b0",
+            "function": "sub_daed28"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Tune"
+      },
+      {
+        "address": "0x2168a9e",
+        "references": [
+          {
+            "from": "0xdad994",
+            "function": "sub_daed28"
+          },
+          {
+            "from": "0xdad99c",
+            "function": "sub_daed28"
+          }
+        ],
+        "section": "__cstring",
+        "text": "tune-lo"
+      },
+      {
+        "address": "0x2168ac3",
+        "references": [
+          {
+            "from": "0xdada98",
+            "function": "sub_daed28"
+          },
+          {
+            "from": "0xdada9c",
+            "function": "sub_daed28"
+          }
+        ],
+        "section": "__cstring",
+        "text": "tune-logo-blur-color"
+      },
+      {
+        "address": "0x2168aed",
+        "references": [
+          {
+            "from": "0xdadb90",
+            "function": "sub_daed28"
+          },
+          {
+            "from": "0xdadb94",
+            "function": "sub_daed28"
+          }
+        ],
+        "section": "__cstring",
+        "text": "tune-logo-blur-sigma"
+      },
+      {
+        "address": "0x2168c0f",
+        "references": [
+          {
+            "from": "0xdc7d04",
+            "function": "sub_dc8cf8"
+          }
+        ],
+        "section": "__cstring",
+        "text": ":KeepScaleButton"
+      },
+      {
+        "address": "0x2168c3c",
+        "references": [
+          {
+            "from": "0xdc7f0c",
+            "function": "sub_d2cc94"
+          },
+          {
+            "from": "0xdc7f10",
+            "function": "sub_d2cc94"
+          }
+        ],
+        "section": "__cstring",
+        "text": "epScaleLabel"
+      },
+      {
+        "address": "0x2168c4e",
+        "references": [
+          {
+            "from": "0xdc7f8c",
+            "function": "sub_d2cc94"
+          }
+        ],
+        "section": "__cstring",
+        "text": "My Scale"
+      },
+      {
+        "address": "0x216935d",
+        "references": [
+          {
+            "from": "0xe3ad00",
+            "function": "sub_e3fb60"
+          },
+          {
+            "from": "0xe3ad04",
+            "function": "sub_e3fb60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ChordSelectorNote"
+      },
+      {
+        "address": "0x21693c3",
+        "references": [
+          {
+            "from": "0xe3afe0",
+            "function": "sub_e3fb60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "chordSelectorNote"
+      },
+      {
+        "address": "0x2169542",
+        "references": [
+          {
+            "from": "0xe4c7e4",
+            "function": "sub_e4c690"
+          },
+          {
+            "from": "0xe4c7ec",
+            "function": "sub_e4c690"
+          }
+        ],
+        "section": "__cstring",
+        "text": "note-tracker-"
+      },
+      {
+        "address": "0x21696fc",
+        "references": [
+          {
+            "from": "0x2cc2d10",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "tuneKey"
+      },
+      {
+        "address": "0x2169704",
+        "references": [
+          {
+            "from": "0xe6600c",
+            "function": "sub_e66114"
+          },
+          {
+            "from": "0xe66014",
+            "function": "sub_e66114"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Absolute_Tune"
+      },
+      {
+        "address": "0x216971a",
+        "references": [],
+        "section": "__cstring",
+        "text": "C_TuneKey"
+      },
+      {
+        "address": "0x2169724",
+        "references": [],
+        "section": "__cstring",
+        "text": "C#TuneKey"
+      },
+      {
+        "address": "0x216972e",
+        "references": [],
+        "section": "__cstring",
+        "text": "D_TuneKey"
+      },
+      {
+        "address": "0x2169738",
+        "references": [],
+        "section": "__cstring",
+        "text": "D#TuneKey"
+      },
+      {
+        "address": "0x2169742",
+        "references": [],
+        "section": "__cstring",
+        "text": "E_TuneKey"
+      },
+      {
+        "address": "0x216974c",
+        "references": [],
+        "section": "__cstring",
+        "text": "F_TuneKey"
+      },
+      {
+        "address": "0x2169756",
+        "references": [],
+        "section": "__cstring",
+        "text": "F#TuneKey"
+      },
+      {
+        "address": "0x2169760",
+        "references": [],
+        "section": "__cstring",
+        "text": "G_TuneKey"
+      },
+      {
+        "address": "0x216976a",
+        "references": [],
+        "section": "__cstring",
+        "text": "G#TuneKey"
+      },
+      {
+        "address": "0x2169774",
+        "references": [],
+        "section": "__cstring",
+        "text": "A_TuneKey"
+      },
+      {
+        "address": "0x216977e",
+        "references": [],
+        "section": "__cstring",
+        "text": "A#TuneKey"
+      },
+      {
+        "address": "0x2169788",
+        "references": [],
+        "section": "__cstring",
+        "text": "B_TuneKey"
+      },
+      {
+        "address": "0x2169792",
+        "references": [
+          {
+            "from": "0xe66228",
+            "function": "sub_e66114"
+          },
+          {
+            "from": "0xe6622c",
+            "function": "sub_e66114"
+          }
+        ],
+        "section": "__cstring",
+        "text": "whiteTuneKey"
+      },
+      {
+        "address": "0x216979f",
+        "references": [
+          {
+            "from": "0xe66244",
+            "function": "sub_e66114"
+          },
+          {
+            "from": "0xe66248",
+            "function": "sub_e66114"
+          }
+        ],
+        "section": "__cstring",
+        "text": "blackTuneKey"
+      },
+      {
+        "address": "0x2169abf",
+        "references": [
+          {
+            "from": "0xeb93dc",
+            "function": "sub_eb9a0c"
+          },
+          {
+            "from": "0xeb93e0",
+            "function": "sub_eb9a0c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "scale-factor"
+      },
+      {
+        "address": "0x2169c31",
+        "references": [
+          {
+            "from": "0xec34a4",
+            "function": "sub_ec716c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ed\nNotes"
+      },
+      {
+        "address": "0x2169ced",
+        "references": [
+          {
+            "from": "0xecc9c4",
+            "function": "sub_ecea60"
+          },
+          {
+            "from": "0xecc9cc",
+            "function": "sub_ecea60"
+          },
+          {
+            "from": "0xecda1c",
+            "function": "sub_ecd880"
+          },
+          {
+            "from": "0xed3660",
+            "function": "sub_ed3638"
+          }
+        ],
+        "section": "__cstring",
+        "text": "KeyScaleBrow"
+      },
+      {
+        "address": "0x2169d0a",
+        "references": [
+          {
+            "from": "0xecc9f8",
+            "function": "sub_ecea60"
+          },
+          {
+            "from": "0xecca00",
+            "function": "sub_ecea60"
+          },
+          {
+            "from": "0xecda24",
+            "function": "sub_ecd880"
+          },
+          {
+            "from": "0xed3668",
+            "function": "sub_ed3638"
+          }
+        ],
+        "section": "__cstring",
+        "text": "KeyScaleBrowse"
+      },
+      {
+        "address": "0x2169d4d",
+        "references": [
+          {
+            "from": "0xecf448",
+            "function": "sub_ecf0f8"
+          }
+        ],
+        "section": "__cstring",
+        "text": "keyScaleBrowser"
+      },
+      {
+        "address": "0x2169da2",
+        "references": [],
+        "section": "__cstring",
+        "text": "KeyScalePrevious"
+      },
+      {
+        "address": "0x2169db3",
+        "references": [],
+        "section": "__cstring",
+        "text": "keyScaleArrow"
+      },
+      {
+        "address": "0x2169dc1",
+        "references": [],
+        "section": "__cstring",
+        "text": "KeyScaleNext"
+      },
+      {
+        "address": "0x2169ddf",
+        "references": [
+          {
+            "from": "0xedb84c",
+            "function": "sub_ee2008"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ousScale"
+      },
+      {
+        "address": "0x2169de8",
+        "references": [
+          {
+            "from": "0xedb8ec",
+            "function": "sub_ee2008"
+          }
+        ],
+        "section": "__cstring",
+        "text": "NextScale"
+      },
+      {
+        "address": "0x2169df2",
+        "references": [
+          {
+            "from": "0xedde1c",
+            "function": "sub_ee2008"
+          },
+          {
+            "from": "0xedde24",
+            "function": "sub_ee2008"
+          }
+        ],
+        "section": "__cstring",
+        "text": "hover to set scale"
+      },
+      {
+        "address": "0x2169e47",
+        "references": [
+          {
+            "from": "0xee47a4",
+            "function": "sub_ee6ac8"
+          },
+          {
+            "from": "0xee47a8",
+            "function": "sub_ee6ac8"
+          }
+        ],
+        "section": "__cstring",
+        "text": "KeyScaleSelector"
+      },
+      {
+        "address": "0x2169e64",
+        "references": [
+          {
+            "from": "0xefaae4",
+            "function": "sub_effebc"
+          },
+          {
+            "from": "0xefaaec",
+            "function": "sub_effebc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Scale"
+      },
+      {
+        "address": "0x2169e72",
+        "references": [
+          {
+            "from": "0xee6190",
+            "function": "sub_ee5530"
+          },
+          {
+            "from": "0xee6378",
+            "function": "sub_ee5530"
+          }
+        ],
+        "section": "__cstring",
+        "text": "keyScaleSelector"
+      },
+      {
+        "address": "0x2169f3b",
+        "references": [
+          {
+            "from": "0xefae9c",
+            "function": "sub_efad74"
+          }
+        ],
+        "section": "__cstring",
+        "text": "scaleSelector"
+      },
+      {
+        "address": "0x2169f49",
+        "references": [
+          {
+            "from": "0xefd8fc",
+            "function": "sub_efd83c"
+          },
+          {
+            "from": "0xefd900",
+            "function": "sub_efd83c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "scaleButton"
+      },
+      {
+        "address": "0x2169f55",
+        "references": [],
+        "section": "__cstring",
+        "text": "ScaleButton"
+      },
+      {
+        "address": "0x2169f61",
+        "references": [],
+        "section": "__cstring",
+        "text": "CustomScaleButton"
+      },
+      {
+        "address": "0x216a0ad",
+        "references": [
+          {
+            "from": "0xf18b58",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Select the scale you want by clicking to the left of the keyboard."
+      },
+      {
+        "address": "0x216a0f0",
+        "references": [
+          {
+            "from": "0xf18b8c",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Select the scale you want by clicking to the left of the keyboard.\nYou can also set it right fr"
+      },
+      {
+        "address": "0x216a160",
+        "references": [
+          {
+            "from": "0xf18c88",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Control how fast your notes are corrected.\nSpeeds between 0 - 20ms produce a classic robotic effect.\nSlower speeds produce a mor"
+      },
+      {
+        "address": "0x216a1f2",
+        "references": [
+          {
+            "from": "0xf18cd8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Control how fast your notes are corrected.\n\nNegative speed creates an even harder effect.\n(Works great with Note Stabilizer act"
+      },
+      {
+        "address": "0x216a27a",
+        "references": [
+          {
+            "from": "0xf18db8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Dynamically adjusts the Speed setting of held notes.\n\nPositive values retune the sustained part "
+      },
+      {
+        "address": "0x216a2f8",
+        "references": [
+          {
+            "from": "0xf18e08",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Dynamically adjusts the Speed setting of held notes.\n\nNegative values retune the sustained part "
+      },
+      {
+        "address": "0x216a3e0",
+        "references": [
+          {
+            "from": "0xf18efc",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "r Amount values."
+      }
+    ],
+    "total": 1773
+  },
+  "summary": "1773 strings match \"Speed|Sustain|Amount|Detune|Human|Scale|Note|Stereo|Tune\".",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "data_sections_only",
+      "message": "only strings stored in the file are searched (absence is not proof)"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 100,
+    "total": 1773,
+    "next_offset": 100
+  },
+  "locations": [],
+  "links": []
+}

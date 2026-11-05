@@ -1,0 +1,3 @@
+[  5%] Building CXX object CMakeFiles/MegaTuneHostCheck.dir/HostCheck.cpp.o
+[ 10%] Linking CXX executable MegaTuneHostCheck_artefacts/Release/MegaTuneHostCheck
+[100%] Built target MegaTuneHostCheck

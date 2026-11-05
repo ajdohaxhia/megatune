@@ -1,0 +1,313 @@
+{
+  "id": "ev_df8d7cbc3b1617183faac98c470f8342c424ae06ad6097c147a52ec68ce821b2",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_strings_find",
+  "params": {
+    "case_sensitive": false,
+    "limit": 40,
+    "mode": "regex",
+    "offset": 0,
+    "pattern": "^(Amount|Sustain|Speed|DoublerDryWet|DoublerStereoWidth|ScalePattern)$"
+  },
+  "result": {
+    "matches": [
+      {
+        "address": "0x216b48b",
+        "references": [
+          {
+            "from": "0xd3314c",
+            "function": "sub_d39748"
+          },
+          {
+            "from": "0xd33150",
+            "function": "sub_d39748"
+          },
+          {
+            "from": "0xfa02ec",
+            "function": "sub_f2a3f8"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ScalePattern"
+      },
+      {
+        "address": "0x216b4f9",
+        "references": [
+          {
+            "from": "0xd6a8d8",
+            "function": "sub_d6f874"
+          },
+          {
+            "from": "0xfa18d4",
+            "function": "sub_ead874"
+          },
+          {
+            "from": "0x2ccfcf8",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "Amount"
+      },
+      {
+        "address": "0x216b500",
+        "references": [
+          {
+            "from": "0xd6a830",
+            "function": "sub_d6f874"
+          },
+          {
+            "from": "0xfa1aac",
+            "function": "sub_ead874"
+          },
+          {
+            "from": "0x2ccfce8",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "Sustain"
+      },
+      {
+        "address": "0x216b512",
+        "references": [
+          {
+            "from": "0xfa1e98",
+            "function": "sub_ead874"
+          },
+          {
+            "from": "0x2ccfcd8",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "Speed"
+      },
+      {
+        "address": "0x216b52e",
+        "references": [
+          {
+            "from": "0xfa239c",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__cstring",
+        "text": "DoublerDryWet"
+      },
+      {
+        "address": "0x216b53c",
+        "references": [
+          {
+            "from": "0xfa257c",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__cstring",
+        "text": "DoublerStereoWidth"
+      },
+      {
+        "address": "0x2261f94",
+        "references": [
+          {
+            "from": "0xfa02c4",
+            "function": "sub_f2a3f8"
+          }
+        ],
+        "section": "__const",
+        "text": "ScalePattern"
+      },
+      {
+        "address": "0x2262134",
+        "references": [
+          {
+            "from": "0xfa18ac",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Amount"
+      },
+      {
+        "address": "0x2262154",
+        "references": [
+          {
+            "from": "0xfa1a84",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Sustain"
+      },
+      {
+        "address": "0x2262194",
+        "references": [
+          {
+            "from": "0xfa1e70",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Speed"
+      },
+      {
+        "address": "0x2262ed4",
+        "references": [
+          {
+            "from": "0xfa02d0",
+            "function": "sub_f2a3f8"
+          }
+        ],
+        "section": "__const",
+        "text": "ScalePattern"
+      },
+      {
+        "address": "0x2263214",
+        "references": [
+          {
+            "from": "0xfa18b8",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Amount"
+      },
+      {
+        "address": "0x2263254",
+        "references": [
+          {
+            "from": "0xfa1a90",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Sustain"
+      },
+      {
+        "address": "0x22632d4",
+        "references": [
+          {
+            "from": "0xfa1e7c",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Speed"
+      },
+      {
+        "address": "0x2264154",
+        "references": [
+          {
+            "from": "0xfa02d8",
+            "function": "sub_f2a3f8"
+          }
+        ],
+        "section": "__const",
+        "text": "ScalePattern"
+      },
+      {
+        "address": "0x22642f4",
+        "references": [
+          {
+            "from": "0xfa18c0",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Amount"
+      },
+      {
+        "address": "0x2264314",
+        "references": [
+          {
+            "from": "0xfa1a98",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Sustain"
+      },
+      {
+        "address": "0x2264354",
+        "references": [
+          {
+            "from": "0xfa1e84",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Speed"
+      },
+      {
+        "address": "0x2265094",
+        "references": [
+          {
+            "from": "0xfa02e4",
+            "function": "sub_f2a3f8"
+          }
+        ],
+        "section": "__const",
+        "text": "ScalePattern"
+      },
+      {
+        "address": "0x22653d4",
+        "references": [
+          {
+            "from": "0xfa18cc",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Amount"
+      },
+      {
+        "address": "0x2265414",
+        "references": [
+          {
+            "from": "0xfa1aa4",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Sustain"
+      },
+      {
+        "address": "0x2265494",
+        "references": [
+          {
+            "from": "0xfa1e90",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__const",
+        "text": "Speed"
+      }
+    ],
+    "total": 22
+  },
+  "summary": "22 strings match \"^(Amount|Sustain|Speed|DoublerDryWet|DoublerStereoWidth|ScalePattern)$\".",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "data_sections_only",
+      "message": "only strings stored in the file are searched (absence is not proof)"
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 22,
+    "total": 22
+  },
+  "locations": [],
+  "links": []
+}

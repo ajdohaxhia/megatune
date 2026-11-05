@@ -1,0 +1,381 @@
+{
+  "version": 1,
+  "values": [
+    {
+      "name": "speed minimum",
+      "group": "controls",
+      "value": -3,
+      "unit": "ms",
+      "estimated": false,
+      "source": "0xfa1d60; 0xf9a798; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "speed maximum",
+      "group": "controls",
+      "value": 200,
+      "unit": "ms",
+      "estimated": false,
+      "source": "0xfa1d58; 0xf9a798; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "speed default",
+      "group": "controls",
+      "value": 25,
+      "unit": "ms",
+      "estimated": false,
+      "source": "0xfa1d74; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "sustain minimum",
+      "group": "controls",
+      "value": -100,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xfa1940; 0x13f3808; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "sustain maximum",
+      "group": "controls",
+      "value": 100,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xfa1940; 0x13f3808; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "amount minimum",
+      "group": "controls",
+      "value": 0,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xfa1758; 0xf9a8c8; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "amount maximum",
+      "group": "controls",
+      "value": 100,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xfa1758; 0xf9a8c8; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "transpose minimum",
+      "group": "controls",
+      "value": -12,
+      "unit": "semitones",
+      "estimated": true
+    },
+    {
+      "name": "transpose maximum",
+      "group": "controls",
+      "value": 12,
+      "unit": "semitones",
+      "estimated": true
+    },
+    {
+      "name": "doubler maximum",
+      "group": "controls",
+      "value": 100,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xfa2228; 0x13f3808; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "width maximum",
+      "group": "controls",
+      "value": 100,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xfa2408; 0x13f3808; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "analysis window",
+      "group": "processing",
+      "value": 80,
+      "unit": "ms",
+      "estimated": true
+    },
+    {
+      "name": "analysis hop",
+      "group": "processing",
+      "value": 20,
+      "unit": "ms",
+      "estimated": true
+    },
+    {
+      "name": "minimum detected pitch",
+      "group": "processing",
+      "value": 55,
+      "unit": "Hz",
+      "estimated": true
+    },
+    {
+      "name": "maximum detected pitch",
+      "group": "processing",
+      "value": 1200,
+      "unit": "Hz",
+      "estimated": true
+    },
+    {
+      "name": "minimum correlation",
+      "group": "processing",
+      "value": 0.65,
+      "unit": "",
+      "estimated": true
+    },
+    {
+      "name": "pitch reference",
+      "group": "processing",
+      "value": 440,
+      "unit": "Hz",
+      "estimated": true
+    },
+    {
+      "name": "reference MIDI note",
+      "group": "processing",
+      "value": 69,
+      "unit": "",
+      "estimated": true
+    },
+    {
+      "name": "semitones per octave",
+      "group": "processing",
+      "value": 12,
+      "unit": "",
+      "estimated": true
+    },
+    {
+      "name": "stabilizer hysteresis",
+      "group": "processing",
+      "value": 0.65,
+      "unit": "semitones",
+      "estimated": true
+    },
+    {
+      "name": "grain radius",
+      "group": "processing",
+      "value": 1.5,
+      "unit": "periods",
+      "estimated": true
+    },
+    {
+      "name": "doubler delay",
+      "group": "processing",
+      "value": 18,
+      "unit": "ms",
+      "estimated": true
+    },
+    {
+      "name": "doubler width offset",
+      "group": "processing",
+      "value": 6,
+      "unit": "ms",
+      "estimated": true
+    },
+    {
+      "name": "doubler modulation",
+      "group": "processing",
+      "value": 1,
+      "unit": "ms",
+      "estimated": true
+    },
+    {
+      "name": "doubler modulation angular rate",
+      "group": "processing",
+      "value": 1.7,
+      "unit": "rad/s",
+      "estimated": true
+    },
+    {
+      "name": "maximum doubler wet",
+      "group": "processing",
+      "value": 0.5,
+      "unit": "",
+      "estimated": true
+    },
+    {
+      "name": "sustain influence",
+      "group": "processing",
+      "value": 0.9,
+      "unit": "",
+      "estimated": true
+    },
+    {
+      "name": "minimum analysis samples",
+      "group": "processing",
+      "value": 128,
+      "unit": "samples",
+      "estimated": true
+    },
+    {
+      "name": "analysis downsample target",
+      "group": "processing",
+      "value": 12000,
+      "unit": "Hz",
+      "estimated": true
+    },
+    {
+      "name": "silence energy threshold",
+      "group": "processing",
+      "value": 1e-05,
+      "unit": "",
+      "estimated": true
+    },
+    {
+      "name": "relative peak threshold",
+      "group": "processing",
+      "value": 0.92,
+      "unit": "",
+      "estimated": true
+    },
+    {
+      "name": "source epoch search radius",
+      "group": "processing",
+      "value": 0.6,
+      "unit": "periods",
+      "estimated": true
+    },
+    {
+      "name": "held note time limit",
+      "group": "processing",
+      "value": 1,
+      "unit": "s",
+      "estimated": true
+    },
+    {
+      "name": "minimum smoothing time",
+      "group": "processing",
+      "value": 1e-05,
+      "unit": "s",
+      "estimated": true
+    },
+    {
+      "name": "minimum grain radius",
+      "group": "processing",
+      "value": 16,
+      "unit": "samples",
+      "estimated": true
+    },
+    {
+      "name": "minimum analysis window",
+      "group": "processing",
+      "value": 256,
+      "unit": "samples",
+      "estimated": true
+    },
+    {
+      "name": "WAV export depth",
+      "group": "processing",
+      "value": 24,
+      "unit": "bits",
+      "estimated": true
+    },
+    {
+      "name": "robotic speed band start",
+      "group": "original message rules",
+      "value": 0,
+      "unit": "ms",
+      "estimated": false,
+      "source": "0xf18b00; ev_a279eb338dc0100303b372fd76452bae79520553d88302da1732be670f09b572",
+      "note": "Described by original messages; not a recovered DSP formula."
+    },
+    {
+      "name": "robotic speed band end",
+      "group": "original message rules",
+      "value": 20,
+      "unit": "ms",
+      "estimated": false,
+      "source": "0xf18b00; ev_a279eb338dc0100303b372fd76452bae79520553d88302da1732be670f09b572",
+      "note": "Described by original messages; not a recovered DSP formula."
+    },
+    {
+      "name": "amount no-retuning endpoint",
+      "group": "original message rules",
+      "value": 0,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xf18b00; ev_a279eb338dc0100303b372fd76452bae79520553d88302da1732be670f09b572",
+      "note": "Described by original messages; not a recovered DSP formula."
+    },
+    {
+      "name": "amount full-retuning endpoint",
+      "group": "original message rules",
+      "value": 100,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xf18b00; ev_a279eb338dc0100303b372fd76452bae79520553d88302da1732be670f09b572",
+      "note": "Described by original messages; not a recovered DSP formula."
+    },
+    {
+      "name": "sustain default",
+      "group": "controls",
+      "value": 0,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xfa1940; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "amount default",
+      "group": "controls",
+      "value": 100,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xfa1758; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "doubler default",
+      "group": "controls",
+      "value": 0,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xfa2228; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "width default",
+      "group": "controls",
+      "value": 0,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xfa2408; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "speed zero normalized",
+      "group": "controls",
+      "value": 0.784,
+      "unit": "normalized",
+      "estimated": false,
+      "source": "0xf9a7f8; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    },
+    {
+      "name": "amount midpoint",
+      "group": "controls",
+      "value": 75,
+      "unit": "%",
+      "estimated": false,
+      "source": "0xf9a8c8; ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814"
+    }
+  ],
+  "rules": [
+    {
+      "name": "sustain direction",
+      "rule": "Positive values retune held notes faster; negative values slower.",
+      "source": "0xf18b00, message strings 0x216a27a and 0x216a2f8",
+      "evidence_id": "ev_a279eb338dc0100303b372fd76452bae79520553d88302da1732be670f09b572",
+      "estimated": false,
+      "scope": "Original user-facing rule; exact timing formula unresolved."
+    },
+    {
+      "name": "speed conversion",
+      "rule": "n<0.784: (30625*49^(-n/0.784)-625)/150; otherwise -3*(n-0.784)/0.216",
+      "estimated": false,
+      "source": "0xf9a798; 0xf9a7f8; 0x13f3588; 0x13f3658",
+      "evidence_id": "ev_adadc508eb9efd3d4683c256e12f70abac180513544a2d569d26d5b7772481f9"
+    },
+    {
+      "name": "amount conversion",
+      "rule": "112.5*(1-9^(-n))",
+      "estimated": false,
+      "source": "0xf9a8c8; 0x13f34b8; 0x13f3658",
+      "evidence_id": "ev_1768a913beaf0af1f3e6f70ff838d270891077b92022c29b026406b2aaa83ebc"
+    }
+  ]
+}

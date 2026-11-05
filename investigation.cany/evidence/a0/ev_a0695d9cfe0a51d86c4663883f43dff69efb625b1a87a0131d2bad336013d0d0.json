@@ -1,0 +1,1227 @@
+{
+  "id": "ev_a0695d9cfe0a51d86c4663883f43dff69efb625b1a87a0131d2bad336013d0d0",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_strings_find",
+  "params": {
+    "case_sensitive": false,
+    "limit": 100,
+    "mode": "regex",
+    "offset": 0,
+    "pattern": "Speed|Sustain|NormalizedAmount|ScalePattern|DoublerStereoWidth|negative|robotic"
+  },
+  "result": {
+    "matches": [
+      {
+        "address": "0x2167a22",
+        "references": [
+          {
+            "from": "0xb9f6b0",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9f6c0",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_ScalePattern"
+      },
+      {
+        "address": "0x2167acf",
+        "references": [
+          {
+            "from": "0xb9fc40",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9fc5c",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_Sustain"
+      },
+      {
+        "address": "0x2167ae9",
+        "references": [
+          {
+            "from": "0xb9fd14",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9fd24",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_Speed"
+      },
+      {
+        "address": "0x2167d1a",
+        "references": [
+          {
+            "from": "0xba0ae4",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0af4",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_ScalePattern"
+      },
+      {
+        "address": "0x2167dc7",
+        "references": [
+          {
+            "from": "0xba103c",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba1058",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_Sustain"
+      },
+      {
+        "address": "0x2167de1",
+        "references": [
+          {
+            "from": "0xba1110",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba1120",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_Speed"
+      },
+      {
+        "address": "0x21683c3",
+        "references": [
+          {
+            "from": "0xd3ece8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd437d8",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "zedSpeed"
+      },
+      {
+        "address": "0x21683d4",
+        "references": [
+          {
+            "from": "0xca9e90",
+            "function": "sub_caab08"
+          },
+          {
+            "from": "0xca9e94",
+            "function": "sub_caab08"
+          }
+        ],
+        "section": "__cstring",
+        "text": "edSustain"
+      },
+      {
+        "address": "0x21685ff",
+        "references": [
+          {
+            "from": "0xd3ec30",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3ec34",
+            "function": "sub_d40404"
+          }
+        ],
+        "section": "__cstring",
+        "text": "edZeroSpeed"
+      },
+      {
+        "address": "0x216860b",
+        "references": [
+          {
+            "from": "0xd3eda4",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3eda8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd43900",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43904",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "NormalizedAmount"
+      },
+      {
+        "address": "0x216861c",
+        "references": [
+          {
+            "from": "0xd09988",
+            "function": "sub_d09968"
+          },
+          {
+            "from": "0xd0998c",
+            "function": "sub_d09968"
+          },
+          {
+            "from": "0xd3f3c0",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3f3c8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd43b10",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43b1c",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "NegativeSpee"
+      },
+      {
+        "address": "0x2168639",
+        "references": [
+          {
+            "from": "0xd3edf8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3ee00",
+            "function": "sub_d40404"
+          }
+        ],
+        "section": "__cstring",
+        "text": "SpeedBackgrou"
+      },
+      {
+        "address": "0x216864f",
+        "references": [
+          {
+            "from": "0xd3ee5c",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3ee64",
+            "function": "sub_d40404"
+          }
+        ],
+        "section": "__cstring",
+        "text": "SustainBackgrou"
+      },
+      {
+        "address": "0x2168686",
+        "references": [
+          {
+            "from": "0xd4384c",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43850",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "edSpeedZero"
+      },
+      {
+        "address": "0x216a160",
+        "references": [
+          {
+            "from": "0xf18c88",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Control how fast your notes are corrected.\nSpeeds between 0 - 20ms produce a classic robotic effect.\nSlower speeds produce a mor"
+      },
+      {
+        "address": "0x216a1f2",
+        "references": [
+          {
+            "from": "0xf18cd8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Control how fast your notes are corrected.\n\nNegative speed creates an even harder effect.\n(Works great with Note Stabilizer act"
+      },
+      {
+        "address": "0x216a27a",
+        "references": [
+          {
+            "from": "0xf18db8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Dynamically adjusts the Speed setting of held notes.\n\nPositive values retune the sustained part "
+      },
+      {
+        "address": "0x216a2f8",
+        "references": [
+          {
+            "from": "0xf18e08",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Dynamically adjusts the Speed setting of held notes.\n\nNegative values retune the sustained part "
+      },
+      {
+        "address": "0x216a4b1",
+        "references": [
+          {
+            "from": "0xf19010",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "sustained notes."
+      },
+      {
+        "address": "0x216a5d0",
+        "references": [
+          {
+            "from": "0xf19680",
+            "function": "sub_f1959c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "w::Speed"
+      },
+      {
+        "address": "0x216a617",
+        "references": [
+          {
+            "from": "0xf1971c",
+            "function": "sub_f1959c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ideshow::Sustain"
+      },
+      {
+        "address": "0x216ab68",
+        "references": [
+          {
+            "from": "0xf4a88c",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ar-speed"
+      },
+      {
+        "address": "0x216ab7e",
+        "references": [
+          {
+            "from": "0xf4a8fc",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ar-speed"
+      },
+      {
+        "address": "0x216ab94",
+        "references": [
+          {
+            "from": "0xf4a968",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ar-speed"
+      },
+      {
+        "address": "0x216aba6",
+        "references": [
+          {
+            "from": "0xf4a9e8",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "or-angular-speed"
+      },
+      {
+        "address": "0x216abc6",
+        "references": [
+          {
+            "from": "0xf4aa60",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ar-speed"
+      },
+      {
+        "address": "0x216abde",
+        "references": [
+          {
+            "from": "0xf4aad8",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ar-speed"
+      },
+      {
+        "address": "0x216b0e8",
+        "references": [
+          {
+            "from": "0xf77274",
+            "function": "sub_f7e180"
+          },
+          {
+            "from": "0xf77278",
+            "function": "sub_f7e180"
+          }
+        ],
+        "section": "__cstring",
+        "text": "orb-angular-speed"
+      },
+      {
+        "address": "0x216b0fa",
+        "references": [
+          {
+            "from": "0xf772e8",
+            "function": "sub_f7e180"
+          },
+          {
+            "from": "0xf772ec",
+            "function": "sub_f7e180"
+          }
+        ],
+        "section": "__cstring",
+        "text": "color-angular-speed"
+      },
+      {
+        "address": "0x216b48b",
+        "references": [
+          {
+            "from": "0xd3314c",
+            "function": "sub_d39748"
+          },
+          {
+            "from": "0xd33150",
+            "function": "sub_d39748"
+          },
+          {
+            "from": "0xfa02ec",
+            "function": "sub_f2a3f8"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ScalePattern"
+      },
+      {
+        "address": "0x216b500",
+        "references": [
+          {
+            "from": "0xd6a830",
+            "function": "sub_d6f874"
+          },
+          {
+            "from": "0xfa1aac",
+            "function": "sub_ead874"
+          },
+          {
+            "from": "0x2ccfce8",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "Sustain"
+      },
+      {
+        "address": "0x216b512",
+        "references": [
+          {
+            "from": "0xfa1e98",
+            "function": "sub_ead874"
+          },
+          {
+            "from": "0x2ccfcd8",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "Speed"
+      },
+      {
+        "address": "0x216b53c",
+        "references": [
+          {
+            "from": "0xfa257c",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__cstring",
+        "text": "DoublerStereoWidth"
+      },
+      {
+        "address": "0x216cad1",
+        "references": [
+          {
+            "from": "0x104f930",
+            "function": "sub_1050944"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ion-speed-factor"
+      },
+      {
+        "address": "0x216e1d3",
+        "references": [
+          {
+            "from": "0x1241e4c",
+            "function": "sub_1241848"
+          }
+        ],
+        "section": "__cstring",
+        "text": "\nSpeed:                   "
+      },
+      {
+        "address": "0x21701b4",
+        "references": [
+          {
+            "from": "0x2d10da8",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "TProtocolException: Negative size"
+      },
+      {
+        "address": "0x21a84ab",
+        "references": [],
+        "section": "__cstring",
+        "text": "bad numeric conversion: negative overflow"
+      },
+      {
+        "address": "0x21b6f52",
+        "references": [],
+        "section": "__cstring",
+        "text": "dng_negative::DefloatStage2"
+      },
+      {
+        "address": "0x21b723a",
+        "references": [],
+        "section": "__cstring",
+        "text": "Digital Negative"
+      },
+      {
+        "address": "0x21b72bf",
+        "references": [],
+        "section": "__cstring",
+        "text": "Negative tile size"
+      },
+      {
+        "address": "0x21d0575",
+        "references": [
+          {
+            "from": "0x1fe1488",
+            "function": "sub_1fe143c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "a non-negative integer"
+      },
+      {
+        "address": "0x221d5c4",
+        "references": [
+          {
+            "from": "0x2cab038",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIN14autotune_enums12ScalePatternENS_20IndependentInterfaceEEEN8autotune13KeyScaleModel20ScalePatternIdGetterEEE"
+      },
+      {
+        "address": "0x221d654",
+        "references": [
+          {
+            "from": "0x2cab000",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui8PropertyIN14autotune_enums12ScalePatternENS_20IndependentInterfaceEEE"
+      },
+      {
+        "address": "0x221d69f",
+        "references": [
+          {
+            "from": "0x2cab108",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "NSt3__110__function6__funcINS_6__bindIMN2ui17ISettablePropertyIN14autotune_enums12ScalePatternEEEFvS6_EJPS7_RKNS_12placeholders4__phILi1EEEEEENS_9allocatorISG_EEFvS6_EEE"
+      },
+      {
+        "address": "0x221d749",
+        "references": [
+          {
+            "from": "0x2cab0f8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "NSt3__110__function6__baseIFvN14autotune_enums12ScalePatternEEEE"
+      },
+      {
+        "address": "0x221d78a",
+        "references": [
+          {
+            "from": "0x2cab148",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "NSt3__16__bindIMN2ui17ISettablePropertyIN14autotune_enums12ScalePatternEEEFvS4_EJPS5_RKNS_12placeholders4__phILi1EEEEEE"
+      },
+      {
+        "address": "0x221d802",
+        "references": [
+          {
+            "from": "0x2cab130",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "NSt3__118__weak_result_typeIMN2ui17ISettablePropertyIN14autotune_enums12ScalePatternEEEFvS4_EEE"
+      },
+      {
+        "address": "0x221d862",
+        "references": [
+          {
+            "from": "0x2cab120",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "NSt3__115binary_functionIPN2ui17ISettablePropertyIN14autotune_enums12ScalePatternEEES4_vEE"
+      },
+      {
+        "address": "0x221e050",
+        "references": [
+          {
+            "from": "0x2cab5a0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "NSt3__110__function6__funcIZN7splugin16ParamModelBinder23addDiscreteParamWatcherIN14autotune_enums12ScalePatternEEEvRN2ui8PropertyIT_NS7_20IndependentInterfaceEEERKjEUljRKN6plugin22DiscreteParameterValueEE_NS_9allocatorISJ_EEFvjSI_EEE"
+      },
+      {
+        "address": "0x221e13b",
+        "references": [
+          {
+            "from": "0x2cab5b8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "ZN7splugin16ParamModelBinder23addDiscreteParamWatcherIN14autotune_enums12ScalePatternEEEvRN2ui8PropertyIT_NS4_20IndependentInterfaceEEERKjEUljRKN6plugin22DiscreteParameterValueEE_"
+      },
+      {
+        "address": "0x221e299",
+        "references": [
+          {
+            "from": "0x2cab808",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune10KnobsModel23NormalizedSpeedIdGetterEEE"
+      },
+      {
+        "address": "0x221e30a",
+        "references": [
+          {
+            "from": "0x2cab870",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune10KnobsModel13SpeedIdGetterEEE"
+      },
+      {
+        "address": "0x221e371",
+        "references": [
+          {
+            "from": "0x2cab8d8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune10KnobsModel25NormalizedSustainIdGetterEEE"
+      },
+      {
+        "address": "0x221e3e4",
+        "references": [
+          {
+            "from": "0x2cab940",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune10KnobsModel15SustainIdGetterEEE"
+      },
+      {
+        "address": "0x221e44d",
+        "references": [
+          {
+            "from": "0x2cab9a8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune10KnobsModel24NormalizedAmountIdGetterEEE"
+      },
+      {
+        "address": "0x221eb28",
+        "references": [
+          {
+            "from": "0x2cabe98",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune18OrbAndDoublerModel23NormalizedSpeedIdGetterEEE"
+      },
+      {
+        "address": "0x221eba1",
+        "references": [
+          {
+            "from": "0x2cabf00",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune18OrbAndDoublerModel24NormalizedAmountIdGetterEEE"
+      },
+      {
+        "address": "0x221ec9c",
+        "references": [
+          {
+            "from": "0x2cabfd0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune18OrbAndDoublerModel36NormalizedDoublerStereoWidthIdGetterEEE"
+      },
+      {
+        "address": "0x2220b6f",
+        "references": [
+          {
+            "from": "0x2cad890",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N8autotune17SpeedMeterUXModelE"
+      },
+      {
+        "address": "0x22220b3",
+        "references": [
+          {
+            "from": "0x2caecc0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIfNS_20IndependentInterfaceEEEN8autotune20OrbAndDoublerUXModel36NegativeSpeedShelfModulationIdGetterEEE"
+      },
+      {
+        "address": "0x222213b",
+        "references": [
+          {
+            "from": "0x2caed28",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIfNS_20IndependentInterfaceEEEN8autotune20OrbAndDoublerUXModel35InstantSpeedNormalizedValueIdGetterEEE"
+      },
+      {
+        "address": "0x2222ecc",
+        "references": [
+          {
+            "from": "0x2caff38",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIN14autotune_enums12ScalePatternENS_17LinkableInterfaceEEEN8autotune17KeyScaleViewModel20ScalePatternIdGetterEEE"
+      },
+      {
+        "address": "0x2222f5d",
+        "references": [
+          {
+            "from": "0x2caff00",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui8PropertyIN14autotune_enums12ScalePatternENS_17LinkableInterfaceEEE"
+      },
+      {
+        "address": "0x222363c",
+        "references": [
+          {
+            "from": "0x2cb0750",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune14KnobsViewModel27NormalizedZeroSpeedIdGetterEEE"
+      },
+      {
+        "address": "0x22236b5",
+        "references": [
+          {
+            "from": "0x2cb07f0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_17LinkableInterfaceEEEN8autotune14KnobsViewModel23NormalizedSpeedIdGetterEEE"
+      },
+      {
+        "address": "0x2223727",
+        "references": [
+          {
+            "from": "0x2cb0890",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_17LinkableInterfaceEEEN8autotune14KnobsViewModel25NormalizedSustainIdGetterEEE"
+      },
+      {
+        "address": "0x222379b",
+        "references": [
+          {
+            "from": "0x2cb0930",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_17LinkableInterfaceEEEN8autotune14KnobsViewModel24NormalizedAmountIdGetterEEE"
+      },
+      {
+        "address": "0x2223877",
+        "references": [
+          {
+            "from": "0x2cb0a70",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIfNS_17LinkableInterfaceEEEN8autotune14KnobsViewModel36NegativeSpeedShelfModulationIdGetterEEE"
+      },
+      {
+        "address": "0x22238f6",
+        "references": [
+          {
+            "from": "0x2cb0ad8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyINSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEENS_20IndependentInterfaceEEEN8autotune14KnobsViewModel29SpeedBackgroundDigitsIdGetterEEE"
+      },
+      {
+        "address": "0x22239b0",
+        "references": [
+          {
+            "from": "0x2cb0b40",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyINSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEENS_20IndependentInterfaceEEEN8autotune14KnobsViewModel31SustainBackgroundDigitsIdGetterEEE"
+      },
+      {
+        "address": "0x2223b27",
+        "references": [
+          {
+            "from": "0x2cb0c48",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIbNS_17LinkableInterfaceEEEN8autotune14KnobsViewModel20SpeedHoveredIdGetterEEE"
+      },
+      {
+        "address": "0x2223b96",
+        "references": [
+          {
+            "from": "0x2cb0ce8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIbNS_17LinkableInterfaceEEEN8autotune14KnobsViewModel19SpeedPushedIdGetterEEE"
+      },
+      {
+        "address": "0x2223ce3",
+        "references": [
+          {
+            "from": "0x2cb0ec8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIbNS_17LinkableInterfaceEEEN8autotune14KnobsViewModel22SustainHoveredIdGetterEEE"
+      },
+      {
+        "address": "0x2223d54",
+        "references": [
+          {
+            "from": "0x2cb0f68",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIbNS_17LinkableInterfaceEEEN8autotune14KnobsViewModel21SustainPushedIdGetterEEE"
+      },
+      {
+        "address": "0x2223e30",
+        "references": [
+          {
+            "from": "0x2cb10e8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_17LinkableInterfaceEEEN8autotune22OrbAndDoublerViewModel23NormalizedSpeedIdGetterEEE"
+      },
+      {
+        "address": "0x2223eaa",
+        "references": [
+          {
+            "from": "0x2cb1188",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_17LinkableInterfaceEEEN8autotune22OrbAndDoublerViewModel27NormalizedSpeedZeroIdGetterEEE"
+      },
+      {
+        "address": "0x2223f28",
+        "references": [
+          {
+            "from": "0x2cb1228",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_17LinkableInterfaceEEEN8autotune22OrbAndDoublerViewModel24NormalizedAmountIdGetterEEE"
+      },
+      {
+        "address": "0x2224025",
+        "references": [
+          {
+            "from": "0x2cb1368",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_17LinkableInterfaceEEEN8autotune22OrbAndDoublerViewModel36NormalizedDoublerStereoWidthIdGetterEEE"
+      },
+      {
+        "address": "0x22241a2",
+        "references": [
+          {
+            "from": "0x2cb1548",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIfNS_17LinkableInterfaceEEEN8autotune22OrbAndDoublerViewModel36NegativeSpeedShelfModulationIdGetterEEE"
+      },
+      {
+        "address": "0x2224229",
+        "references": [
+          {
+            "from": "0x2cb15e8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIfNS_17LinkableInterfaceEEEN8autotune22OrbAndDoublerViewModel35InstantSpeedNormalizedValueIdGetterEEE"
+      },
+      {
+        "address": "0x222470c",
+        "references": [
+          {
+            "from": "0x2cb1ba0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N7sigslot6detail4slotIRZN8autotune22OrbAndDoublerViewModelC1ERKNS2_18OrbAndDoublerModelERKNS2_20OrbAndDoublerUXModelERKNS2_19SpeedMeterViewModelERKNS2_21VisualizerKnobUXModelESF_E3$_0JEEE"
+      },
+      {
+        "address": "0x22247c8",
+        "references": [
+          {
+            "from": "0x2cb1c88",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_17LinkableInterfaceEEEN8autotune19SpeedMeterViewModel28NormalizedRangeStartIdGetterEEE"
+      },
+      {
+        "address": "0x2224844",
+        "references": [
+          {
+            "from": "0x2cb1cf0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune19SpeedMeterViewModel26NormalizedRangeEndIdGetterEEE"
+      },
+      {
+        "address": "0x22248c1",
+        "references": [
+          {
+            "from": "0x2cb1d58",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune19SpeedMeterViewModel22NormalizedZeroIdGetterEEE"
+      },
+      {
+        "address": "0x222493a",
+        "references": [
+          {
+            "from": "0x2cb1dc0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune19SpeedMeterViewModel22NormalizedPeakIdGetterEEE"
+      },
+      {
+        "address": "0x22249b3",
+        "references": [
+          {
+            "from": "0x2cb1e60",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIbNS_17LinkableInterfaceEEEN8autotune19SpeedMeterViewModel14BypassIdGetterEEE"
+      },
+      {
+        "address": "0x2224a21",
+        "references": [
+          {
+            "from": "0x2cb1eb0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N7sigslot6detail8slot_pmfIMN8autotune19SpeedMeterViewModelEFvvEPS3_JEEE"
+      },
+      {
+        "address": "0x2224a69",
+        "references": [
+          {
+            "from": "0x2cb1f18",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N7sigslot6detail8slot_pmfIRMN8autotune19SpeedMeterViewModelEFvRKNSt3__16vectorIdNS4_9allocatorIdEEEEERPS3_JSA_EEE"
+      },
+      {
+        "address": "0x222650a",
+        "references": [
+          {
+            "from": "0x2cb37e8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N8autotune19SpeedMeterViewModelE"
+      },
+      {
+        "address": "0x2226dbe",
+        "references": [
+          {
+            "from": "0x2cb3df0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui16PropertyBehaviorIN14autotune_enums12ScalePatternENS_17LinkableInterfaceEEE"
+      },
+      {
+        "address": "0x2226e0f",
+        "references": [
+          {
+            "from": "0x2cb3dc8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui16PropertyBehaviorIN14autotune_enums12ScalePatternENS_20IndependentInterfaceEEE"
+      },
+      {
+        "address": "0x2226e63",
+        "references": [
+          {
+            "from": "0x2cb3db8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui20IndependentInterface20IIndependentPropertyIN14autotune_enums12ScalePatternEEE"
+      },
+      {
+        "address": "0x2226eb7",
+        "references": [
+          {
+            "from": "0x2cb3de0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui17LinkableInterface17ILinkablePropertyIN14autotune_enums12ScalePatternEEE"
+      },
+      {
+        "address": "0x2226f05",
+        "references": [
+          {
+            "from": "0x2cb3ea0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N7sigslot6detail4slotIRZN2ui16PropertyBehaviorIN14autotune_enums12ScalePatternENS2_17LinkableInterfaceEE6linkToERKNS2_12PropertyBaseIS5_EEEUlRKS5_E_JSD_EEE"
+      },
+      {
+        "address": "0x2226fa1",
+        "references": [
+          {
+            "from": "0x2cb3e88",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N7sigslot6detail9slot_baseIJRKN14autotune_enums12ScalePatternEEEE"
+      },
+      {
+        "address": "0x2226fe3",
+        "references": [
+          {
+            "from": "0x2cb3ef0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "NSt3__120__shared_ptr_pointerIPN7sigslot6detail9slot_baseIJRKN14autotune_enums12ScalePatternEEEENS_10shared_ptrIS8_E27__shared_ptr_default_deleteIS8_S8_EENS_9allocatorIS8_EEEE"
+      },
+      {
+        "address": "0x2227093",
+        "references": [],
+        "section": "__const",
+        "text": "NSt3__110shared_ptrIN7sigslot6detail9slot_baseIJRKN14autotune_enums12ScalePatternEEEEE27__shared_ptr_default_deleteIS8_S8_EE"
+      },
+      {
+        "address": "0x2227110",
+        "references": [
+          {
+            "from": "0x2cb3f40",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui12PropertyBaseIN14autotune_enums12ScalePatternEEE"
+      },
+      {
+        "address": "0x2227146",
+        "references": [
+          {
+            "from": "0x2cb3f30",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui17ISettablePropertyIN14autotune_enums12ScalePatternEEE"
+      },
+      {
+        "address": "0x2227181",
+        "references": [
+          {
+            "from": "0x2cb3f90",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N7sigslot11signal_baseINSt3__15mutexEJRKN14autotune_enums12ScalePatternEEEE"
+      }
+    ],
+    "total": 219
+  },
+  "summary": "219 strings match \"Speed|Sustain|NormalizedAmount|ScalePattern|DoublerStereoWidth|negative|robotic\".",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "data_sections_only",
+      "message": "only strings stored in the file are searched (absence is not proof)"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 100,
+    "total": 219,
+    "next_offset": 100
+  },
+  "locations": [],
+  "links": []
+}

@@ -1,0 +1,2 @@
+[env]
+DEVELOPER_DIR = { value = "/Library/Developer/CommandLineTools", force = false }

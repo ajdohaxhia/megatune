@@ -1,0 +1,470 @@
+{
+  "id": "ev_9355017cbad300a7da565fe7a887da7296c011fc16526a4ed744f15ee0fbfb5a",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_strings_find",
+  "params": {
+    "case_sensitive": false,
+    "limit": 30,
+    "mode": "regex",
+    "offset": 0,
+    "pattern": "Speed|Sustain|NormalizedAmount|ScalePattern|DoublerStereoWidth|negative|robotic"
+  },
+  "result": {
+    "matches": [
+      {
+        "address": "0x2167a22",
+        "references": [
+          {
+            "from": "0xb9f6b0",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9f6c0",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_ScalePattern"
+      },
+      {
+        "address": "0x2167acf",
+        "references": [
+          {
+            "from": "0xb9fc40",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9fc5c",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_Sustain"
+      },
+      {
+        "address": "0x2167ae9",
+        "references": [
+          {
+            "from": "0xb9fd14",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9fd24",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_Speed"
+      },
+      {
+        "address": "0x2167d1a",
+        "references": [
+          {
+            "from": "0xba0ae4",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba0af4",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_ScalePattern"
+      },
+      {
+        "address": "0x2167dc7",
+        "references": [
+          {
+            "from": "0xba103c",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba1058",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_Sustain"
+      },
+      {
+        "address": "0x2167de1",
+        "references": [
+          {
+            "from": "0xba1110",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba1120",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_Speed"
+      },
+      {
+        "address": "0x21683c3",
+        "references": [
+          {
+            "from": "0xd3ece8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd437d8",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "zedSpeed"
+      },
+      {
+        "address": "0x21683d4",
+        "references": [
+          {
+            "from": "0xca9e90",
+            "function": "sub_caab08"
+          },
+          {
+            "from": "0xca9e94",
+            "function": "sub_caab08"
+          }
+        ],
+        "section": "__cstring",
+        "text": "edSustain"
+      },
+      {
+        "address": "0x21685ff",
+        "references": [
+          {
+            "from": "0xd3ec30",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3ec34",
+            "function": "sub_d40404"
+          }
+        ],
+        "section": "__cstring",
+        "text": "edZeroSpeed"
+      },
+      {
+        "address": "0x216860b",
+        "references": [
+          {
+            "from": "0xd3eda4",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3eda8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd43900",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43904",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "NormalizedAmount"
+      },
+      {
+        "address": "0x216861c",
+        "references": [
+          {
+            "from": "0xd09988",
+            "function": "sub_d09968"
+          },
+          {
+            "from": "0xd0998c",
+            "function": "sub_d09968"
+          },
+          {
+            "from": "0xd3f3c0",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3f3c8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd43b10",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43b1c",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "NegativeSpee"
+      },
+      {
+        "address": "0x2168639",
+        "references": [
+          {
+            "from": "0xd3edf8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3ee00",
+            "function": "sub_d40404"
+          }
+        ],
+        "section": "__cstring",
+        "text": "SpeedBackgrou"
+      },
+      {
+        "address": "0x216864f",
+        "references": [
+          {
+            "from": "0xd3ee5c",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3ee64",
+            "function": "sub_d40404"
+          }
+        ],
+        "section": "__cstring",
+        "text": "SustainBackgrou"
+      },
+      {
+        "address": "0x2168686",
+        "references": [
+          {
+            "from": "0xd4384c",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43850",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "edSpeedZero"
+      },
+      {
+        "address": "0x216a160",
+        "references": [
+          {
+            "from": "0xf18c88",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Control how fast your notes are corrected.\nSpeeds between 0 - 20ms produce a classic robotic effect.\nSlower speeds produce a mor"
+      },
+      {
+        "address": "0x216a1f2",
+        "references": [
+          {
+            "from": "0xf18cd8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Control how fast your notes are corrected.\n\nNegative speed creates an even harder effect.\n(Works great with Note Stabilizer act"
+      },
+      {
+        "address": "0x216a27a",
+        "references": [
+          {
+            "from": "0xf18db8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Dynamically adjusts the Speed setting of held notes.\n\nPositive values retune the sustained part "
+      },
+      {
+        "address": "0x216a2f8",
+        "references": [
+          {
+            "from": "0xf18e08",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Dynamically adjusts the Speed setting of held notes.\n\nNegative values retune the sustained part "
+      },
+      {
+        "address": "0x216a4b1",
+        "references": [
+          {
+            "from": "0xf19010",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "sustained notes."
+      },
+      {
+        "address": "0x216a5d0",
+        "references": [
+          {
+            "from": "0xf19680",
+            "function": "sub_f1959c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "w::Speed"
+      },
+      {
+        "address": "0x216a617",
+        "references": [
+          {
+            "from": "0xf1971c",
+            "function": "sub_f1959c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ideshow::Sustain"
+      },
+      {
+        "address": "0x216ab68",
+        "references": [
+          {
+            "from": "0xf4a88c",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ar-speed"
+      },
+      {
+        "address": "0x216ab7e",
+        "references": [
+          {
+            "from": "0xf4a8fc",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ar-speed"
+      },
+      {
+        "address": "0x216ab94",
+        "references": [
+          {
+            "from": "0xf4a968",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ar-speed"
+      },
+      {
+        "address": "0x216aba6",
+        "references": [
+          {
+            "from": "0xf4a9e8",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "or-angular-speed"
+      },
+      {
+        "address": "0x216abc6",
+        "references": [
+          {
+            "from": "0xf4aa60",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ar-speed"
+      },
+      {
+        "address": "0x216abde",
+        "references": [
+          {
+            "from": "0xf4aad8",
+            "function": "sub_f560b0"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ar-speed"
+      },
+      {
+        "address": "0x216b0e8",
+        "references": [
+          {
+            "from": "0xf77274",
+            "function": "sub_f7e180"
+          },
+          {
+            "from": "0xf77278",
+            "function": "sub_f7e180"
+          }
+        ],
+        "section": "__cstring",
+        "text": "orb-angular-speed"
+      },
+      {
+        "address": "0x216b0fa",
+        "references": [
+          {
+            "from": "0xf772e8",
+            "function": "sub_f7e180"
+          },
+          {
+            "from": "0xf772ec",
+            "function": "sub_f7e180"
+          }
+        ],
+        "section": "__cstring",
+        "text": "color-angular-speed"
+      },
+      {
+        "address": "0x216b48b",
+        "references": [
+          {
+            "from": "0xd3314c",
+            "function": "sub_d39748"
+          },
+          {
+            "from": "0xd33150",
+            "function": "sub_d39748"
+          },
+          {
+            "from": "0xfa02ec",
+            "function": "sub_f2a3f8"
+          }
+        ],
+        "section": "__cstring",
+        "text": "ScalePattern"
+      }
+    ],
+    "total": 219
+  },
+  "summary": "219 strings match \"Speed|Sustain|NormalizedAmount|ScalePattern|DoublerStereoWidth|negative|robotic\".",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "data_sections_only",
+      "message": "only strings stored in the file are searched (absence is not proof)"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 219,
+    "next_offset": 30
+  },
+  "locations": [],
+  "links": []
+}

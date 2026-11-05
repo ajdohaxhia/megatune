@@ -1,0 +1,66 @@
+{
+  "id": "ev_bd86a384339ea1ede9c5286f557d6134823f3e8e7f63f100446ceaf5f765fbc4",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_function_pseudocode",
+  "params": {
+    "function": "0x13f3808"
+  },
+  "result": {
+    "calls": [],
+    "engine": "clean-room lifter",
+    "entry": "0x13f3808",
+    "function": "sub_13f3808",
+    "gotos": 0,
+    "inline_asm": 1,
+    "pseudo_code": "void sub_13f3808(int64_t x0)\n{\n    x8 += 0x590;\n    *(void*)(x0) = x8;\n    __asm(\"fsub d1, d1, d0\");\n    *(void*)(x0 + 8)[0] = 0; *(void*)(x0 + 8)[1] = 0;\n    return;\n}\n",
+    "signature": "void sub_13f3808(int64_t x0)",
+    "strings": [],
+    "structured": true
+  },
+  "summary": "Pseudo-C for sub_13f3808 (8 lines).",
+  "confidence": "inferred",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "register_level",
+      "message": "variables are machine registers and stack slots; types are not recovered"
+    },
+    {
+      "code": "calling_convention_assumed",
+      "message": "call arguments follow the usual arm64 convention and may be wrong for unusual functions"
+    },
+    {
+      "code": "conditions_from_flags",
+      "message": "branch conditions are rebuilt from the last compare and may be approximate"
+    },
+    {
+      "code": "inline_asm",
+      "message": "1 instructions have no C rule and are shown as __asm(...)"
+    },
+    {
+      "code": "deep_engine_unavailable",
+      "message": "Ghidra couldn't decompile this function (the bridge rejected the request (bridge_error): the decompiler gave no result: ). So this came from the built-in decompiler, which is less exact."
+    }
+  ],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0x13f3808"
+    }
+  ],
+  "links": [],
+  "carries_target_content": true
+}

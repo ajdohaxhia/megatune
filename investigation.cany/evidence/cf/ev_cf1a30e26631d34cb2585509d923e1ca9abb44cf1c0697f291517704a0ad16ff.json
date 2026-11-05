@@ -1,0 +1,48 @@
+{
+  "id": "ev_cf1a30e26631d34cb2585509d923e1ca9abb44cf1c0697f291517704a0ad16ff",
+  "subject": {
+    "kind": "mach-o",
+    "sha256": "149690405ff6faaf6ddd73563f9ac686d5a2c2a8a2b93b626c3e9f93d8a9fbea",
+    "name": "MetaTune-arm64"
+  },
+  "operation": "native_xrefs_list",
+  "params": {
+    "address": "0xf9a7f8",
+    "limit": 20,
+    "offset": 0
+  },
+  "result": {
+    "address": "0xf9a7f8",
+    "name": null,
+    "references_from": [],
+    "references_to": [],
+    "total_to": 0
+  },
+  "summary": "0xf9a7f8 is referenced from 0 places and refers to 0.",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "static_references",
+      "message": "references made through computed pointers at run time are not seen"
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 0,
+    "total": 0
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0xf9a7f8"
+    }
+  ],
+  "links": []
+}

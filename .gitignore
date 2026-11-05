@@ -1,0 +1,22 @@
+.DS_Store
+# build artifacts
+app/vst3/build*/
+app/vst3/host/build*/
+app/target/
+*.o
+*.a
+*.dSYM
+# release binaries (use GitHub Releases)
+app/dist/*.vst3/
+app/MegaTune*.vst3/
+# large or third-party audio/materials
+test-audio/*.wav
+capture/
+original/
+__pycache__/
+*.pyc
+# audio renders derived from copyrighted material
+app/vst3/verify/out/
+app/vst3/build-cli/
+**/whyclip_*.wav
+**/whyvocal_*.wav

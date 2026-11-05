@@ -1,0 +1,525 @@
+{
+  "id": "ev_447ef97cfb53f0d1a01dd09cf18bb7f04d48cdadaeeacc36a0680d17b24b4ac5",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_strings_find",
+  "params": {
+    "case_sensitive": false,
+    "limit": 45,
+    "mode": "regex",
+    "offset": 0,
+    "pattern": "stabiliz|held note|retun|robot|negative speed"
+  },
+  "result": {
+    "matches": [
+      {
+        "address": "0x2168156",
+        "references": [
+          {
+            "from": "0xbc6d34",
+            "function": "sub_bc5d3c"
+          },
+          {
+            "from": "0xbc6d38",
+            "function": "sub_bc5d3c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "roboto-bold"
+      },
+      {
+        "address": "0x2168162",
+        "references": [
+          {
+            "from": "0xbc6d7c",
+            "function": "sub_bc5d3c"
+          },
+          {
+            "from": "0xbc6d84",
+            "function": "sub_bc5d3c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "robot"
+      },
+      {
+        "address": "0x2168170",
+        "references": [
+          {
+            "from": "0xbc6dd4",
+            "function": "sub_bc5d3c"
+          },
+          {
+            "from": "0xbc6ddc",
+            "function": "sub_bc5d3c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "robot"
+      },
+      {
+        "address": "0x216850d",
+        "references": [],
+        "section": "__cstring",
+        "text": "RetuneNo"
+      },
+      {
+        "address": "0x2168562",
+        "references": [
+          {
+            "from": "0xd0bbd8",
+            "function": "sub_d0f8dc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "stabilizerMeter"
+      },
+      {
+        "address": "0x2168593",
+        "references": [
+          {
+            "from": "0xd0fb58",
+            "function": "sub_d0fb34"
+          },
+          {
+            "from": "0xd0fb5c",
+            "function": "sub_d0fb34"
+          },
+          {
+            "from": "0xd4cc98",
+            "function": "sub_d4ce04"
+          },
+          {
+            "from": "0xd4cca0",
+            "function": "sub_d4ce04"
+          }
+        ],
+        "section": "__cstring",
+        "text": "StabilizerMete"
+      },
+      {
+        "address": "0x2168692",
+        "references": [
+          {
+            "from": "0xd43aa8",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43ab0",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "RetuneMete"
+      },
+      {
+        "address": "0x2168a35",
+        "references": [
+          {
+            "from": "0xda7b64",
+            "function": "sub_da7694"
+          },
+          {
+            "from": "0xda7b6c",
+            "function": "sub_da7694"
+          }
+        ],
+        "section": "__cstring",
+        "text": "robotomedium"
+      },
+      {
+        "address": "0x2168c83",
+        "references": [
+          {
+            "from": "0xdca534",
+            "function": "sub_dcb440"
+          }
+        ],
+        "section": "__cstring",
+        "text": "rStabilizerLabel"
+      },
+      {
+        "address": "0x216a160",
+        "references": [
+          {
+            "from": "0xf18c88",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Control how fast your notes are corrected.\nSpeeds between 0 - 20ms produce a classic robotic effect.\nSlower speeds produce a mor"
+      },
+      {
+        "address": "0x216a1f2",
+        "references": [
+          {
+            "from": "0xf18cd8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Control how fast your notes are corrected.\n\nNegative speed creates an even harder effect.\n(Works great with Note Stabilizer act"
+      },
+      {
+        "address": "0x216a27a",
+        "references": [
+          {
+            "from": "0xf18db8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Dynamically adjusts the Speed setting of held notes.\n\nPositive values retune the sustained part "
+      },
+      {
+        "address": "0x216a2f8",
+        "references": [
+          {
+            "from": "0xf18e08",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Dynamically adjusts the Speed setting of held notes.\n\nNegative values retune the sustained part "
+      },
+      {
+        "address": "0x216a375",
+        "references": [
+          {
+            "from": "0xf18ee8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "At 100%, full retuning is heard.\nAt 0%, no retuning is heard.\n\nGet a more natural-sounding effec"
+      },
+      {
+        "address": "0x216a3f1",
+        "references": [
+          {
+            "from": "0xf18fc4",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Prevents retuning during vibratos & when transitioning betwee"
+      },
+      {
+        "address": "0x216a437",
+        "references": [
+          {
+            "from": "0xf19004",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Prevents retuning during vibratos & when transitioning between notes.\n\nAlso prevents unwanted flutters & pitch changes in "
+      },
+      {
+        "address": "0x216a5e5",
+        "references": [
+          {
+            "from": "0xf196b4",
+            "function": "sub_f1959c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "show::Stabilizer"
+      },
+      {
+        "address": "0x216a943",
+        "references": [
+          {
+            "from": "0xf25174",
+            "function": "sub_f31fd4"
+          },
+          {
+            "from": "0xf25178",
+            "function": "sub_f31fd4"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Absolute_Stabilizer"
+      },
+      {
+        "address": "0x216a957",
+        "references": [],
+        "section": "__cstring",
+        "text": "StabilizerButtonNone"
+      },
+      {
+        "address": "0x216a96c",
+        "references": [],
+        "section": "__cstring",
+        "text": "stabilizerButtonNone"
+      },
+      {
+        "address": "0x216a981",
+        "references": [],
+        "section": "__cstring",
+        "text": "StabilizerButtonShort"
+      },
+      {
+        "address": "0x216a997",
+        "references": [],
+        "section": "__cstring",
+        "text": "stabilizerButtonShort"
+      },
+      {
+        "address": "0x216a9ad",
+        "references": [],
+        "section": "__cstring",
+        "text": "StabilizerButtonMid"
+      },
+      {
+        "address": "0x216a9c1",
+        "references": [],
+        "section": "__cstring",
+        "text": "stabilizerButtonMid"
+      },
+      {
+        "address": "0x216a9d5",
+        "references": [],
+        "section": "__cstring",
+        "text": "StabilizerButtonLong"
+      },
+      {
+        "address": "0x216a9ea",
+        "references": [],
+        "section": "__cstring",
+        "text": "stabilizerButtonLong"
+      },
+      {
+        "address": "0x216a9ff",
+        "references": [
+          {
+            "from": "0xf2bcac",
+            "function": "sub_f2a684"
+          }
+        ],
+        "section": "__cstring",
+        "text": "StabilizerToggle"
+      },
+      {
+        "address": "0x216aa10",
+        "references": [
+          {
+            "from": "0xf2dfa0",
+            "function": "sub_f2bf98"
+          }
+        ],
+        "section": "__cstring",
+        "text": "StabilizerLabel"
+      },
+      {
+        "address": "0x216aa20",
+        "references": [
+          {
+            "from": "0xf2dfb0",
+            "function": "sub_f2bf98"
+          }
+        ],
+        "section": "__cstring",
+        "text": "stabilizerLabel"
+      },
+      {
+        "address": "0x216aa4c",
+        "references": [
+          {
+            "from": "0x2cd2390",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "stabilizer"
+      },
+      {
+        "address": "0x216aadc",
+        "references": [
+          {
+            "from": "0x2cd35e0",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "stabilizerButton"
+      },
+      {
+        "address": "0x216ab19",
+        "references": [
+          {
+            "from": "0x2cd3ff0",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "stabilizerToggle"
+      },
+      {
+        "address": "0x216b523",
+        "references": [
+          {
+            "from": "0xfa21bc",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Stabilizer"
+      },
+      {
+        "address": "0x21da399",
+        "references": [],
+        "section": "__cstring",
+        "text": "\n<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <title>Slate Digital Third Party Software Licenses</title>\n        <style>\n            html {\n                scroll-padding-top: 200px;\n            }\n            body {\n                background: #121212;\n                color: #808080;\n                line-height: 1.5;\n                font-family: Georgia, serif;\n                padding: 2rem;\n                margin: 0px;\n            }\n            h1, h2, h3 {\n                color: #fff;\n                font-family: helvetica, roboto, noto, arial, sans-serif;\n                line-height: 1.3;\n            }\n            h1 {\n                min-width: 700px;\n                position: fixed;\n                top: 20px;\n                left: 20px;\n            }\n            h2 {\n                border-bottom: 2px solid #676767;\n                margin-top: 3rem;\n                margin-bottom: 2rem;\n                padding-bottom: 0.5rem;\n            }\n            header {\n                background: #121212;\n                position: fixed;\n                height: 200px;\n                width: 100%;\n                top: 0;\n                left: 0;\n            }\n            nav {\n                background: #121212;\n                border: 1px solid #676767;\n                border-radius: 5px;\n                padding: 10px;\n            }\n            nav ul {\n                margin: 0;\n                padding: 0;\n                overflow: hidden;\n            }\n            nav ul li::before {\n                color: white;\n            }\n            nav ul li a {\n                color: white;\n            }\n            nav ul li a:visited {\n                color: white;\n            }\n            main {\n                margin-top: 220px;\n            }\n            article {\n                padding: 1rem 3rem;\n            }\n            @media screen and (min-width: 900px) {\n                nav {\n                    position: fixed;\n                    top: 120px;\n                    right: 50px;\n                }\n            }\n            @media screen and (max-width: 900px) {\n                nav {\n                    min-width: 500px;\n                    position: fixed;\n                    margin-right: 50px;\n                    top: 100px;\n                    left: 20px;\n                }\n                nav ul li {\n                    display: inline-block;\n                }\n                nav ul li:before {\n                    content: '\\00a0\\2022\\00a0\\00a0';\n                    color:#999;\n                    color:rgba(0,0,0,0.5);\n                    font-size:11px;\n                }\n                nav ul li:first-child:before {\n                    content: '';\n                }\n            }\n        </style>\n    </head>\n    <body>\n        <header>\n            <h1>Slate Digital Third Party Software Licenses</h1>\n            <nav>\n                <ul>\n"
+      },
+      {
+        "address": "0x2222032",
+        "references": [
+          {
+            "from": "0x2caec58",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIfNS_20IndependentInterfaceEEEN8autotune20OrbAndDoublerUXModel29RetuneNormalizedValueIdGetterEEE"
+      },
+      {
+        "address": "0x2222381",
+        "references": [
+          {
+            "from": "0x2caeef0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N8autotune17StabilizerUXModelE"
+      },
+      {
+        "address": "0x22223a0",
+        "references": [
+          {
+            "from": "0x2caeff0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyINSt3__16chrono8durationIxNS2_5ratioILl1ELl1000EEEEENS_20RegistrableInterfaceEEEN8autotune17StabilizerUXModel21AttackCoeffMsIdGetterEEE"
+      },
+      {
+        "address": "0x2222448",
+        "references": [
+          {
+            "from": "0x2caf0d0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyINSt3__16chrono8durationIxNS2_5ratioILl1ELl1000EEEEENS_20RegistrableInterfaceEEEN8autotune17StabilizerUXModel22ReleaseCoeffMsIdGetterEEE"
+      },
+      {
+        "address": "0x22224f1",
+        "references": [
+          {
+            "from": "0x2caf138",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIfNS_20IndependentInterfaceEEEN8autotune17StabilizerUXModel38StabilizerMeterNormalizedValueIdGetterEEE"
+      },
+      {
+        "address": "0x2222578",
+        "references": [
+          {
+            "from": "0x2caf188",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N7sigslot6detail8slot_pmfIMN8autotune17StabilizerUXModelEFvvEPS3_JEEE"
+      },
+      {
+        "address": "0x222411d",
+        "references": [
+          {
+            "from": "0x2cb14a8",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIfNS_17LinkableInterfaceEEEN8autotune22OrbAndDoublerViewModel34RetuneMeterNormalizedValueIdGetterEEE"
+      },
+      {
+        "address": "0x2224c43",
+        "references": [
+          {
+            "from": "0x2cb2050",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIfNS_17LinkableInterfaceEEEN8autotune19StabilizerViewModel38StabilizerMeterNormalizedValueIdGetterEEE"
+      },
+      {
+        "address": "0x2224cc9",
+        "references": [
+          {
+            "from": "0x2cb20f0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIbNS_17LinkableInterfaceEEEN8autotune19StabilizerViewModel18LowLatencyIdGetterEEE"
+      },
+      {
+        "address": "0x2245cac",
+        "references": [
+          {
+            "from": "0x2cd2380",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N8autotune10StabilizerE"
+      },
+      {
+        "address": "0x2245cc4",
+        "references": [
+          {
+            "from": "0x2cd23e0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui16PropertyBehaviorIN5boost8optionalIN14autotune_enums10StabilizerEEENS_20IndependentInterfaceEEE"
+      }
+    ],
+    "total": 125
+  },
+  "summary": "125 strings match \"stabiliz|held note|retun|robot|negative speed\".",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "data_sections_only",
+      "message": "only strings stored in the file are searched (absence is not proof)"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 125,
+    "next_offset": 45
+  },
+  "locations": [],
+  "links": []
+}

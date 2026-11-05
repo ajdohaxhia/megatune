@@ -1,0 +1,72 @@
+{
+  "id": "ev_6388a72b5a6b20d3550fce53c5b1a4232260f79d4a0dce7004e9c751a64baa43",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_function_pseudocode",
+  "params": {
+    "function": "0xd09968"
+  },
+  "result": {
+    "calls": [
+      "__ZdlPv@stub",
+      "__Znwm@stub",
+      "sub_bdba2c"
+    ],
+    "engine": "clean-room lifter",
+    "entry": "0xd09968",
+    "function": "sub_d09968",
+    "gotos": 0,
+    "inline_asm": 1,
+    "pseudo_code": "int64_t sub_d09968(int64_t x0)\n{\n    stack_20[0] = x20; stack_20[1] = x19;\n    x19 = xzr;\n    x0 = __Znwm@stub(0x20);\n    x8 = \"NegativeSpee\";\n    0 = *(uint64_t*)0x216861c;\n    *(void*)(x0) = 0;\n    0 = *(uint64_t*)0x2168628;\n    *(void*)(x0 + 12) = 0;\n    *(void*)(x0 + 0x1c) = wzr;\n    stack_8 = x0;\n    0 = *(uint64_t*)0x2b1ee20;\n    stack_10 = 0;\n    __asm(\"movi d0, #0x0\");\n    sub_bdba2c(xzr, sp + 8);\n    w8 = stack_1f;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_8);\n    }\n    x8 += 0xec8;\n    *(void*)(x19) = x8;\n    x8 += 0x28;\n    *(void*)(x19 + 0x130) = x8;\n    x0 = __Znwm@stub(0x20);\n    x8 += 0xfc0;\n    *(void*)(x0) = x8;\n    0 = *(uint64_t*)0x22187c0;\n    *(void*)(x0 + 8) = 0;\n    *(void*)(x0 + 0x18) = x19;\n    *(void*)(x19 + 0x150) = x0;\n    x8 += 0xc78;\n    *(void*)(x19) = x8;\n    x8 += 0x28;\n    *(void*)(x19 + 0x130) = x8;\n    x0 = xzr;\n    x20 = stack_20[0]; x19 = stack_20[1];\n    return x0;\n}\n",
+    "signature": "int64_t sub_d09968(int64_t x0)",
+    "strings": [
+      "NegativeSpee"
+    ],
+    "structured": true
+  },
+  "summary": "Pseudo-C for sub_d09968 (39 lines).",
+  "confidence": "inferred",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "register_level",
+      "message": "variables are machine registers and stack slots; types are not recovered"
+    },
+    {
+      "code": "calling_convention_assumed",
+      "message": "call arguments follow the usual arm64 convention and may be wrong for unusual functions"
+    },
+    {
+      "code": "conditions_from_flags",
+      "message": "branch conditions are rebuilt from the last compare and may be approximate"
+    },
+    {
+      "code": "inline_asm",
+      "message": "1 instructions have no C rule and are shown as __asm(...)"
+    },
+    {
+      "code": "deep_engine_unavailable",
+      "message": "Ghidra couldn't decompile this function (the bridge rejected the request (bridge_error): the decompiler gave no result: ). So this came from the built-in decompiler, which is less exact."
+    }
+  ],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0xd09968"
+    }
+  ],
+  "links": [],
+  "carries_target_content": true
+}

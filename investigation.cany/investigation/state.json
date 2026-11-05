@@ -1,0 +1,77 @@
+{
+  "revision": 13,
+  "brief": null,
+  "plan": [
+    {
+      "title": "Open original main program in Deep mode and trace strings/references",
+      "status": "done",
+      "why": "Original universal executable and exact ARM64 slice opened; message/control references retained."
+    },
+    {
+      "title": "Read relevant pseudocode and corroborate control arithmetic",
+      "status": "done",
+      "why": "Awaited each pseudocode request; Ghidra unavailable, fallback FP inline assembly checked against raw ARM64 and dispatch tables."
+    },
+    {
+      "title": "Apply recovered control curves, defaults and sustain direction",
+      "status": "done",
+      "why": "Both builds use recovered Speed/Amount mappings; width default and sustain direction corrected. Regression tests passed after RED."
+    },
+    {
+      "title": "Rebuild and verify outputs",
+      "status": "done",
+      "why": "11 Rust tests, offline build, VST3 CTest/signature and Craft Anything rebuild_check pass."
+    },
+    {
+      "title": "Recover exact original pitch detector and DSP timing",
+      "status": "blocked",
+      "why": "No successful Ghidra decompilation; fallback insufficient to establish proprietary DSP. Remaining formulas explicitly estimated in app/MECHANICS.md."
+    }
+  ],
+  "hypotheses": [],
+  "findings": [
+    {
+      "id": "fnd_1",
+      "statement": "Original ARM64 control registration sets Speed to -3..200 ms, default25, with nonlinear normalization: n<.784 => (30625*49^(-n/.784)-625)/150; otherwise -3*(n-.784)/.216. Derived by following Speed string reference through registration, constructor and generic curve instructions; fallback pseudocode leaves FP operations as inline assembly, so raw bytes/disassembly were corroborated.",
+      "evidence_ids": [
+        "ev_111b361b2b0559db57c161612a62076c366bede11c3600db6a71c143b3c8216a",
+        "ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814",
+        "ev_38839edd705adc82cd9fc36844b77618bdbd3ca49ccfd717dd9ba3952b8c0e77",
+        "ev_adadc508eb9efd3d4683c256e12f70abac180513544a2d569d26d5b7772481f9",
+        "ev_739b13c8db669b09e9ab2def73d8dafd1e43ae0a393a6910d8fa52eaa2a923cb"
+      ],
+      "confidence": "derived"
+    },
+    {
+      "id": "fnd_2",
+      "statement": "Original Amount parameter is 0..100 default100, normalized curve112.5*(1-9^(-n)) with midpoint75; Sustain is linear -100..100 default0, and doubler dry/wet and width are linear0..100 default0. These are control mappings, not original DSP formulas.",
+      "evidence_ids": [
+        "ev_9b14238d9db27b4a4774534e64788e4b62cf35447e889557d1f788615e72c814",
+        "ev_1768a913beaf0af1f3e6f70ff838d270891077b92022c29b026406b2aaa83ebc",
+        "ev_12243f63f8af18dd116838d63a8609d06ce0089934c5ed75a9a6cd27a4f331c7",
+        "ev_43d277e7b86df30b692d80438986210cea37d63f550ecf48a5604add5ba89485"
+      ],
+      "confidence": "derived"
+    },
+    {
+      "id": "fnd_3",
+      "statement": "Original function0xf18b00 wires messages describing positive Sustain as faster retuning of held notes and negative Sustain as slower; original speed messages describe0-20ms robotic correction and harder negative speed. Both reconstructed engines had sustain direction reversed; corrected direction is applied while exact sustain timing and negative-speed DSP remain unresolved.",
+      "evidence_ids": [
+        "ev_a279eb338dc0100303b372fd76452bae79520553d88302da1732be670f09b572",
+        "ev_f73eb9b3d5fc471e4b68ddf5abe07968d86573ac92010864994699741ea63940"
+      ],
+      "confidence": "observed"
+    },
+    {
+      "id": "fnd_4",
+      "statement": "Width registration block 0xfa2408 uses linear 0..100 conversion with zero physical default. Current VST3 initialization and Default factory presets drifted to70; corrected to0.",
+      "evidence_ids": [
+        "ev_3665d2906d578398c4b6f00fa7d4ae8e4e24a33c3f9b6baa0c7f75e382e9adfe",
+        "ev_bd86a384339ea1ede9c5286f557d6134823f3e8e7f63f100446ceaf5f765fbc4"
+      ],
+      "confidence": "derived"
+    }
+  ],
+  "handoff": "Fresh workspace original opened with core_target_open Deep mode, hash7453f5ec9f81. Names ev_5bec3ca89950d7dc7ca166b09a0e7cbaddac0f78fed3702e1a4ccfc1ccb425b9; settings/messages ev_447ef97cfb53f0d1a01dd09cf18bb7f04d48cdadaeeacc36a0680d17b24b4ac5 partial45/125. Followed Speed string xrefs and registration, awaited sequential pseudocode fa1e98,f9a798,13f3588,13f3658,f9a8c8,13f34b8,13f3808,f9a84c,f18b00. Ghidra unavailable; fallback only. Existing recovered formulas retained. New Rust sustain forward/inverse clamped functions replace UI inline mapping/default; 17 tests and cargo build pass; plugin build/CTest/signature pass. MECHANICS.md records exact current evidence and limitations. Exact original DSP still unresolved.",
+  "updated": "2026-11-04T20:53:33Z"
+}

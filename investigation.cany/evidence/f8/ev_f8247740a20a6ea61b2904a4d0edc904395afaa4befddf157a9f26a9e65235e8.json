@@ -1,0 +1,423 @@
+{
+  "id": "ev_f8247740a20a6ea61b2904a4d0edc904395afaa4befddf157a9f26a9e65235e8",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_strings_find",
+  "params": {
+    "case_sensitive": false,
+    "limit": 35,
+    "mode": "regex",
+    "offset": 0,
+    "pattern": "robotic|sustained|negative|Doubler"
+  },
+  "result": {
+    "matches": [
+      {
+        "address": "0x2167b11",
+        "references": [
+          {
+            "from": "0xb9fe48",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9fe58",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_DoublerDryWet"
+      },
+      {
+        "address": "0x2167b23",
+        "references": [
+          {
+            "from": "0xb9feac",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xb9feb4",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "MON_DoublerSte"
+      },
+      {
+        "address": "0x2167e09",
+        "references": [
+          {
+            "from": "0xba1244",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba1254",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_DoublerDryWet"
+      },
+      {
+        "address": "0x2167e1b",
+        "references": [
+          {
+            "from": "0xba12a8",
+            "function": "sub_ba2b60"
+          },
+          {
+            "from": "0xba12b0",
+            "function": "sub_ba2b60"
+          }
+        ],
+        "section": "__cstring",
+        "text": "STE_DoublerSte"
+      },
+      {
+        "address": "0x216861c",
+        "references": [
+          {
+            "from": "0xd09988",
+            "function": "sub_d09968"
+          },
+          {
+            "from": "0xd0998c",
+            "function": "sub_d09968"
+          },
+          {
+            "from": "0xd3f3c0",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd3f3c8",
+            "function": "sub_d40404"
+          },
+          {
+            "from": "0xd43b10",
+            "function": "sub_d44bdc"
+          },
+          {
+            "from": "0xd43b1c",
+            "function": "sub_d44bdc"
+          }
+        ],
+        "section": "__cstring",
+        "text": "NegativeSpee"
+      },
+      {
+        "address": "0x2168cf1",
+        "references": [],
+        "section": "__cstring",
+        "text": "doublerD"
+      },
+      {
+        "address": "0x2168d05",
+        "references": [],
+        "section": "__cstring",
+        "text": "doublerW"
+      },
+      {
+        "address": "0x2168d18",
+        "references": [],
+        "section": "__cstring",
+        "text": "doublerD"
+      },
+      {
+        "address": "0x2168d2c",
+        "references": [],
+        "section": "__cstring",
+        "text": "doublerW"
+      },
+      {
+        "address": "0x2168d3f",
+        "references": [
+          {
+            "from": "0xdd24dc",
+            "function": "sub_dd7c30"
+          }
+        ],
+        "section": "__cstring",
+        "text": "doublerControls"
+      },
+      {
+        "address": "0x2168d4f",
+        "references": [
+          {
+            "from": "0xdd3c20",
+            "function": "sub_dd7c30"
+          },
+          {
+            "from": "0xdd3c24",
+            "function": "sub_dd7c30"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Doubler\nDry / Wet"
+      },
+      {
+        "address": "0x2168ef8",
+        "references": [
+          {
+            "from": "0xddc87c",
+            "function": "sub_de10b8"
+          }
+        ],
+        "section": "__cstring",
+        "text": "doublerPad"
+      },
+      {
+        "address": "0x2168fc2",
+        "references": [
+          {
+            "from": "0xded0f8",
+            "function": "sub_deda64"
+          },
+          {
+            "from": "0xded0fc",
+            "function": "sub_deda64"
+          }
+        ],
+        "section": "__cstring",
+        "text": "doublerValueEditor"
+      },
+      {
+        "address": "0x216a160",
+        "references": [
+          {
+            "from": "0xf18c88",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Control how fast your notes are corrected.\nSpeeds between 0 - 20ms produce a classic robotic effect.\nSlower speeds produce a mor"
+      },
+      {
+        "address": "0x216a1f2",
+        "references": [
+          {
+            "from": "0xf18cd8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Control how fast your notes are corrected.\n\nNegative speed creates an even harder effect.\n(Works great with Note Stabilizer act"
+      },
+      {
+        "address": "0x216a27a",
+        "references": [
+          {
+            "from": "0xf18db8",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Dynamically adjusts the Speed setting of held notes.\n\nPositive values retune the sustained part "
+      },
+      {
+        "address": "0x216a2f8",
+        "references": [
+          {
+            "from": "0xf18e08",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "Dynamically adjusts the Speed setting of held notes.\n\nNegative values retune the sustained part "
+      },
+      {
+        "address": "0x216a4b1",
+        "references": [
+          {
+            "from": "0xf19010",
+            "function": "sub_f18b00"
+          }
+        ],
+        "section": "__cstring",
+        "text": "sustained notes."
+      },
+      {
+        "address": "0x216aed7",
+        "references": [
+          {
+            "from": "0x2cd8b18",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "doublerVisualizer"
+      },
+      {
+        "address": "0x216b52e",
+        "references": [
+          {
+            "from": "0xfa239c",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__cstring",
+        "text": "DoublerDryWet"
+      },
+      {
+        "address": "0x216b53c",
+        "references": [
+          {
+            "from": "0xfa257c",
+            "function": "sub_ead874"
+          }
+        ],
+        "section": "__cstring",
+        "text": "DoublerStereoWidth"
+      },
+      {
+        "address": "0x21701b4",
+        "references": [
+          {
+            "from": "0x2d10da8",
+            "function": null
+          }
+        ],
+        "section": "__cstring",
+        "text": "TProtocolException: Negative size"
+      },
+      {
+        "address": "0x21a84ab",
+        "references": [],
+        "section": "__cstring",
+        "text": "bad numeric conversion: negative overflow"
+      },
+      {
+        "address": "0x21ae111",
+        "references": [],
+        "section": "__cstring",
+        "text": "LsDoubleRelation"
+      },
+      {
+        "address": "0x21ae130",
+        "references": [],
+        "section": "__cstring",
+        "text": "LsDoubleRelation("
+      },
+      {
+        "address": "0x21b6f52",
+        "references": [],
+        "section": "__cstring",
+        "text": "dng_negative::DefloatStage2"
+      },
+      {
+        "address": "0x21b723a",
+        "references": [],
+        "section": "__cstring",
+        "text": "Digital Negative"
+      },
+      {
+        "address": "0x21b72bf",
+        "references": [],
+        "section": "__cstring",
+        "text": "Negative tile size"
+      },
+      {
+        "address": "0x21d0575",
+        "references": [
+          {
+            "from": "0x1fe1488",
+            "function": "sub_1fe143c"
+          }
+        ],
+        "section": "__cstring",
+        "text": "a non-negative integer"
+      },
+      {
+        "address": "0x221ea97",
+        "references": [
+          {
+            "from": "0x2cabd80",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N8autotune18OrbAndDoublerModelE"
+      },
+      {
+        "address": "0x221eab7",
+        "references": [
+          {
+            "from": "0x2cabe30",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_17LinkableInterfaceEEEN8autotune18OrbAndDoublerModel18SamplerateIdGetterEEE"
+      },
+      {
+        "address": "0x221eb28",
+        "references": [
+          {
+            "from": "0x2cabe98",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune18OrbAndDoublerModel23NormalizedSpeedIdGetterEEE"
+      },
+      {
+        "address": "0x221eba1",
+        "references": [
+          {
+            "from": "0x2cabf00",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune18OrbAndDoublerModel24NormalizedAmountIdGetterEEE"
+      },
+      {
+        "address": "0x221ec1b",
+        "references": [
+          {
+            "from": "0x2cabf68",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune18OrbAndDoublerModel31NormalizedDoublerDryWetIdGetterEEE"
+      },
+      {
+        "address": "0x221ec9c",
+        "references": [
+          {
+            "from": "0x2cabfd0",
+            "function": null
+          }
+        ],
+        "section": "__const",
+        "text": "N2ui13NamedPropertyINS_8PropertyIdNS_20IndependentInterfaceEEEN8autotune18OrbAndDoublerModel36NormalizedDoublerStereoWidthIdGetterEEE"
+      }
+    ],
+    "total": 292
+  },
+  "summary": "292 strings match \"robotic|sustained|negative|Doubler\".",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "data_sections_only",
+      "message": "only strings stored in the file are searched (absence is not proof)"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 35,
+    "total": 292,
+    "next_offset": 35
+  },
+  "locations": [],
+  "links": []
+}

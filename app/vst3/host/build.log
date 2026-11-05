@@ -1,0 +1,11 @@
+[ 48%] Built target MegaTuneHostCheck
+[ 51%] Building CXX object CMakeFiles/MegaTuneRender.dir/RenderCheck.cpp.o
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/host/RenderCheck.cpp:167:13: warning: 'createWriterFor' is deprecated: Use the function taking an AudioFormatWriterOptions instead. [-Wdeprecated-declarations]
+  167 |         wav.createWriterFor (new juce::FileOutputStream (outFile), sr, (unsigned int) numChannels, 24, {}, 0));
+      |             ^
+/private/tmp/juce/modules/juce_audio_formats/format/juce_AudioFormat.h:178:7: note: 'createWriterFor' has been explicitly marked deprecated here
+  178 |     [[deprecated ("Use the function taking an AudioFormatWriterOptions instead.")]]
+      |       ^
+1 warning generated.
+[ 53%] Linking CXX executable MegaTuneRender_artefacts/Release/MegaTuneRender
+[100%] Built target MegaTuneRender

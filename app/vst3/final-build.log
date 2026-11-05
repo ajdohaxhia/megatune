@@ -1,0 +1,34 @@
+-- Configuring juceaide
+-- Building juceaide
+-- Exporting juceaide
+-- Testing juceaide
+-- Finished setting up juceaide
+-- Configuring done (0.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli
+[  1%] Building VST3 manifest helper for MegaTune
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/vst3_helpers/MegaTune
+make[3]: warning: jobserver unavailable: using -j1.  Add `+' to parent make rule.
+[100%] Built target vst3_helper
+[  1%] Built target MegaTune_vst3_helper
+[  3%] Building CXX object CMakeFiles/MegaTune.dir/Plugin.cpp.o
+[  4%] Linking CXX static library MegaTune_artefacts/Release/libMegaTune_SharedCode.a
+[ 40%] Built target MegaTune
+[ 42%] Linking CXX CFBundle shared module MegaTune_artefacts/Release/VST3/MegaTune.vst3/Contents/MacOS/MegaTune
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3: code has no resources but signature indicates they must be present
+-- Replacing invalid signature with ad-hoc signature
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3: replacing existing signature
+removing moduleinfo.json
+creating /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3/Contents/Resources/moduleinfo.json
+[ 44%] Linking CXX executable MegaTuneTests_artefacts/Release/MegaTuneTests
+[ 63%] Built target MegaTune_VST3
+[100%] Built target MegaTuneTests
+Test project /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli
+    Start 1: MegaTuneStreaming
+1/1 Test #1: MegaTuneStreaming ................   Passed    0.46 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.46 sec

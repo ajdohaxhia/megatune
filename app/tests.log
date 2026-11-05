@@ -1,0 +1,22 @@
+   Compiling pitchcraft v0.1.0 (/Users/ade/Documents/Craft Anything/metatune/app)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.22s
+     Running unittests src/main.rs (app/target/debug/deps/pitchcraft-57d3fd682655ee59)
+
+running 14 tests
+test audio::tests::scale_selection_crosses_octaves ... ok
+test audio::tests::sustain_speeds_up_held_notes_only_when_positive ... ok
+test control_tests::settings_forward_every_switch_and_effect ... ok
+test audio::tests::all_disabled_is_safe ... ok
+test audio::tests::bypass_and_zero_amount_are_exact ... ok
+test audio::tests::silence_is_unvoiced ... ok
+test parameters::tests::amount_matches_original_landmarks ... ok
+test parameters::tests::mappings_roundtrip_and_clamp_boundaries ... ok
+test parameters::tests::speed_matches_original_landmarks ... ok
+test presets::tests::default_preset_matches_recovered_controls ... ok
+test audio::tests::pitch_detection_tracks_a4 ... ok
+test audio::tests::wav_roundtrip_preserves_metadata ... ok
+test audio::tests::correction_preserves_duration_and_moves_pitch_up ... ok
+test audio::tests::transpose_and_doubler_change_the_output ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+

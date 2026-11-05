@@ -1,0 +1,199 @@
+{
+  "id": "ev_aba9324b1d8fa96fdb908d79b79e3f744f6384cbfdb7f1e8c7d90dd91fbde026",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_functions_list",
+  "params": {
+    "limit": 15,
+    "offset": 0
+  },
+  "result": {
+    "functions": [
+      {
+        "address": "0x0",
+        "blocks": 0,
+        "found_by": "code_pointer",
+        "instructions": 0,
+        "name": "sub_0",
+        "name_source": "generated",
+        "size": 0,
+        "thunk_of": null
+      },
+      {
+        "address": "0xa378",
+        "blocks": 1,
+        "found_by": "call",
+        "instructions": 3,
+        "name": "sub_a378",
+        "name_source": "generated",
+        "size": 12,
+        "thunk_of": null
+      },
+      {
+        "address": "0xa384",
+        "blocks": 11,
+        "found_by": "prologue",
+        "instructions": 91,
+        "name": "sub_a384",
+        "name_source": "generated",
+        "size": 364,
+        "thunk_of": null
+      },
+      {
+        "address": "0xa5fc",
+        "blocks": 19,
+        "found_by": "call",
+        "instructions": 85,
+        "name": "sub_a5fc",
+        "name_source": "generated",
+        "size": 340,
+        "thunk_of": null
+      },
+      {
+        "address": "0xa750",
+        "blocks": 6,
+        "found_by": "code_pointer",
+        "instructions": 21,
+        "name": "sub_a750",
+        "name_source": "generated",
+        "size": 84,
+        "thunk_of": null
+      },
+      {
+        "address": "0xa7a4",
+        "blocks": 11,
+        "found_by": "code_pointer",
+        "instructions": 40,
+        "name": "sub_a7a4",
+        "name_source": "generated",
+        "size": 160,
+        "thunk_of": null
+      },
+      {
+        "address": "0xa844",
+        "blocks": 1,
+        "found_by": "prologue",
+        "instructions": 6,
+        "name": "sub_a844",
+        "name_source": "generated",
+        "size": 24,
+        "thunk_of": null
+      },
+      {
+        "address": "0xa94c",
+        "blocks": 1,
+        "found_by": "call",
+        "instructions": 1,
+        "name": "sub_a94c",
+        "name_source": "generated",
+        "size": 4,
+        "thunk_of": null
+      },
+      {
+        "address": "0xa950",
+        "blocks": 10,
+        "found_by": "prologue",
+        "instructions": 54,
+        "name": "sub_a950",
+        "name_source": "generated",
+        "size": 216,
+        "thunk_of": null
+      },
+      {
+        "address": "0xaa48",
+        "blocks": 10,
+        "found_by": "prologue",
+        "instructions": 54,
+        "name": "sub_aa48",
+        "name_source": "generated",
+        "size": 216,
+        "thunk_of": null
+      },
+      {
+        "address": "0xab48",
+        "blocks": 1,
+        "found_by": "prologue",
+        "instructions": 7,
+        "name": "sub_ab48",
+        "name_source": "generated",
+        "size": 28,
+        "thunk_of": null
+      },
+      {
+        "address": "0xab7c",
+        "blocks": 229,
+        "found_by": "call",
+        "instructions": 1867,
+        "name": "sub_ab7c",
+        "name_source": "generated",
+        "size": 7468,
+        "thunk_of": null
+      },
+      {
+        "address": "0xc8a8",
+        "blocks": 56,
+        "found_by": "call",
+        "instructions": 253,
+        "name": "sub_c8a8",
+        "name_source": "generated",
+        "size": 1012,
+        "thunk_of": null
+      },
+      {
+        "address": "0xcc9c",
+        "blocks": 13,
+        "found_by": "call",
+        "instructions": 85,
+        "name": "sub_cc9c",
+        "name_source": "generated",
+        "size": 340,
+        "thunk_of": null
+      },
+      {
+        "address": "0xcdf0",
+        "blocks": 12,
+        "found_by": "call",
+        "instructions": 244,
+        "name": "sub_cdf0",
+        "name_source": "generated",
+        "size": 976,
+        "thunk_of": null
+      }
+    ],
+    "total": 24946
+  },
+  "summary": "24946 functions (showing 15).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "instruction_limit",
+      "message": "function discovery stopped after 6000000 instructions; the function list is incomplete and some code is not analysed"
+    },
+    {
+      "code": "indirect_jumps_unresolved",
+      "message": "6617 indirect jumps could not be resolved; code they reach may be missing"
+    },
+    {
+      "code": "static_analysis_only",
+      "message": "functions reached only through computed pointers or at run time may be missing; absence is not proof"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 15,
+    "total": 24946,
+    "next_offset": 15
+  },
+  "locations": [],
+  "links": []
+}

@@ -1,0 +1,68 @@
+{
+  "id": "ev_0cbf31ea56c3654dc0404047442fd0b575a73ae43312a36de00dad1f8a1c4ce2",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_function_pseudocode",
+  "params": {
+    "function": "0x13f3658"
+  },
+  "result": {
+    "calls": [
+      "_pow@stub"
+    ],
+    "engine": "clean-room lifter",
+    "entry": "0x13f3658",
+    "function": "sub_13f3658",
+    "gotos": 0,
+    "inline_asm": 18,
+    "pseudo_code": "int64_t sub_13f3658(int64_t x0)\n{\n    stack_30[0] = 0; stack_30[1] = 0;\n    stack_10[0] = x20; stack_10[1] = x19;\n    x19 = xzr;\n    w8 = *(void*)(x0 + 0x48);\n    if (w8 != 1) {\n        0 = *(void*)(x19 + 0x30)[0]; 0 = *(void*)(x19 + 0x30)[1];\n        __asm(\"fmul d1, d1, d0\");\n        __asm(\"fmov d0, #2.0\");\n        _pow@stub();\n        __asm(\"fmul d0, d8, d0\");\n        0 = *(void*)(x19 + 0x40);\n        __asm(\"fadd d0, d0, d1\");\n        0 = *(void*)(x19 + 0x28);\n        __asm(\"fdiv d1, d0, d1\");\n        0 = *(void*)(x19 + 8);\n    } else {\n        0 = *(void*)(x19 + 0x18)[0]; 0 = *(void*)(x19 + 0x18)[1];\n        __asm(\"fadd d1, d1, d2\");\n        __asm(\"fmul d1, d1, d0\");\n        0 = *(void*)(x19 + 8);\n        __asm(\"fadd d1, d1, d0\");\n    }\n    0 = *(void*)(x19 + 16);\n    __asm(\"fcmpe d0, d2\");\n    __asm(\"fcsel d3, d0, d2, mi\");\n    __asm(\"fcsel d4, d0, d2, gt\");\n    __asm(\"fcmpe d4, d1\");\n    __asm(\"fcsel d1, d4, d1, mi\");\n    __asm(\"fcmpe d3, d1\");\n    __asm(\"fcsel d1, d3, d1, gt\");\n    __asm(\"fcmp d1, d0\");\n    if (0 != 0) {\n        __asm(\"fcmp d1, d2\");\n        __asm(\"fcsel d0, d2, d1, eq\");\n    }\n    x20 = stack_10[0]; x19 = stack_10[1];\n    0 = stack_0[0]; 0 = stack_0[1];\n    return x0;\n}\n",
+    "signature": "int64_t sub_13f3658(int64_t x0)",
+    "strings": [],
+    "structured": true
+  },
+  "summary": "Pseudo-C for sub_13f3658 (41 lines).",
+  "confidence": "inferred",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "register_level",
+      "message": "variables are machine registers and stack slots; types are not recovered"
+    },
+    {
+      "code": "calling_convention_assumed",
+      "message": "call arguments follow the usual arm64 convention and may be wrong for unusual functions"
+    },
+    {
+      "code": "conditions_from_flags",
+      "message": "branch conditions are rebuilt from the last compare and may be approximate"
+    },
+    {
+      "code": "inline_asm",
+      "message": "18 instructions have no C rule and are shown as __asm(...)"
+    },
+    {
+      "code": "deep_engine_unavailable",
+      "message": "Ghidra's analysis has no function at this address and it couldn't make one: Ghidra could not disassemble code at this address. So this came from the built-in decompiler, which is less exact."
+    }
+  ],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0x13f3658"
+    }
+  ],
+  "links": [],
+  "carries_target_content": true
+}

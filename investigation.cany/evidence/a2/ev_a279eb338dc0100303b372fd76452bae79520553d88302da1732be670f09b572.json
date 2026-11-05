@@ -1,0 +1,86 @@
+{
+  "id": "ev_a279eb338dc0100303b372fd76452bae79520553d88302da1732be670f09b572",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_function_pseudocode",
+  "params": {
+    "function": "0xf18b00"
+  },
+  "result": {
+    "calls": [
+      "__ZdlPv@stub",
+      "__Znwm@stub",
+      "___stack_chk_fail@stub",
+      "sub_1072004",
+      "sub_f1671c",
+      "x8"
+    ],
+    "engine": "clean-room lifter",
+    "entry": "0xf18b00",
+    "function": "sub_f18b00",
+    "gotos": 4,
+    "inline_asm": 0,
+    "pseudo_code": "int64_t sub_f18b00()\n{\n    stack_a0[0] = x22; stack_a0[1] = x21;\n    stack_b0[0] = x20; stack_b0[1] = x19;\n    x19 = xzr;\n    x8 = *(void*)(x8);\n    var_28 = x8;\n    *(void*)(x19)[0] = xzr; *(void*)(x19)[1] = xzr;\n    *(void*)(x19 + 16) = xzr;\n    x0 = __Znwm@stub(0x48);\n    x21 = xzr;\n    stack_58 = x0;\n    0 = *(uint64_t*)0x2244470;\n    stack_60 = 0;\n    w8 = 0x2e64;\n    *(void*)(x0 + 0x40) = w8;\n    x8 = \"Select the scale you want by clicking to the left of the keyboard.\";\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    *(void*)(x0 + 0x42) = wzr;\n    stack_70 = xzr;\n    x0 = __Znwm@stub(0x70);\n    stack_78 = x0;\n    0 = *(uint64_t*)0x2244480;\n    x8 = \"Select the scale you want by clicking to the left of the keyboard.\\nYou can also set it right fr\";\n    stack_80 = 0;\n    0 = *(void*)(x8 + 0x40)[0]; 0 = *(void*)(x8 + 0x40)[1];\n    *(void*)(x0 + 0x40)[0] = 0; *(void*)(x0 + 0x40)[1] = 0;\n    0 = *(uint64_t*)0x216a14f;\n    *(void*)(x0 + 0x5f) = 0;\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    *(void*)(x0 + 0x6f) = wzr;\n    w8 = 0x1b58;\n    stack_90 = x8;\n    x0 = __Znwm@stub(0x550);\n    x21 = xzr;\n    x8 = 0x6843;\n    x8 = 0x6f6f0000;\n    x8 = 0x657300000000;\n    x8 = 0x7920000000000000;\n    w9 = 0x65;\n    x10 = \"our Scale\";\n    stack_50 = w9;\n    x9 = *(uint64_t*)0x216a8a8;\n    stack_40[0] = x8; stack_40[1] = x9;\n    w8 = 0x11;\n    stack_57 = w8;\n    w1 = 0x3dad;\n    sub_f1671c(x0, 0x2db90000, sp + 0x58, 2, sp + 0x40, 1);\n    w8 = stack_57;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_40);\n    }\n    stack_38 = x21;\n    sub_1072004(xzr, sp + 0x38);\n    x0 = stack_38;\n    stack_38 = xzr;\n    if (x0 != 0) {\n        x8 = *(void*)(x0);\n        x8 = *(void*)(x8 + 8);\n        (*x8)();\n    }\n    w8 = stack_8f;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_78);\n        w8 = stack_6f;\n        if (((w8 >> 31) & 1) != 0) {\nlabel_f192b8:\n            __ZdlPv@stub(stack_58);\n        }\n    } else {\n        w8 = stack_6f;\n        if (((w8 >> 31) & 1) != 0) {\n            goto label_f192b8;\n        }\n    }\n    x0 = __Znwm@stub(0x98);\n    x21 = xzr;\n    stack_58 = x0;\n    0 = *(uint64_t*)0x2244490;\n    stack_60 = 0;\n    w8 = 0x2e;\n    *(void*)(x0 + 0x90) = w8;\n    x8 = \"Control how fast your notes are corrected.\\nSpeeds between 0 - 20ms produce a classic robotic effect.\\nSlower speeds produ...\";\n    0 = *(void*)(x8 + 0x60)[0]; 0 = *(void*)(x8 + 0x60)[1];\n    *(void*)(x0 + 0x60)[0] = 0; *(void*)(x0 + 0x60)[1] = 0;\n    0 = *(uint64_t*)0x216a1e0;\n    *(void*)(x0 + 0x80) = 0;\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    0 = *(void*)(x8 + 0x40)[0]; 0 = *(void*)(x8 + 0x40)[1];\n    *(void*)(x0 + 0x40)[0] = 0; *(void*)(x0 + 0x40)[1] = 0;\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    *(void*)(x0 + 0x91) = wzr;\n    stack_70 = xzr;\n    x0 = __Znwm@stub(0x88);\n    stack_78 = x0;\n    0 = *(uint64_t*)0x22444a0;\n    stack_80 = 0;\n    x8 = \"Control how fast your notes are corrected.\\n\\nNegative speed creates an even harder effect.\\n(Works great with Note Stabili...\";\n    0 = *(void*)(x8 + 0x60)[0]; 0 = *(void*)(x8 + 0x60)[1];\n    *(void*)(x0 + 0x60)[0] = 0; *(void*)(x0 + 0x60)[1] = 0;\n    x9 = *(uint64_t*)0x216a271;\n    *(void*)(x0 + 0x7f) = x9;\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    0 = *(void*)(x8 + 0x40)[0]; 0 = *(void*)(x8 + 0x40)[1];\n    *(void*)(x0 + 0x40)[0] = 0; *(void*)(x0 + 0x40)[1] = 0;\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    *(void*)(x0 + 0x87) = wzr;\n    w8 = 0x2af8;\n    stack_90 = x8;\n    x0 = __Znwm@stub(0x550);\n    x21 = xzr;\n    x8 = 0x7053;\n    x8 = 0x65650000;\n    x8 = 0x6400000000;\n    stack_40 = x8;\n    w8 = 5;\n    stack_57 = w8;\n    w1 = 0xe6df;\n    sub_f1671c(x0, 0xced90000, sp + 0x58, 2, sp + 0x40, 1);\n    w8 = stack_57;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_40);\n    }\n    stack_30 = x21;\n    sub_1072004(xzr, sp + 0x30);\n    x0 = stack_30;\n    stack_30 = xzr;\n    if (x0 != 0) {\n        x8 = *(void*)(x0);\n        x8 = *(void*)(x8 + 8);\n        (*x8)();\n    }\n    w8 = stack_8f;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_78);\n        w8 = stack_6f;\n        if (((w8 >> 31) & 1) != 0) {\nlabel_f192d4:\n            __ZdlPv@stub(stack_58);\n        }\n    } else {\n        w8 = stack_6f;\n        if (((w8 >> 31) & 1) != 0) {\n            goto label_f192d4;\n        }\n    }\n    x0 = __Znwm@stub(0x80);\n    x21 = xzr;\n    stack_58 = x0;\n    0 = *(uint64_t*)0x22444b0;\n    stack_60 = 0;\n    x8 = \"Dynamically adjusts the Speed setting of held notes.\\n\\nPositive values retune the sustained part \";\n    0 = *(void*)(x8 + 0x40)[0]; 0 = *(void*)(x8 + 0x40)[1];\n    *(void*)(x0 + 0x40)[0] = 0; *(void*)(x0 + 0x40)[1] = 0;\n    0 = *(uint64_t*)0x216a2da;\n    *(void*)(x0 + 0x60) = 0;\n    0 = *(uint64_t*)0x216a2e7;\n    *(void*)(x0 + 0x6d) = 0;\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    *(void*)(x0 + 0x7d) = wzr;\n    stack_70 = xzr;\n    x0 = __Znwm@stub(0x80);\n    stack_78 = x0;\n    0 = *(uint64_t*)0x22444c0;\n    stack_80 = 0;\n    x8 = \"Dynamically adjusts the Speed setting of held notes.\\n\\nNegative values retune the sustained part \";\n    0 = *(void*)(x8 + 0x40)[0]; 0 = *(void*)(x8 + 0x40)[1];\n    *(void*)(x0 + 0x40)[0] = 0; *(void*)(x0 + 0x40)[1] = 0;\n    0 = *(uint64_t*)0x216a358;\n    *(void*)(x0 + 0x60) = 0;\n    0 = *(uint64_t*)0x216a364;\n    *(void*)(x0 + 0x6c) = 0;\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    *(void*)(x0 + 0x7c) = wzr;\n    w8 = 0x1b58;\n    stack_90 = x8;\n    x0 = __Znwm@stub(0x550);\n    x21 = xzr;\n    x8 = 0x7553;\n    x8 = 0x74730000;\n    x8 = 0x696100000000;\n    x8 = 0x6e000000000000;\n    stack_40 = x8;\n    w8 = 7;\n    stack_57 = w8;\n    w1 = 0xdf8a;\n    sub_f1671c(x0, 0x41260000, sp + 0x58, 2, sp + 0x40, 1);\n    w8 = stack_57;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_40);\n    }\n    stack_28 = x21;\n    sub_1072004(xzr, sp + 0x28);\n    x0 = stack_28;\n    stack_28 = xzr;\n    if (x0 != 0) {\n        x8 = *(void*)(x0);\n        x8 = *(void*)(x8 + 8);\n        (*x8)();\n    }\n    w8 = stack_8f;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_78);\n        w8 = stack_6f;\n        if (((w8 >> 31) & 1) != 0) {\nlabel_f192f0:\n            __ZdlPv@stub(stack_58);\n        }\n    } else {\n        w8 = stack_6f;\n        if (((w8 >> 31) & 1) != 0) {\n            goto label_f192f0;\n        }\n    }\n    x0 = __Znwm@stub(0x80);\n    stack_58 = x0;\n    0 = *(uint64_t*)0x22444d0;\n    stack_60 = 0;\n    x8 = \"At 100%, full retuning is heard.\\nAt 0%, no retuning is heard.\\n\\nGet a more natural-sounding effec\";\n    0 = *(void*)(x8 + 0x40)[0]; 0 = *(void*)(x8 + 0x40)[1];\n    *(void*)(x0 + 0x40)[0] = 0; *(void*)(x0 + 0x40)[1] = 0;\n    0 = *(uint64_t*)0x216a3d5;\n    *(void*)(x0 + 0x60) = 0;\n    0 = *(uint64_t*)0x216a3e0;\n    *(void*)(x0 + 0x6b) = 0;\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    *(void*)(x0 + 0x7b) = wzr;\n    stack_70 = xzr;\n    x0 = __Znwm@stub(0x550);\n    x21 = xzr;\n    x8 = 0x6d41;\n    x8 = 0x756f0000;\n    x8 = 0x746e00000000;\n    stack_40 = x8;\n    w8 = 6;\n    stack_57 = w8;\n    w1 = 0x1736;\n    sub_f1671c(x0, 0xccd20000, sp + 0x58, 1, sp + 0x40, 1);\n    w8 = stack_57;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_40);\n    }\n    stack_20 = x21;\n    sub_1072004(xzr, sp + 0x20);\n    x0 = stack_20;\n    stack_20 = xzr;\n    if (x0 != 0) {\n        x8 = *(void*)(x0);\n        x8 = *(void*)(x8 + 8);\n        (*x8)();\n    }\n    w8 = stack_6f;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_58);\n    }\n    x0 = __Znwm@stub(0x48);\n    x21 = xzr;\n    stack_58 = x0;\n    0 = *(uint64_t*)0x22444e0;\n    stack_60 = 0;\n    x8 = \"Prevents retuning during vibratos & when transitioning betwee\";\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    x9 = *(uint64_t*)0x216a42e;\n    *(void*)(x0 + 0x3d) = x9;\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    *(void*)(x0 + 0x45) = wzr;\n    stack_70 = xzr;\n    x0 = __Znwm@stub(0x90);\n    stack_78 = x0;\n    0 = *(uint64_t*)0x22444f0;\n    stack_80 = 0;\n    x8 = \"Prevents retuning during vibratos & when transitioning between notes.\\n\\nAlso prevents unwanted flutters & pitch changes i...\";\n    0 = *(void*)(x8 + 0x60)[0]; 0 = *(void*)(x8 + 0x60)[1];\n    *(void*)(x0 + 0x60)[0] = 0; *(void*)(x0 + 0x60)[1] = 0;\n    0 = *(uint64_t*)0x216a4b1;\n    *(void*)(x0 + 0x7a) = 0;\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    0 = *(void*)(x8 + 0x40)[0]; 0 = *(void*)(x8 + 0x40)[1];\n    *(void*)(x0 + 0x40)[0] = 0; *(void*)(x0 + 0x40)[1] = 0;\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    *(void*)(x0 + 0x8a) = wzr;\n    w8 = 0x1f40;\n    stack_90 = x8;\n    x0 = __Znwm@stub(0x550);\n    x21 = xzr;\n    x8 = 0x6f4e;\n    x8 = 0x65740000;\n    x8 = 0x532000000000;\n    x8 = 0x6174000000000000;\n    stack_40 = x8;\n    w8 = 0x6962;\n    w8 = 0x696c0000;\n    stack_48 = w8;\n    w8 = 0x7a69;\n    w8 = 0x72650000;\n    stack_4b = w8;\n    stack_4f = wzr;\n    w8 = 15;\n    stack_57 = w8;\n    w1 = 0xc719;\n    sub_f1671c(x0, 0xac260000, sp + 0x58, 2, sp + 0x40, 1);\n    w8 = stack_57;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_40);\n    }\n    stack_18 = x21;\n    sub_1072004(xzr, sp + 0x18);\n    x0 = stack_18;\n    stack_18 = xzr;\n    if (x0 != 0) {\n        x8 = *(void*)(x0);\n        x8 = *(void*)(x8 + 8);\n        (*x8)();\n    }\n    w8 = stack_8f;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_78);\n        w8 = stack_6f;\n        if (((w8 >> 31) & 1) != 0) {\nlabel_f1930c:\n            __ZdlPv@stub(stack_58);\n        }\n    } else {\n        w8 = stack_6f;\n        if (((w8 >> 31) & 1) != 0) {\n            goto label_f1930c;\n        }\n    }\n    x0 = __Znwm@stub(0x68);\n    stack_58 = x0;\n    0 = *(uint64_t*)0x2244500;\n    stack_60 = 0;\n    x8 = \"Group multiple instances of MetaTune to link their settings & adjust multiple tracks at the sa\";\n    0 = *(void*)(x8 + 0x40)[0]; 0 = *(void*)(x8 + 0x40)[1];\n    *(void*)(x0 + 0x40)[0] = 0; *(void*)(x0 + 0x40)[1] = 0;\n    x9 = *(uint64_t*)0x216a520;\n    *(void*)(x0 + 0x5e) = x9;\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    *(void*)(x0 + 0x66) = wzr;\n    stack_70 = xzr;\n    x0 = __Znwm@stub(0x550);\n    x21 = xzr;\n    x8 = 0x7247;\n    x8 = 0x756f0000;\n    x8 = 0x737000000000;\n    stack_40 = x8;\n    w8 = 6;\n    stack_57 = w8;\n    w1 = 0x5e04;\n    sub_f1671c(x0, 0xb21e0000, sp + 0x58, 1, sp + 0x40, 1);\n    w8 = stack_57;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_40);\n    }\n    stack_10 = x21;\n    sub_1072004(xzr, sp + 16);\n    x0 = stack_10;\n    stack_10 = xzr;\n    if (x0 != 0) {\n        x8 = *(void*)(x0);\n        x8 = *(void*)(x8 + 8);\n        (*x8)();\n    }\n    w8 = stack_6f;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_58);\n    }\n    x0 = __Znwm@stub(0x50);\n    stack_58 = x0;\n    0 = *(uint64_t*)0x2244510;\n    stack_60 = 0;\n    x8 = \"Click on the Slate Digital Logo to reopen these tutorials or \";\n    0 = *(void*)(x8 + 0x20)[0]; 0 = *(void*)(x8 + 0x20)[1];\n    *(void*)(x0 + 0x20)[0] = 0; *(void*)(x0 + 0x20)[1] = 0;\n    0 = *(uint64_t*)0x216a566;\n    *(void*)(x0 + 0x3d) = 0;\n    0 = *(void*)(x8)[0]; 0 = *(void*)(x8)[1];\n    *(void*)(x0)[0] = 0; *(void*)(x0)[1] = 0;\n    *(void*)(x0 + 0x4d) = wzr;\n    stack_70 = xzr;\n    x0 = __Znwm@stub(0x550);\n    x21 = xzr;\n    x8 = 0x6741;\n    x8 = 0x69610000;\n    x8 = 0x6e00000000;\n    stack_40 = x8;\n    w8 = 5;\n    stack_57 = w8;\n    w1 = 0x3aca;\n    sub_f1671c(x0, 0x740b0000, sp + 0x58, 1, sp + 0x40, 3);\n    w8 = stack_57;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_40);\n    }\n    stack_8 = x21;\n    sub_1072004(xzr, sp + 8);\n    x0 = stack_8;\n    stack_8 = xzr;\n    if (x0 != 0) {\n        x8 = *(void*)(x0);\n        x8 = *(void*)(x8 + 8);\n        (*x8)();\n    }\n    w8 = stack_6f;\n    if (((w8 >> 31) & 1) != 0) {\n        __ZdlPv@stub(stack_58);\n    }\n    x8 = var_28;\n    x9 = *(void*)(x9);\n    if (x9 != x8) {\n        ___stack_chk_fail@stub();\n    } else {\n        x20 = stack_b0[0]; x19 = stack_b0[1];\n        x22 = stack_a0[0]; x21 = stack_a0[1];\n        return x0;\n    }\n}\n",
+    "signature": "int64_t sub_f18b00()",
+    "strings": [
+      "Select the scale you want by clicking to the left of the keyboard.",
+      "Select the scale you want by clicking to the left of the keyboard.\nYou can also set it right fr",
+      "our Scale",
+      "Control how fast your notes are corrected.\nSpeeds between 0 - 20ms produce a classic robotic effect.\nSlower speeds produce a mor",
+      "Control how fast your notes are corrected.\n\nNegative speed creates an even harder effect.\n(Works great with Note Stabilizer act",
+      "Dynamically adjusts the Speed setting of held notes.\n\nPositive values retune the sustained part ",
+      "Dynamically adjusts the Speed setting of held notes.\n\nNegative values retune the sustained part ",
+      "At 100%, full retuning is heard.\nAt 0%, no retuning is heard.\n\nGet a more natural-sounding effec",
+      "Prevents retuning during vibratos & when transitioning betwee",
+      "Prevents retuning during vibratos & when transitioning between notes.\n\nAlso prevents unwanted flutters & pitch changes in ",
+      "Group multiple instances of MetaTune to link their settings & adjust multiple tracks at the sa",
+      "Click on the Slate Digital Logo to reopen these tutorials or "
+    ],
+    "structured": false
+  },
+  "summary": "Pseudo-C for sub_f18b00 (443 lines, partly unstructured).",
+  "confidence": "inferred",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "register_level",
+      "message": "variables are machine registers and stack slots; types are not recovered"
+    },
+    {
+      "code": "calling_convention_assumed",
+      "message": "call arguments follow the usual arm64 convention and may be wrong for unusual functions"
+    },
+    {
+      "code": "conditions_from_flags",
+      "message": "branch conditions are rebuilt from the last compare and may be approximate"
+    },
+    {
+      "code": "unstructured_flow",
+      "message": "4 gotos remain where the control flow isn't a simple if/loop"
+    },
+    {
+      "code": "deep_engine_unavailable",
+      "message": "Ghidra's analysis has no function at this address and it couldn't make one: Ghidra could not disassemble code at this address. So this came from the built-in decompiler, which is less exact."
+    }
+  ],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0xf18b00"
+    }
+  ],
+  "links": [],
+  "carries_target_content": true
+}

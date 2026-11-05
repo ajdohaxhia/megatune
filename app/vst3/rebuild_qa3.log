@@ -1,0 +1,29 @@
+-- Configuring juceaide
+-- Building juceaide
+-- Exporting juceaide
+-- Testing juceaide
+-- Finished setting up juceaide
+-- Configuring done (1.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli
+[  1%] Building VST3 manifest helper for MegaTune
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/vst3_helpers/MegaTune
+make[3]: warning: jobserver unavailable: using -j1.  Add `+' to parent make rule.
+[100%] Built target vst3_helper
+[  1%] Built target MegaTune_vst3_helper
+[  3%] Building CXX object CMakeFiles/MegaTune.dir/Plugin.cpp.o
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:199:15: error: deduced conflicting types ('juce::Slider *' vs 'juce::ToggleButton *') for initializer list element type
+  199 |   for(auto* v:{&speed,&sustain,&amount,&doubler,&width,&stabilize,&reference})v->setVisible(!showWhy);repaint();};enginePick.addItem("Quality",1);enginePick.addItem("Low Latency",2);enginePick.addItem("TD-PSOLA (experimental)",3);enginePick.addItem("Signalsmith (experimental)",4);enginePick.setSelectedId(1,juce::dontSendNotification);enginePick.onChange=[this]{const int id=enginePick.getSelectedId();auto setP=[&](const char* pid,float v){auto* pr=proc.state.getParameter(pid);pr->beginChangeGesture();pr->setValueNotifyingHost(v);pr->endChangeGesture();};setP("lowlatency",id==2?1.f:0.f);setP("engine",id==3?1.f:0.f);setP("smith",id==4?1.f:0.f);};observed=capture();comparison[0]=comparison[1]=observed;resized();timerCallback();startTimerHz(30);}
+      |               ^~~~~~~                                  ~~~~~~~~~~
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:264:6: error: use of undeclared identifier 'value'
+  264 |   if(value("engine")>.5f||value("smith")>.5f)g.drawText("EXPERIMENTAL",646,52,96,14,juce::Justification::left);
+      |      ^~~~~
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:264:27: error: use of undeclared identifier 'value'
+  264 |   if(value("engine")>.5f||value("smith")>.5f)g.drawText("EXPERIMENTAL",646,52,96,14,juce::Justification::left);
+      |                           ^~~~~
+3 errors generated.
+make[2]: *** [CMakeFiles/MegaTune.dir/Plugin.cpp.o] Error 1
+make[1]: *** [CMakeFiles/MegaTune.dir/all] Error 2
+make: *** [all] Error 2

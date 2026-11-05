@@ -1,0 +1,13 @@
+[package]
+name = "pitchcraft"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = "0.31.1"
+image = { version = "0.25.10", default-features = false, features = ["png"] }
+hound = "3.5.1"
+rfd = "0.15.4"
+rodio = "0.20.1"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"

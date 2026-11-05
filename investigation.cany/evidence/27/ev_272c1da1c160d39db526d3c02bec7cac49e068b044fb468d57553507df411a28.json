@@ -1,0 +1,42 @@
+{
+  "id": "ev_272c1da1c160d39db526d3c02bec7cac49e068b044fb468d57553507df411a28",
+  "subject": {
+    "kind": "mach-o",
+    "sha256": "149690405ff6faaf6ddd73563f9ac686d5a2c2a8a2b93b626c3e9f93d8a9fbea",
+    "name": "MetaTune-arm64"
+  },
+  "operation": "native_bytes_show",
+  "params": {
+    "address": "0xf9a798",
+    "length": 304
+  },
+  "result": {
+    "address": "0xf9a798",
+    "ascii": ".#.m.O...{......(@`...........9.......... ...../.0g.oc...../.........A`.jc.......{B..OA..#.l.._.H...H`......(.....g.. a....T..g...a.. ...c....g..8a......~..h...h.....g...a..`...c...{........b.. a.m..T. ...c..H...H`......(.....g...a..{...._..`...c.......~..h...h.....g...a.H...H`......(.....g. (`..{...._.",
+    "file_offset": 16361368,
+    "hex": "e923bd6df44f01a9fd7b02a9fd8300912840601ef30300aa08ea00f008e13991f40300aa888605f80020009101e4002f0230671e6f63119400e4002f02107f1ee00314aa0141601e6a631194e00313aafd7b42a9f44f41a9e923c36cc0035fd6488981d24860a5f2e8d0c2f228fde7f20101679e1020611ea50000540101679e0018611e002000918e6311140101679e0038611e08db99d2e87eaaf268bcd4f268f9e7f20101679e0018611e0060019184631114fd7bbfa9fd030091e103621e1020611e6d01005400200091a5631194488981d24860a5f2e8d0c2f228fde7f20101679e0008611efd7bc1a8c0035fd6006001919b63119408db99d2e87eaaf268bcd4f268f9e7f20101679e0008611e488981d24860a5f2e8d0c2f228fde7f20101679e2028601efd7bc1a8c0035fd6",
+    "length": 304
+  },
+  "summary": "304 bytes at 0xf9a798.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 304,
+    "total": 304
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0xf9a798"
+    }
+  ],
+  "links": []
+}

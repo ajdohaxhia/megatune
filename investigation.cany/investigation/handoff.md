@@ -1,0 +1,3 @@
+# Handoff
+
+Fresh workspace original opened with core_target_open Deep mode, hash7453f5ec9f81. Names ev_5bec3ca89950d7dc7ca166b09a0e7cbaddac0f78fed3702e1a4ccfc1ccb425b9; settings/messages ev_447ef97cfb53f0d1a01dd09cf18bb7f04d48cdadaeeacc36a0680d17b24b4ac5 partial45/125. Followed Speed string xrefs and registration, awaited sequential pseudocode fa1e98,f9a798,13f3588,13f3658,f9a8c8,13f34b8,13f3808,f9a84c,f18b00. Ghidra unavailable; fallback only. Existing recovered formulas retained. New Rust sustain forward/inverse clamped functions replace UI inline mapping/default; 17 tests and cargo build pass; plugin build/CTest/signature pass. MECHANICS.md records exact current evidence and limitations. Exact original DSP still unresolved.

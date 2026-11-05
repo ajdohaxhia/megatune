@@ -1,0 +1,692 @@
+{
+  "version": 2,
+  "name": "MetaTune",
+  "request": "Make my own version of this app",
+  "target": {
+    "kind": "local",
+    "path": "/Users/ade/Downloads/MetaTune.vst3"
+  },
+  "stack": "Rust + egui (eframe)",
+  "status": "ready",
+  "note": "Ready: all 3 checks pass, 19 of 19 claims hold.",
+  "created_ms": 1793668930265,
+  "updated_ms": 1793825631999,
+  "checks": [
+    {
+      "round": 1,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793669662159
+    },
+    {
+      "round": 1,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (1800×1480).",
+      "artifacts": [
+        "checks/round-1/screenshot.png"
+      ],
+      "at_ms": 1793669666204
+    },
+    {
+      "round": 1,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 37 values (0 with a source, 37 estimated).",
+      "artifacts": [],
+      "at_ms": 1793669666207
+    },
+    {
+      "round": 2,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793671483695
+    },
+    {
+      "round": 2,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (1800×1600). It looks about 40% like reference/picture-1.jpg.",
+      "artifacts": [
+        "checks/round-2/screenshot.png"
+      ],
+      "at_ms": 1793671486470
+    },
+    {
+      "round": 2,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 47 values (19 with a source, 28 estimated).",
+      "artifacts": [],
+      "at_ms": 1793671486475,
+      "claims": [
+        {
+          "title": "speed minimum (-3) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed maximum (200) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed default (25) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain minimum (-100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount minimum (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band start (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band end (20) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount no-retuning endpoint (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount full-retuning endpoint (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount default (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed zero normalized (0.784) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount midpoint (75) is used in the code",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793812894663
+    },
+    {
+      "round": 3,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (1800×1600). It looks about 40% like reference/picture-1.jpg.",
+      "artifacts": [
+        "checks/round-3/screenshot.png"
+      ],
+      "at_ms": 1793812895974
+    },
+    {
+      "round": 3,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 47 values (19 with a source, 28 estimated).",
+      "artifacts": [],
+      "at_ms": 1793812895984,
+      "claims": [
+        {
+          "title": "speed minimum (-3) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed maximum (200) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed default (25) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain minimum (-100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount minimum (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band start (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band end (20) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount no-retuning endpoint (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount full-retuning endpoint (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount default (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed zero normalized (0.784) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount midpoint (75) is used in the code",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793813939862
+    },
+    {
+      "round": 4,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (1800×1600). It looks about 40% like reference/picture-1.jpg.",
+      "artifacts": [
+        "checks/round-4/screenshot.png"
+      ],
+      "at_ms": 1793813942536
+    },
+    {
+      "round": 4,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 47 values (19 with a source, 28 estimated).",
+      "artifacts": [],
+      "at_ms": 1793813942541,
+      "claims": [
+        {
+          "title": "speed minimum (-3) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed maximum (200) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed default (25) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain minimum (-100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount minimum (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band start (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band end (20) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount no-retuning endpoint (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount full-retuning endpoint (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount default (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed zero normalized (0.784) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount midpoint (75) is used in the code",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793814841017
+    },
+    {
+      "round": 5,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (1800×1600). It looks about 40% like reference/picture-1.jpg.",
+      "artifacts": [
+        "checks/round-5/screenshot.png"
+      ],
+      "at_ms": 1793814848158
+    },
+    {
+      "round": 5,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 47 values (19 with a source, 28 estimated).",
+      "artifacts": [],
+      "at_ms": 1793814848172,
+      "claims": [
+        {
+          "title": "speed minimum (-3) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed maximum (200) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed default (25) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain minimum (-100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount minimum (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band start (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band end (20) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount no-retuning endpoint (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount full-retuning endpoint (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount default (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed zero normalized (0.784) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount midpoint (75) is used in the code",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793816359944
+    },
+    {
+      "round": 6,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (1800×1600). It looks about 40% like reference/picture-1.jpg.",
+      "artifacts": [
+        "checks/round-6/screenshot.png"
+      ],
+      "at_ms": 1793816363192
+    },
+    {
+      "round": 6,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 47 values (19 with a source, 28 estimated).",
+      "artifacts": [],
+      "at_ms": 1793816363204,
+      "claims": [
+        {
+          "title": "speed minimum (-3) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed maximum (200) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed default (25) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain minimum (-100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount minimum (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band start (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band end (20) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount no-retuning endpoint (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount full-retuning endpoint (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount default (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed zero normalized (0.784) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount midpoint (75) is used in the code",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "check": "build",
+      "passed": true,
+      "similarity": null,
+      "note": "Build succeeded.",
+      "artifacts": [],
+      "at_ms": 1793825627998
+    },
+    {
+      "round": 7,
+      "check": "app-screenshot",
+      "passed": true,
+      "similarity": null,
+      "note": "The program starts and draws (1800×1600). It looks about 40% like reference/picture-1.jpg.",
+      "artifacts": [
+        "checks/round-7/screenshot.png"
+      ],
+      "at_ms": 1793825631978
+    },
+    {
+      "round": 7,
+      "check": "mechanics",
+      "passed": true,
+      "similarity": null,
+      "note": "app/mechanics.json has 47 values (19 with a source, 28 estimated).",
+      "artifacts": [],
+      "at_ms": 1793825631990,
+      "claims": [
+        {
+          "title": "speed minimum (-3) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed maximum (200) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed default (25) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain minimum (-100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount minimum (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width maximum (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band start (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "robotic speed band end (20) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount no-retuning endpoint (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount full-retuning endpoint (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "sustain default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount default (100) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "doubler default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "width default (0) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "speed zero normalized (0.784) is used in the code",
+          "passed": true
+        },
+        {
+          "title": "amount midpoint (75) is used in the code",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "agent_session": "01a1a854-da65-7501-8e97-c026a415ee4a",
+  "allowed_actions": [],
+  "last_reply": "I’ll locate the original program and the current build, then trace its functions and use the recovered mechanics to update and rebuild the app.\nI’m using the reverse-engineer-anything skill to trace the original. The workspace contains earlier mechanics notes; I’ll check the binary directly and distinguish recovered rules from unresolved DSP details.\nThe fresh reads confirm the control registration and tutorial functions. Ghidra is failing, so the tool returns less precise register-level pseudocode. The recovered control mappings are already implemented; I’ll centralize the standalone Sustain mapping and its range limits, and document this pass without claiming the original audio DSP has been recovered.\nThe standalone build passes all 17 tests, and the VST3 rebuild passes its streaming test and signature check. The mechanics document now records the fresh function reads, addresses, formulas, code change, and remaining decompiler limitations.\nOpened the original main program, followed string references, and awaited all nine pseudocode reads. Recorded formulas, defaults, addresses, and evidence in [app/MECHANICS.md](/Users/ade/Documents/Craft%20Anything/metatune/app/MECHANICS.md).\n\nUpdated Sustain mapping and rebuilt both apps. All 17 tests, VST3 streaming checks, and signature verification pass.\n\nGhidra failed; fallback pseudocode was available. Exact original audio DSP remains unresolved.",
+  "asset_budget_usd": 5.0,
+  "generate_assets": false
+}

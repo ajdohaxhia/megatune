@@ -1,0 +1,68 @@
+{
+  "id": "ev_e22fb525fbf96ccbd0e85b4d247c5ad724c9cdc76dc6ef56e1eea37cde851d05",
+  "subject": {
+    "kind": "mach-o-fat",
+    "sha256": "7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010",
+    "name": "MetaTune"
+  },
+  "operation": "native_function_pseudocode",
+  "params": {
+    "function": "0xf9a84c"
+  },
+  "result": {
+    "calls": [
+      "sub_13f36f8"
+    ],
+    "engine": "clean-room lifter",
+    "entry": "0xf9a84c",
+    "function": "sub_f9a84c",
+    "gotos": 0,
+    "inline_asm": 8,
+    "pseudo_code": "int64_t sub_f9a84c()\n{\n    __asm(\"scvtf d1, wzr\");\n    __asm(\"fcmpe d0, d1\");\n    if (0 <= 0) {\n        x0 += 0x58;\n        sub_13f36f8();\n        x8 = 0xced8;\n        x8 = 0x53f70000;\n        x8 = 0xa5e300000000;\n        x8 = 0x3fcb000000000000;\n        __asm(\"fmov d1, x8\");\n        __asm(\"fmul d0, d0, d1\");\n        x8 = 0xc4a;\n        x8 = 0x2b020000;\n        x8 = 0x168700000000;\n        x8 = 0x3fe9000000000000;\n        __asm(\"fmov d1, x8\");\n        __asm(\"fadd d0, d1, d0\");\n        return x0;\n    } else {\n        x0 += 8;\n        sub_13f36f8();\n        x8 = 0xc4a;\n        x8 = 0x2b020000;\n        x8 = 0x168700000000;\n        x8 = 0x3fe9000000000000;\n        __asm(\"fmov d1, x8\");\n        __asm(\"fmul d0, d0, d1\");\n        return x0;\n    }\n}\n",
+    "signature": "int64_t sub_f9a84c()",
+    "strings": [],
+    "structured": true
+  },
+  "summary": "Pseudo-C for sub_f9a84c (32 lines).",
+  "confidence": "inferred",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [
+    {
+      "code": "register_level",
+      "message": "variables are machine registers and stack slots; types are not recovered"
+    },
+    {
+      "code": "calling_convention_assumed",
+      "message": "call arguments follow the usual arm64 convention and may be wrong for unusual functions"
+    },
+    {
+      "code": "conditions_from_flags",
+      "message": "branch conditions are rebuilt from the last compare and may be approximate"
+    },
+    {
+      "code": "inline_asm",
+      "message": "8 instructions have no C rule and are shown as __asm(...)"
+    },
+    {
+      "code": "deep_engine_unavailable",
+      "message": "Ghidra couldn't decompile this function (the bridge rejected the request (bridge_error): the decompiler gave no result: ). So this came from the built-in decompiler, which is less exact."
+    }
+  ],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0xf9a84c"
+    }
+  ],
+  "links": [],
+  "carries_target_content": true
+}

@@ -1,0 +1,42 @@
+{
+  "id": "ev_739b13c8db669b09e9ab2def73d8dafd1e43ae0a393a6910d8fa52eaa2a923cb",
+  "subject": {
+    "kind": "mach-o",
+    "sha256": "149690405ff6faaf6ddd73563f9ac686d5a2c2a8a2b93b626c3e9f93d8a9fbea",
+    "name": "MetaTune-arm64"
+  },
+  "operation": "native_bytes_show",
+  "params": {
+    "address": "0xfa1d4c",
+    "length": 128
+  },
+  "result": {
+    "address": "0xfa1d4c",
+    "ascii": "...Rp.F.....(.....g...q.........H.@...@..0g.......?..@`.......(....8...6..B....R].F.........H3..(.....g..0g......A`..6......h..R",
+    "file_offset": 16391500,
+    "hex": "0015805270fb4694fa0300aa280de8d20001679e0110711e8de2ff97fa8f02f9480340f9080d40f90030671ee0031aaa00013fd60840601e881301d008e1289108c1bf3808850336fa8f42f9000980525dfb4694f90300aae8e701b2483393f228f7e7f20001679e0130671ee1031aaa0241601e88361194f98b02f968878952",
+    "length": 128
+  },
+  "summary": "128 bytes at 0xfa1d4c.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.3.0",
+    "host": "macos-aarch64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 128,
+    "total": 128
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0xfa1d4c"
+    }
+  ],
+  "links": []
+}
