@@ -1,5 +1,28 @@
 # Mechanics and evidence
 
+## 0.1.0 stability pass — 2026-11-05
+
+Additional host-facing fixes, each covered by a regression:
+
+- Signalsmith now honours Global Bypass and applies Doubler/Stereo Width after
+  the engine, matching the normal path.
+- Host/global bypass while Signalsmith is selected now uses the Signalsmith
+  latency for its dry delay, so the reported and measured onset stay aligned.
+  The delay ring was enlarged to cover 120 ms through 384 kHz.
+- Non-finite input is sanitised before both engine paths, and Signalsmith output
+  is sanitised before it reaches the host or the doubler tail.
+- `reset()` now flushes the delay lines, PSOLA grains and Signalsmith state
+  without changing the prepared configuration.
+- Processing is clamped to two channels defensively; mono and extra-channel
+  buffers are safe.
+- The test suite skips the optional real-vocal fixture instead of dereferencing
+  a missing reader. The full suite now passes natively and under Rosetta x86_64.
+- A 3 sample-rate × 4 block-size × 4 engine matrix checks finite output.
+
+Signalsmith was also verified through the packaged VST3 at 96 kHz: declared and
+measured latency both report 11,520 samples (120 ms), and the same suite passes
+under AddressSanitizer/UndefinedBehaviorSanitizer.
+
 ## RC2 stability fixes — 2026-11-05
 
 Four host-facing defects found in review are fixed with regressions:

@@ -2,6 +2,7 @@
 #include <atomic>
 #include <cstdlib>
 #include <iostream>
+#include <limits>
 #include <new>
 #include "EditorApi.h"
 #include "TuningRules.h"
@@ -62,6 +63,69 @@ int main(){
   juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,512);for(int i=0;i<512;++i)for(int c=0;c<2;++c)b.setSample(c,i,.2f*std::sin(juce::MathConstants<double>::twoPi*440*i/48000));
   r->processBlock(b,mb);allocationCount=0;countAllocations=true;r->processBlock(b,mb);countAllocations=false;
   if(allocationCount.load()>0)return 90;}
+ // Non-finite host input must not poison the delay line or Signalsmith path.
+ {auto run=[&](bool smith){std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+   for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID=="smith")p->setValueNotifyingHost(smith?1.f:0.f);
+   r->setRateAndBufferSizeDetails(48000,512);r->prepareToPlay(48000,512);
+   juce::AudioBuffer<float> b(2,512);juce::MidiBuffer mb;
+   for(int blk=0;blk<40;++blk){for(int i=0;i<512;++i){const float v=blk<2?std::numeric_limits<float>::quiet_NaN():0.f;b.setSample(0,i,v);b.setSample(1,i,blk<2?std::numeric_limits<float>::infinity():0.f);}r->processBlock(b,mb);
+     for(int i=0;i<512;++i)if(!std::isfinite(b.getSample(0,i))||!std::isfinite(b.getSample(1,i)))return false;}
+   return true;};
+  if(!run(false)||!run(true))return 93;}
+ // reset() must flush delayed audio without changing the prepared configuration.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());r->setRateAndBufferSizeDetails(48000,256);r->prepareToPlay(48000,256);
+  juce::AudioBuffer<float> b(2,256);juce::MidiBuffer mb;b.clear();b.setSample(0,0,.8f);b.setSample(1,0,.8f);r->processBlock(b,mb);
+  r->reset();float peak=0;for(int blk=0;blk<24;++blk){b.clear();r->processBlock(b,mb);for(int i=0;i<256;++i)peak=juce::jmax(peak,std::abs(b.getSample(0,i)));}
+  if(peak>1.0e-6f)return 94;}
+ // Signalsmith must also be allocation-free in steady state.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID=="smith")p->setValueNotifyingHost(1.f);
+  r->setRateAndBufferSizeDetails(48000,512);r->prepareToPlay(48000,512);
+  juce::AudioBuffer<float> b(2,512);juce::MidiBuffer mb;for(int i=0;i<512;++i)for(int c=0;c<2;++c)b.setSample(c,i,.2f*std::sin(juce::MathConstants<double>::twoPi*440*i/48000));
+  r->processBlock(b,mb);r->processBlock(b,mb);allocationCount=0;countAllocations=true;r->processBlock(b,mb);countAllocations=false;
+  if(allocationCount.load()>0)return 95;}
+ // Global Bypass must still pass dry audio when Signalsmith is selected.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  auto setP=[&](const char* id,float v){for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID==id){p->setValueNotifyingHost(v);return;}};
+  for(int n=0;n<12;++n)setP(("note"+juce::String(n)).toRawUTF8(),1.f);setP("smith",1.f);setP("bypass",1.f);setP("amount",1.f);setP("speed",1.f);
+  r->setRateAndBufferSizeDetails(48000,512);r->prepareToPlay(48000,512);
+  juce::AudioBuffer<float> b(2,512);juce::MidiBuffer mb;std::vector<float> steady;
+  for(int blk=0;blk<300;++blk){for(int i=0;i<512;++i){float v=.25f*std::sin(juce::MathConstants<double>::twoPi*432*(blk*512+i)/48000);b.setSample(0,i,v);b.setSample(1,i,v);}r->processBlock(b,mb);if(blk>200)for(int i=0;i<512;++i)steady.push_back(b.getSample(0,i));}
+  int bestLag=0;double best=-1;for(int lag=100;lag<125;++lag){double cross=0;for(size_t i=0;i+lag<steady.size();++i)cross+=steady[i]*steady[i+lag];if(cross>best){best=cross;bestLag=lag;}}
+  if(bestLag<=0)return 96;const double f=48000.0/bestLag;if(std::abs(f-432)>4){std::cerr<<"Signalsmith bypass output "<<f<<" Hz\n";return 96;}}
+ // Doubler and width must still apply after Signalsmith.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  auto setP=[&](const char* id,float v){for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID==id){p->setValueNotifyingHost(v);return;}};
+  setP("smith",1.f);setP("doubler",.65f);setP("width",1.f);
+  r->setRateAndBufferSizeDetails(48000,256);r->prepareToPlay(48000,256);
+  juce::AudioBuffer<float> b(2,256);juce::MidiBuffer mb;double difference=0;
+  for(int blk=0;blk<120;++blk){for(int i=0;i<256;++i){float v=.25f*std::sin(juce::MathConstants<double>::twoPi*440*(blk*256+i)/48000);b.setSample(0,i,v);b.setSample(1,i,v);}r->processBlock(b,mb);if(blk>80)for(int i=0;i<256;++i)difference+=std::abs(b.getSample(0,i)-b.getSample(1,i));}
+  if(difference<1){std::cerr<<"Signalsmith doubler is silent\n";return 97;}}
+ // Host bypass must be latency-aligned with the selected Signalsmith engine.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID=="smith")p->setValueNotifyingHost(1.f);
+  r->setRateAndBufferSizeDetails(48000,512);r->prepareToPlay(48000,512);const int latency=r->getLatencySamples();
+  juce::AudioBuffer<float> b(2,512);juce::MidiBuffer mb;int onset=-1;
+  for(int blk=0;blk<20&&onset<0;++blk){b.clear();if(blk==0){b.setSample(0,0,1.f);b.setSample(1,0,1.f);}r->processBlockBypassed(b,mb);
+   for(int i=0;i<512;++i)if(std::abs(b.getSample(0,i))>1.0e-4f){onset=blk*512+i;break;}}
+  if(onset!=latency){std::cerr<<"Signalsmith bypass onset "<<onset<<" != "<<latency<<"\n";return 98;}}
+ // Engine, sample-rate and block-size matrix must stay finite.
+ {for(double sr:{44100.0,48000.0,96000.0})for(int block:{1,17,512,4096})for(int mode=0;mode<4;++mode){
+   std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+   auto setP=[&](const char* id,float v){for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID==id){p->setValueNotifyingHost(v);return;}};
+   for(int n=0;n<12;++n)setP(("note"+juce::String(n)).toRawUTF8(),1.f);setP("key",0.f);setP("amount",1.f);setP("speed",1.f);
+   setP("lowlatency",mode==1?1.f:0.f);setP("engine",mode==2?1.f:0.f);setP("smith",mode==3?1.f:0.f);
+   r->setRateAndBufferSizeDetails(sr,block);r->prepareToPlay(sr,block);
+   juce::AudioBuffer<float> b(2,block);juce::MidiBuffer mb;double phase=0;
+   for(int blk=0;blk<6;++blk){for(int i=0;i<block;++i){const float v=.2f*std::sin(phase);phase+=juce::MathConstants<double>::twoPi*220/sr;b.setSample(0,i,v);b.setSample(1,i,v);}r->processBlock(b,mb);
+    for(int c=0;c<2;++c)for(int i=0;i<block;++i)if(!std::isfinite(b.getSample(c,i))){std::cerr<<"non-finite output sr="<<sr<<" block="<<block<<" mode="<<mode<<"\n";return 99;}}}}
+ // Mono and unexpected extra channels must be safe.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());r->setRateAndBufferSizeDetails(48000,512);r->prepareToPlay(48000,512);
+  juce::AudioBuffer<float> mono(1,512);juce::MidiBuffer mb;for(int i=0;i<512;++i)mono.setSample(0,i,.2f*std::sin(juce::MathConstants<double>::twoPi*220*i/48000));r->processBlock(mono,mb);
+  for(int i=0;i<512;++i)if(!std::isfinite(mono.getSample(0,i)))return 100;
+  for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID=="smith")p->setValueNotifyingHost(1.f);
+  r->prepareToPlay(48000,512);juce::AudioBuffer<float> four(4,512);four.clear();juce::MidiBuffer m4;r->processBlock(four,m4);
+  for(int c=0;c<2;++c)for(int i=0;i<512;++i)if(!std::isfinite(four.getSample(c,i)))return 101;}
 juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(createPluginFilter());auto* rangedSpeed=dynamic_cast<juce::RangedAudioParameter*>(p->getParameters()[1]);
  auto* rangedAmount=dynamic_cast<juce::RangedAudioParameter*>(p->getParameters()[3]);
  if(!rangedSpeed || !rangedAmount || std::abs(rangedSpeed->convertFrom0to1(0.f)-200.f)>.001f || std::abs(rangedSpeed->convertFrom0to1(.392f)-25.f)>.001f || std::abs(rangedSpeed->convertFrom0to1(.784f))>.001f || std::abs(rangedSpeed->convertFrom0to1(1.f)+3.f)>.001f || std::abs(rangedAmount->convertFrom0to1(.5f)-75.f)>.001f) {std::cerr<<"Recovered parameter landmarks differ\n";return 13;}
@@ -259,7 +323,8 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
  {juce::AudioFormatManager fm;fm.registerBasicFormats();
   juce::File dry(juce::File::getCurrentWorkingDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getChildFile("test-audio/ade-dry.wav"));
   std::unique_ptr<juce::AudioFormatReader> rd(dry.exists()?fm.createReaderFor(dry):nullptr);
-  if(rd==nullptr){std::cerr<<"VOCAL fixture missing\n";}
+  if(rd==nullptr){std::cerr<<"VOCAL fixture missing; skipping\n";}
+  else{
   const int sr2=(int)rd->sampleRate;const int total=(int)juce::jmin((juce::int64)rd->lengthInSamples,(juce::int64)sr2*40);
   juce::AudioBuffer<float> all(1,total);rd->read(&all,0,total,0,true,false);
   auto mk=[&](bool gOn,int mutePc){std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
@@ -299,7 +364,7 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
     std::cerr<<"TRACE voiced before="<<nb<<" excluded="<<ne<<" of "<<tb.size()<<" first_before="<<(tb.empty()?-9:tb[0])<<" first_excluded="<<(te.empty()?-9:te[0])<<"\n";
     for(size_t k=0;k<tb.size()&&k<te.size();++k)if(tb[k]!=te[k]){std::cerr<<"first diff at block "<<k<<" before="<<tb[k]<<" excluded="<<te[k]<<"\n";break;}}
    if(d1==0||d2!=0)std::cerr<<"VOCAL demo inconclusive (does not abort)\n";
-  }}
+  }}}
 
  // ---- deterministic disabled-target check: 490 Hz, A#/B/C enabled ----
  {auto mk2=[&](bool bOn,bool stab){std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());

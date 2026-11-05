@@ -73,6 +73,7 @@ void changeProgramName(int,const juce::String&)override{}
  bool isBusesLayoutSupported(const BusesLayout& l)const override{return l.getMainInputChannelSet()==l.getMainOutputChannelSet()&&(l.getMainOutputChannelSet()==juce::AudioChannelSet::mono()||l.getMainOutputChannelSet()==juce::AudioChannelSet::stereo());}
  void prepareToPlay(double r,int samplesPerBlock)override {rate=r;write=0;analysisCount=0;phase=0;ratio=1;target=0;lastNote=0;heldSeconds=0;doublePhase=0;currentTargetNote=0;psolaGain=0;psolaVoiced=false;voicedHold=0;pitchCount=0;for(auto& c:doubleRing)c.fill(0); for(auto& c:ring)c.fill(0); history.fill(0);hist=0;lowLatencyActive=value("lowlatency")>.5f;window=lowLatencyActive?128:2048;setLatencySamples(window);yinWorkspace.ensure(512);psola[0].prepare(window);psola[1].prepare(window);if(!smithReady||smithRate!=r){smith.presetDefault(2,(float)rate);smithReady=true;smithRate=r;}smith.reset();smithLatency=smith.inputLatency()+smith.outputLatency();if(value("smith")>.5f&&!lowLatencyActive)setLatencySamples(smithLatency);const int staging=juce::jmax(8192,samplesPerBlock);sIn[0].assign((size_t)staging,0.f);sIn[1].assign((size_t)staging,0.f);sOut[0].assign((size_t)staging,0.f);sOut[1].assign((size_t)staging,0.f);}
  void releaseResources()override{}
+ void reset()override{write=0;hist=0;analysisCount=0;phase=0;ratio=1;target=0;lastNote=0;heldSeconds=0;doublePhase=0;currentTargetNote=0;pitch=0;outputPitch=0;level=0;outputLevel=0;pitchCount=0;pitchHist[0]=pitchHist[1]=pitchHist[2]=0;psolaPeriod=200;psolaGain=0;psolaVoiced=false;voicedHold=0;for(auto& c:ring)c.fill(0);for(auto& c:doubleRing)c.fill(0);history.fill(0);psola[0].reset();psola[1].reset();if(smithReady)smith.reset();}
  float value(const char* id) const{const char* ids[]={"speed","sustain","amount","bypass","stabilize","key","doubler","width","reference","lowlatency","shift","range","engine","smith","smithcomp"};for(int i=0;i<15;++i)if(std::strcmp(id,ids[i])==0)return raw[i]->load();auto* v=state.getRawParameterValue(id);return v?v->load():0;}
  float noteValue(int i)const{return noteRaw[i]->load();}
  int smithBufferCapacity()const{return (int)std::min(sIn[0].capacity(),sOut[0].capacity());}
@@ -100,41 +101,51 @@ void changeProgramName(int,const juce::String&)override{}
  void processBlock(juce::AudioBuffer<float>& b,juce::MidiBuffer&)override{processAudio(b,false);}
  void processBlockBypassed(juce::AudioBuffer<float>& b,juce::MidiBuffer&)override{processAudio(b,true);}
  void processAudio(juce::AudioBuffer<float>& b,bool hostBypass){
-  if(!hostBypass&&value("smith")>.5f&&!lowLatencyActive&&value("amount")>0.f){const int n=b.getNumSamples();
+  const bool smithActive=value("smith")>.5f&&!lowLatencyActive;
+  if(!hostBypass&&value("bypass")<=.5f&&smithActive){const int n=b.getNumSamples();
    if(n>(int)sIn[0].size()){const size_t size=(size_t)n;for(auto& channel:sIn)channel.assign(size,0.f);for(auto& channel:sOut)channel.assign(size,0.f);}
-   const int channels=b.getNumChannels();
-   for(int i=0;i<n;++i){float mono=0;for(int c=0;c<channels;++c){const float v=b.getSample(c,i);ring[c][write]=std::isfinite(v)?v:0.f;mono+=ring[c][write]/channels;}
-    history[hist]=mono;hist=(hist+1)%16384;if(++analysisCount>=512){analysisCount=0;analyse();}write=(write+1)%16384;
-    sIn[0][i]=b.getSample(0,i);sIn[1][i]=b.getSample(juce::jmin(1,channels-1),i);}
-   smith.setTransposeSemitones((float)target,0.f);
+   const int channels=juce::jmin(2,b.getNumChannels());if(channels<=0)return;const int second=juce::jmin(1,channels-1);float peak=0;
+   for(int i=0;i<n;++i){float mono=0;for(int c=0;c<channels;++c){const float v=b.getSample(c,i);ring[c][write]=std::isfinite(v)?v:0.f;mono+=ring[c][write]/channels;peak=juce::jmax(peak,std::abs(ring[c][write]));}
+    history[hist]=mono;hist=(hist+1)%16384;if(++analysisCount>=512){analysisCount=0;analyse();}write=(write+1)%ringSize;
+    const float in0=b.getSample(0,i),in1=b.getSample(second,i);sIn[0][i]=std::isfinite(in0)?in0:0.f;sIn[1][i]=std::isfinite(in1)?in1:0.f;}
+   smith.setTransposeSemitones(value("amount")>0.f?(float)target:0.f,0.f);
    smith.setFormantSemitones(0.f,value("smithcomp")>.5f);
    const float* ip[2]={sIn[0].data(),sIn[1].data()};float* op[2]={sOut[0].data(),sOut[1].data()};
    smith.process(ip,n,op,n);
-   for(int c=0;c<b.getNumChannels();++c)for(int i=0;i<n;++i)b.setSample(c,i,sOut[juce::jmin(1,c)][i]);
+   const int outputStart=(write-(n%ringSize)+ringSize)%ringSize;float outPeak=0;
+   for(int i=0;i<n;++i){const int frame=(outputStart+i)%ringSize;
+    for(int c=0;c<channels;++c){float out=sOut[(size_t)c][i];if(!std::isfinite(out))out=0.f;doubleRing[c][frame]=out;
+     if(value("bypass")<=.5f){const float wet=value("doubler")*.005f;const float width=value("width")*.01f;const float delay=juce::jlimit(1.f,16000.f,(18.f+(c==0?-6.f:6.f)*width+std::sin(doublePhase+(c==0?0.f:1.7f))*1.2f)*(float)rate*.001f);float pos=frame-delay;while(pos<0)pos+=ringSize;const int index=(int)pos;const float fraction=pos-index;const float doubled=doubleRing[c][index]*(1-fraction)+doubleRing[c][(index+1)%ringSize]*fraction;out=out*(1-wet)+doubled*wet;}
+     outPeak=juce::jmax(outPeak,std::abs(out));b.setSample(c,i,out);}
+    doublePhase+=1.7f/(float)rate;if(doublePhase>juce::MathConstants<float>::twoPi)doublePhase-=juce::MathConstants<float>::twoPi;}
+   level=peak;outputLevel=outPeak;outputPitch=pitch.load()>0?pitch.load()+target:0.f;
    if(getLatencySamples()!=smithLatency)setLatencySamples(smithLatency);
    return;}
 
 
-  juce::ScopedNoDenormals no;const int channels=b.getNumChannels();float peak=0,outPeak=0;bool bypass=hostBypass||value("bypass")>.5f;
-  const int requestedWindow=value("lowlatency")>.5f?128:2048;if(requestedWindow!=window){window=requestedWindow;lowLatencyActive=window==128;setLatencySamples(window);}const int half=window/2;
-  for(int i=0;i<b.getNumSamples();++i){float mono=0;for(int c=0;c<channels;++c){float v=b.getSample(c,i);ring[c][write]=std::isfinite(v)?v:0;mono+=ring[c][write]/channels;peak=juce::jmax(peak,std::abs(v));}history[hist]=mono;hist=(hist+1)%16384;
+  juce::ScopedNoDenormals no;const int channels=juce::jmin(2,b.getNumChannels());if(channels<=0)return;float peak=0,outPeak=0;bool bypass=hostBypass||value("bypass")>.5f;
+  const int requestedWindow=value("lowlatency")>.5f?128:2048;
+  if(smithActive){if(getLatencySamples()!=smithLatency)setLatencySamples(smithLatency);}
+  else if(requestedWindow!=window){window=requestedWindow;lowLatencyActive=window==128;setLatencySamples(window);}
+  const int half=window/2;const int dryDelay=smithActive?smithLatency:window;
+  for(int i=0;i<b.getNumSamples();++i){float mono=0;for(int c=0;c<channels;++c){float v=b.getSample(c,i);ring[c][write]=std::isfinite(v)?v:0;mono+=ring[c][write]/channels;peak=juce::jmax(peak,std::abs(ring[c][write]));}history[hist]=mono;hist=(hist+1)%16384;
    if(++analysisCount>=512){analysisCount=0;analyse();}
    if(lastNote>0)heldSeconds=juce::jmin(1.f,heldSeconds+1.f/(float)rate);
    float speed=megaTuneSmoothingSeconds(value("speed"),value("sustain"),heldSeconds);float blend=1-std::exp(-1.0f/(float(rate)*juce::jmax(.001f,speed)));ratio+=(std::pow(2.f,target/12)-ratio)*blend;
    phase+=1-ratio;while(phase<0)phase+=window;while(phase>=window)phase-=window;
-   for(int c=0;c<channels;++c){auto read=[&](float delay){float pos=write-delay;while(pos<0)pos+=16384;int a=(int)pos;float t=pos-a;
-     auto tap=[&](int k){return ring[c][(a+k+16384)%16384];};float y0=tap(-1),y1=tap(0),y2=tap(1),y3=tap(2);
+   for(int c=0;c<channels;++c){auto read=[&](float delay){float pos=write-delay;while(pos<0)pos+=ringSize;int a=(int)pos;float t=pos-a;
+     auto tap=[&](int k){return ring[c][(a+k+ringSize)%ringSize];};float y0=tap(-1),y1=tap(0),y2=tap(1),y3=tap(2);
      return y1+.5f*t*(y2-y0+t*(2.f*y0-5.f*y1+4.f*y2-y3+t*(3.f*(y1-y2)+y3-y0)));};float out;
     const float ps=psola[c].process(ring[c][write]);
     if(voicedHold>0)--voicedHold;psolaVoiced=voicedHold>0;psolaGain+=((psolaVoiced?1.f:0.f)-psolaGain)*(psolaVoiced?0.002f:0.0002f);
-    if(bypass||value("amount")==0)out=read(window);
+    if(bypass||value("amount")==0)out=read(dryDelay);
     else if(!lowLatencyActive&&value("engine")>.5f)out=psolaGain*ps+(1.f-psolaGain)*read(window);
     else if(lowLatencyActive){float p2=std::fmod(phase+half,(float)window);float w=.5f-.5f*std::cos(juce::MathConstants<float>::twoPi*phase/window);out=read(half+phase)*w+read(half+p2)*(1-w);}
     else{const float base=(float)(half+window/4);float acc=0;for(int k=0;k<4;++k){float g=std::fmod(phase+k*window*.25f,(float)window);float wt=.5f-.5f*std::cos(juce::MathConstants<float>::twoPi*g/window);acc+=wt*read(base+g);}out=acc*.5f;}
     doubleRing[c][write]=out;
-    if(!bypass){float wet=value("doubler")*.005f;float width=value("width")*.01f;float delay=(18.f+(c==0?-6.f:6.f)*width+std::sin(doublePhase+(c==0?0.f:1.7f))*1.2f)*(float)rate*.001f;delay=juce::jlimit(1.f,16000.f,delay);float pos=write-delay;while(pos<0)pos+=16384;int index=(int)pos;float fraction=pos-index;float doubled=doubleRing[c][index]*(1-fraction)+doubleRing[c][(index+1)%16384]*fraction;out=out*(1-wet)+doubled*wet;}
+    if(!bypass){float wet=value("doubler")*.005f;float width=value("width")*.01f;float delay=(18.f+(c==0?-6.f:6.f)*width+std::sin(doublePhase+(c==0?0.f:1.7f))*1.2f)*(float)rate*.001f;delay=juce::jlimit(1.f,16000.f,delay);float pos=write-delay;while(pos<0)pos+=ringSize;int index=(int)pos;float fraction=pos-index;float doubled=doubleRing[c][index]*(1-fraction)+doubleRing[c][(index+1)%ringSize]*fraction;out=out*(1-wet)+doubled*wet;}
     outPeak=juce::jmax(outPeak,std::abs(out));b.setSample(c,i,out);}
-   doublePhase+=1.7f/(float)rate;if(doublePhase>juce::MathConstants<float>::twoPi)doublePhase-=juce::MathConstants<float>::twoPi;write=(write+1)%16384;
+   doublePhase+=1.7f/(float)rate;if(doublePhase>juce::MathConstants<float>::twoPi)doublePhase-=juce::MathConstants<float>::twoPi;write=(write+1)%ringSize;
   }level=peak;outputLevel=outPeak;float detected=pitch.load();outputPitch=detected>0?detected+((bypass||value("amount")==0)?0.f:12.f*std::log2(juce::jmax(.001f,ratio))):0.f;
  }
  bool hasEditor()const override{return true;}juce::AudioProcessorEditor* createEditor()override;
@@ -143,7 +154,7 @@ void changeProgramName(int,const juce::String&)override{}
 private:
  std::array<std::atomic<float>*,15> raw{};std::array<std::atomic<float>*,12> noteRaw{};
  double rate=44100;int write=0,hist=0,analysisCount=0,lastNote=0,window=2048,pitchCount=0;float pitchHist[3]{};megatune::Psola psola[2];float psolaPeriod=200.f,psolaGain=0.f;bool psolaVoiced=false;int voicedHold=0;signalsmith::stretch::SignalsmithStretch<float> smith;bool smithReady=false;double smithRate=0;std::vector<float> sIn[2],sOut[2];int smithLatency=0;megatune::YinWorkspace yinWorkspace;bool lowLatencyActive=false;float phase=0,ratio=1,target=0,heldSeconds=0;
- std::array<std::array<float,16384>,2> ring{};std::array<float,16384> history{};std::array<std::array<float,16384>,2> doubleRing{};float doublePhase=0;
+ static constexpr int ringSize=65536;std::array<std::array<float,ringSize>,2> ring{};std::array<float,16384> history{};std::array<std::array<float,ringSize>,2> doubleRing{};float doublePhase=0;
 };
 class TunerLook final:public juce::LookAndFeel_V4 {
 public:

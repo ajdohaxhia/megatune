@@ -1,11 +1,12 @@
-# MegaTune 1.0.1 RC2 — VST3 (macOS, universal arm64 + x86_64)
+# MegaTune 0.1.0 — VST3 (macOS, universal arm64 + x86_64)
 
 Install: double-click `Install MegaTune.command` (or copy `MegaTune.vst3` to
 `~/Library/Audio/Plug-Ins/VST3/`), then rescan plug-ins in your DAW.
 
-RC2 fixes oversized host blocks, sample-rate changes in the Signalsmith engine,
-audio-thread allocations during pitch analysis and an inaccurate held-target
-history reason.
+0.1.0 fixes oversized host blocks, sample-rate changes in the Signalsmith engine,
+audio-thread allocations during pitch analysis, held-target history reasons, and
+Signalsmith bypass, doubler and latency handling. Non-finite input and `reset()`
+are hardened.
 
 ## Engines
 - **Quality** — 4-grain shifter, 2048 samples (42.7 ms @ 48 kHz)

@@ -130,6 +130,14 @@ public:
         acc.assign ((size_t) ACC, 0.0f);
         wsum.assign ((size_t) ACC, 0.0f);
         latency = latencySamples;
+        reset();
+    }
+
+    void reset()
+    {
+        std::fill (ring.begin(), ring.end(), 0.0f);
+        std::fill (acc.begin(), acc.end(), 0.0f);
+        std::fill (wsum.begin(), wsum.end(), 0.0f);
         w = 0; written = 0; outIdx = 0; nextCenter = 0.0;
         period = 200.0; ratio = 1.0; lastMark = 0; haveMark = false;
         started = false; voiced = false;
