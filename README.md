@@ -66,7 +66,7 @@ Declared latency matches measured impulse onset and cross-correlation lag at 44.
 
 | Idle | Active | History |
 |---|---|---|
-| ![](app/vst3/build-cli/MegaTune-vst3-idle.png) | ![](app/vst3/build-cli/MegaTune-vst3.png) | ![](app/vst3/build-cli/MegaTune-vst3-history.png) |
+| ![](docs/screenshots/idle.png) | ![](docs/screenshots/active.png) | ![](docs/screenshots/history.png) |
 
 ---
 
