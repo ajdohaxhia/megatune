@@ -158,20 +158,89 @@ private:
 };
 class TunerLook final:public juce::LookAndFeel_V4 {
 public:
- void drawRotarySlider(juce::Graphics& g,int x,int y,int width,int height,float position,float,float,juce::Slider& slider)override{
- auto area=juce::Rectangle<float>((float)x,(float)y,(float)width,(float)height).reduced(5);float radius=juce::jmin(area.getWidth(),area.getHeight())*.5f;auto center=area.getCentre();
- juce::ColourGradient body(juce::Colour(0xff38353b),center.x-radius,center.y-radius,juce::Colour(0xff151418),center.x+radius,center.y+radius,false);g.setGradientFill(body);g.fillEllipse(center.x-radius,center.y-radius,2*radius,2*radius);g.setColour(juce::Colour(0xff111014));g.drawEllipse(center.x-radius,center.y-radius,2*radius,2*radius,2);
- g.setColour(juce::Colour(0xff222126));g.fillEllipse(center.x-radius*.77f,center.y-radius*.77f,radius*1.54f,radius*1.54f);
- const float start=juce::MathConstants<float>::pi*1.2f,sweep=juce::MathConstants<float>::pi*1.6f;
- for(int i=0;i<88;++i){float angle=start+sweep*i/87.f;g.setColour(i<position*88?juce::Colour::fromRGB((juce::uint8)(188+i*.5f),135,(juce::uint8)(167+i*.7f)):juce::Colour(0xff38343d));g.drawLine(center.x+std::sin(angle)*radius*.82f,center.y-std::cos(angle)*radius*.82f,center.x+std::sin(angle)*radius*.94f,center.y-std::cos(angle)*radius*.94f,1.5f);}
- g.setColour(juce::Colour(0xffd1ccd5));g.setFont(11.f);g.drawText(slider.getName(),juce::Rectangle<float>(center.x-radius,center.y+6,radius*2,18),juce::Justification::centred);
+ static constexpr juce::uint32 accent=0xffa78bfa,accentDeep=0xff7c5cff,ink=0xfff4f1ff,muted=0xff8d879d,line=0xff2d2939,panel=0xff17151f;
+ void drawButtonBackground(juce::Graphics& g,juce::Button& button,const juce::Colour&,bool over,bool down)override{
+  auto r=button.getLocalBounds().toFloat().reduced(1.f);const bool on=button.getToggleState();
+  juce::Colour fill=on?juce::Colour(accent).withAlpha(.24f):juce::Colour(0xff1c1a25);
+  if(over)fill=fill.brighter(.08f);if(down)fill=fill.darker(.08f);if(!button.isEnabled())fill=fill.withAlpha(.45f);
+  g.setColour(fill);g.fillRoundedRectangle(r,6.f);
+  g.setColour(on?juce::Colour(accent).withAlpha(.85f):juce::Colour(line));g.drawRoundedRectangle(r,6.f,1.f);
  }
- juce::Slider::SliderLayout getSliderLayout(juce::Slider& slider)override{if(!slider.isRotary())return juce::LookAndFeel_V4::getSliderLayout(slider);juce::Slider::SliderLayout layout;layout.sliderBounds=slider.getLocalBounds();layout.textBoxBounds=juce::Rectangle<int>(slider.getWidth()/2-37,slider.getHeight()/2-18,75,24);return layout;}
+ void drawButtonText(juce::Graphics& g,juce::TextButton& button,bool,bool)override{
+  g.setFont(juce::Font(juce::FontOptions(12.f)));
+  g.setColour(button.getToggleState()?juce::Colour(ink):juce::Colour(0xffd7d2e4).withAlpha(button.isEnabled()?1.f:.45f));
+  g.drawFittedText(button.getButtonText(),button.getLocalBounds().reduced(5,0),juce::Justification::centred,1);
+ }
+ void drawComboBox(juce::Graphics& g,int width,int height,bool down,int,int,int,int,juce::ComboBox& box)override{
+  auto r=juce::Rectangle<float>(0,0,(float)width,(float)height).reduced(1.f);
+  g.setColour(box.findColour(juce::ComboBox::backgroundColourId));g.fillRoundedRectangle(r,6.f);
+  g.setColour(down?juce::Colour(accent):juce::Colour(line));g.drawRoundedRectangle(r,6.f,1.f);
+  g.setColour(juce::Colour(ink));g.setFont(juce::Font(juce::FontOptions(12.f)));
+  g.drawText(box.getText(),r.withTrimmedRight(24).reduced(10,0),juce::Justification::centredLeft);
+  juce::Path p;p.startNewSubPath((float)width-18.f,(float)height*.5f-2.f);p.lineTo((float)width-13.f,(float)height*.5f+3.f);p.lineTo((float)width-8.f,(float)height*.5f-2.f);
+  g.setColour(juce::Colour(muted));g.strokePath(p,juce::PathStrokeType(1.6f,juce::PathStrokeType::curved,juce::PathStrokeType::rounded));
+ }
+ void drawToggleButton(juce::Graphics& g,juce::ToggleButton& button,bool over,bool)override{
+  auto r=button.getLocalBounds().toFloat();auto box=r.removeFromLeft(22.f).withSizeKeepingCentre(18.f,18.f);
+  const bool on=button.getToggleState();
+  g.setColour(on?juce::Colour(accent):juce::Colour(0xff24212f));g.fillRoundedRectangle(box,5.f);
+  g.setColour(on?juce::Colour(accent):juce::Colour(0xff3a3548));g.drawRoundedRectangle(box,5.f,1.f);
+  if(on){juce::Path check;check.startNewSubPath(box.getX()+4,box.getCentreY());check.lineTo(box.getCentreX()-1,box.getBottom()-5);check.lineTo(box.getRight()-4,box.getY()+5);g.setColour(juce::Colour(0xff17121f));g.strokePath(check,juce::PathStrokeType(2.f,juce::PathStrokeType::curved,juce::PathStrokeType::rounded));}
+  g.setColour(over?juce::Colour(ink):juce::Colour(0xffd7d2e4));g.setFont(juce::Font(juce::FontOptions(12.f)));
+  g.drawText(button.getButtonText(),r.withTrimmedLeft(6),juce::Justification::centredLeft);
+ }
+ void drawLinearSlider(juce::Graphics& g,int x,int y,int width,int height,float sliderPos,float,float,const juce::Slider::SliderStyle style,juce::Slider& slider)override{
+  if(style!=juce::Slider::LinearHorizontal){juce::LookAndFeel_V4::drawLinearSlider(g,x,y,width,height,sliderPos,0,0,style,slider);return;}
+  auto r=juce::Rectangle<float>((float)x,(float)y,(float)width,(float)height).reduced(0,4.f);
+  const float cy=r.getCentreY();const float left=r.getX()+7,right=r.getRight()-7;
+  g.setColour(juce::Colour(0xff2a2636));g.fillRoundedRectangle(left,cy-2,right-left,4.f,2.f);
+  const float fill=slider.valueToProportionOfLength(slider.getValue());
+  g.setColour(juce::Colour(accent));g.fillRoundedRectangle(left,cy-2,juce::jmax(0.f,(right-left)*fill),4.f,2.f);
+  const float px=left+(right-left)*fill;
+  g.setColour(juce::Colour(0xff14121b));g.fillEllipse(px-7,cy-7,14,14);
+  g.setColour(juce::Colour(ink));g.drawEllipse(px-7,cy-7,14,14,1.5f);
+  g.setColour(juce::Colour(accent));g.fillEllipse(px-3,cy-3,6,6);
+ }
+ void drawRotarySlider(juce::Graphics& g,int x,int y,int width,int height,float position,float,float,juce::Slider& slider)override{
+  auto area=juce::Rectangle<float>((float)x,(float)y,(float)width,(float)height).reduced(4);float radius=juce::jmin(area.getWidth(),area.getHeight())*.5f;auto center=area.getCentre();
+  const float start=juce::MathConstants<float>::pi*1.18f,sweep=juce::MathConstants<float>::pi*1.64f;
+  // outer inactive track
+  g.setColour(juce::Colour(0xff272332));g.drawEllipse(center.x-radius*.97f,center.y-radius*.97f,radius*1.94f,radius*1.94f,2.f);
+  const int ticks=72;
+  for(int i=0;i<ticks;++i){const float t=(float)i/(ticks-1),angle=start+sweep*t;const bool lit=t<=position;
+   const float r0=radius*(lit?.82f:.84f),r1=radius*(lit?.94f:.90f);
+   g.setColour(lit?juce::Colour(accent).withAlpha(.55f+.45f*t):juce::Colour(0xff3a3548));
+   g.drawLine(center.x+std::sin(angle)*r0,center.y-std::cos(angle)*r0,center.x+std::sin(angle)*r1,center.y-std::cos(angle)*r1,lit?2.f:1.f);}
+  juce::ColourGradient body(juce::Colour(0xff2a2634),center.x-radius*.2f,center.y-radius*.45f,juce::Colour(0xff0f0e14),center.x+radius*.5f,center.y+radius*.6f,false);
+  g.setGradientFill(body);g.fillEllipse(center.x-radius*.78f,center.y-radius*.78f,radius*1.56f,radius*1.56f);
+  g.setColour(juce::Colour(0xff08080c));g.drawEllipse(center.x-radius*.78f,center.y-radius*.78f,radius*1.56f,radius*1.56f,1.5f);
+  g.setColour(juce::Colour(0xff393244).withAlpha(.6f));g.drawEllipse(center.x-radius*.62f,center.y-radius*.62f,radius*1.24f,radius*1.24f,1.f);
+  g.setColour(juce::Colour(ink));g.setFont(juce::Font(juce::FontOptions(11.f)));
+  g.drawText(slider.getName(),juce::Rectangle<float>(center.x-radius,center.y+4,radius*2,16),juce::Justification::centred);
+ }
+ juce::Slider::SliderLayout getSliderLayout(juce::Slider& slider)override{if(!slider.isRotary())return juce::LookAndFeel_V4::getSliderLayout(slider);juce::Slider::SliderLayout layout;layout.sliderBounds=slider.getLocalBounds();layout.textBoxBounds=juce::Rectangle<int>(slider.getWidth()/2-42,slider.getHeight()/2-20,84,26);return layout;}
 };
 class KeyButton final:public juce::TextButton {
 public:
- std::function<void(juce::Graphics&,juce::Rectangle<float>)> overlay;
- void paintButton(juce::Graphics& g,bool,bool)override{juce::TextButton::paintButton(g,false,false);if(overlay)overlay(g,getLocalBounds().toFloat());}
+ bool blackKey=false,scaleDot=false,targetFill=false,inputOutline=false,selectedKey=false;
+ void paintButton(juce::Graphics& g,bool over,bool down)override{
+  auto r=getLocalBounds().toFloat().reduced(1.f,0.5f);const float radius=blackKey?5.f:6.f;
+  juce::Colour top=blackKey?juce::Colour(0xff1a1822):juce::Colour(0xfff0edf7);
+  juce::Colour bottom=blackKey?juce::Colour(0xff0d0c12):juce::Colour(0xffd7d2e3);
+  if(over){top=top.brighter(.05f);bottom=bottom.brighter(.04f);}if(down){top=top.darker(.05f);bottom=bottom.darker(.05f);}
+  g.setGradientFill(juce::ColourGradient(top,r.getTopLeft(),bottom,r.getBottomLeft(),false));
+  g.fillRoundedRectangle(r,radius);
+  if(targetFill){g.setColour(juce::Colour(0xff8b5cf6).withAlpha(blackKey?.92f:.78f));g.fillRoundedRectangle(r.reduced(1.f),radius);}
+  g.setColour(blackKey?juce::Colour(0xff332d42):juce::Colour(0xffbdb6ce));g.drawRoundedRectangle(r,radius,1.f);
+  const bool fill=targetFill;
+  g.setColour(blackKey?(fill?juce::Colour(0xfff7f4ff):juce::Colour(0xffd7d2e4)):(fill?juce::Colour(0xfffbf9ff):juce::Colour(0xff443d55)));
+  g.setFont(juce::Font(juce::FontOptions(blackKey?9.5f:11.f)));
+  auto label=r.removeFromBottom(blackKey?22.f:28.f);
+  g.drawText(getButtonText(),label,juce::Justification::centred);
+  if(scaleDot){g.setColour(fill?juce::Colour(0xfff7f4ff):(blackKey?juce::Colour(0xffb9a6ff):juce::Colour(0xff7c5cff)));g.fillEllipse(r.getCentreX()-3.f,r.getBottom()-9.f,6.f,6.f);}
+  if(inputOutline){g.setColour(juce::Colour(0xff8ee7ff));g.drawRoundedRectangle(r.reduced(2.f),radius-2.f,2.f);}
+  if(selectedKey){g.setColour(juce::Colours::white);g.drawRoundedRectangle(r.reduced(4.f),radius-3.f,2.5f);g.fillRect(r.getCentreX()-6.f,r.getY()+3.f,12.f,3.f);}
+ }
 };
 static juce::String megaTuneNoteName(float midi){
  static const char* names[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
@@ -220,15 +289,18 @@ public:
  }
  void resized()override{
   close.setBounds(getWidth()-76,8,64,22);
-  for(int i=0;i<6;++i)rows[(size_t)i]->setBounds(12,50+i*22,getWidth()-24,19);
-  enable.setBounds(12,184,130,22);exclude.setBounds(150,184,130,22);status.setBounds(292,184,getWidth()-304,22);
+  for(int i=0;i<6;++i)rows[(size_t)i]->setBounds(12,46+i*21,getWidth()-24,19);
+  enable.setBounds(12,174,130,22);exclude.setBounds(150,174,130,22);status.setBounds(292,174,getWidth()-304,22);
  }
  void paint(juce::Graphics& g)override{
-  g.fillAll(juce::Colour(0xff141418));
-  g.setColour(juce::Colour(0xff2e2b38));g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(.5f),6.f,1.f);
-  g.setColour(juce::Colour(0xffefeef5));g.setFont(14.f);g.drawText("Recent pitch decisions",12,8,300,18,juce::Justification::left);
-  g.setColour(juce::Colour(0xff8d8a99));g.setFont(10.f);g.drawText("history is diagnostic; every edit goes through Undo",12,26,500,14,juce::Justification::left);
-  g.setColour(juce::Colour(0xff2a2a31));g.fillRect(12,44,getWidth()-24,1);
+  juce::ColourGradient bg(juce::Colour(0xff191622),0,0,juce::Colour(0xff0f0d15),0,(float)getHeight(),false);
+  g.setGradientFill(bg);g.fillRoundedRectangle(getLocalBounds().toFloat().reduced(.5f),10.f);
+  g.setColour(juce::Colour(0xff342d45));g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(.5f),10.f,1.f);
+  g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(juce::FontOptions(14.f)));
+  g.drawText("Recent pitch decisions",12,6,300,18,juce::Justification::left);
+  g.setColour(juce::Colour(0xff8d879d));g.setFont(juce::Font(juce::FontOptions(10.f)));
+  g.drawText("history is diagnostic; every edit goes through Undo",12,22,500,14,juce::Justification::left);
+  g.setColour(juce::Colour(0xff2d2939));g.fillRect(12,40,getWidth()-24,1);
  }
  int actionPc=-1;
  std::function<void(int)> onSelect,onEnable,onExclude;std::function<void()> onClose;
@@ -241,7 +313,7 @@ class Editor final:public juce::AudioProcessorEditor,private juce::Timer {
  struct Sound {std::vector<float> values;int program=0;};
  juce::TextButton previous{"<"},next{">"},undo{"Undo"},redo{"Redo"},slotA{"A"},slotB{"B"},copyAB{"A > B"};juce::TextButton why{"Why this note?"};bool showWhy=false;int selSeq=-1,selectedPc=-1;HistoryPanel historyPanel;juce::Label experimental;juce::ComboBox enginePick;int shownEngine=-1;
  Sound comparison[2],observed;std::vector<Sound> past,future;int activeSlot=0;
- float animationTime=0,smoothedLevel=0;std::array<float,12> inputGlow{},outputGlow{};
+ float animationTime=0,smoothedLevel=0;
  Sound capture()const{Sound sound;sound.program=proc.getCurrentProgram();for(auto* p:proc.getParameters())sound.values.push_back(p->getValue());return sound;}
  bool same(const Sound& a,const Sound& b)const{return a.program==b.program&&a.values==b.values;}
  void restore(const Sound& sound){proc.currentProgram=sound.program;auto& parameters=proc.getParameters();for(size_t i=0;i<sound.values.size()&&i<(size_t)parameters.size();++i){parameters[(int)i]->beginChangeGesture();parameters[(int)i]->setValueNotifyingHost(sound.values[i]);parameters[(int)i]->endChangeGesture();}observed=capture();repaint();}
@@ -265,7 +337,10 @@ class Editor final:public juce::AudioProcessorEditor,private juce::Timer {
   edit([&]{parameter->beginChangeGesture();parameter->setValueNotifyingHost(enable?1.f:0.f);parameter->endChangeGesture();});
   refreshHistory();repaint();}
  void timerCallback()override{animationTime+=1.f/30.f;smoothedLevel+=(juce::jlimit(0.f,1.f,proc.level.load()*2)-smoothedLevel)*.18f;
- for(int i=0;i<12;++i){inputGlow[i]*=.89f;outputGlow[i]*=.89f;}float detected=proc.pitch.load();if(detected>0&&smoothedLevel>.001f){int note=((int)std::round(detected)%12+12)%12;inputGlow[note]=smoothedLevel;float actual=proc.outputPitch.load();if(actual>0){int targetNote=((int)std::round(actual)%12+12)%12;outputGlow[targetNote]=smoothedLevel;}}
+ const float detected=proc.pitch.load();const int target=megatune::currentTargetNote(proc);
+ const int ip=detected>0?(((int)std::lround(detected))%12+12)%12:-1;
+ const int op=target>0?((target%12)+12)%12:-1;const int root=(int)proc.value("key");
+ for(int i=0;i<12;++i){notes[i].scaleDot=proc.noteValue(((i-root)+24)%12)>.5f;notes[i].targetFill=i==op;notes[i].inputOutline=i==ip;notes[i].selectedKey=i==selectedPc;notes[i].repaint();}
  if(!juce::ModifierKeys::getCurrentModifiersRealtime().isAnyMouseButtonDown())remember();
  if(showWhy)refreshHistory();
  const int wantEngine=proc.value("smith")>.5f?4:proc.value("engine")>.5f?3:proc.value("lowlatency")>.5f?2:1;
@@ -275,7 +350,7 @@ class Editor final:public juce::AudioProcessorEditor,private juce::Timer {
  void setScale(bool isMinor,bool all){const int scaleMajor[]={0,2,4,5,7,9,11};const int scaleMinor[]={0,2,3,5,7,8,10};for(int i=0;i<12;++i){bool selected=all;for(int j=0;j<7;++j)if(i==(isMinor?scaleMinor[j]:scaleMajor[j]))selected=true;auto* p=proc.state.getParameter("note"+juce::String(i));p->beginChangeGesture();p->setValueNotifyingHost(selected?1.f:0.f);p->endChangeGesture();}}
 public:
  void tick(){timerCallback();}
- Editor(MegaTune& p):AudioProcessorEditor(p),proc(p){setSize(860,680);auto setup=[&](juce::Slider& s,const char* id){addAndMakeVisible(s);s.setLookAndFeel(&tunerLook);s.textFromValueFunction=[](double value){return juce::String(value,1);};s.setNumDecimalPlacesToDisplay(1);s.setDoubleClickReturnValue(true,proc.state.getParameter(id)->convertFrom0to1(proc.state.getParameter(id)->getDefaultValue()));s.setColour(juce::Slider::thumbColourId,juce::Colour(0xffbb8de9));s.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);s.setTextBoxStyle(juce::Slider::TextBoxBelow,false,75,22);s.setColour(juce::Slider::rotarySliderFillColourId,juce::Colour(0xffc48cea));s.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colour(0xff343137));s.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::transparentBlack);auto attachment=std::make_unique<SA>(proc.state,id,s);s.textFromValueFunction=[](double value){return juce::String(value,1);};s.updateText();return attachment;};a=setup(speed,"speed");b=setup(sustain,"sustain");c=setup(amount,"amount");da=setup(doubler,"doubler");wa=setup(width,"width");ra=setup(reference,"reference");sa=setup(shift,"shift");rga=setup(range,"range");for(auto* slider:{&doubler,&width}){slider->setSliderStyle(juce::Slider::LinearHorizontal);slider->setTextBoxStyle(juce::Slider::TextBoxRight,false,38,20);slider->setTextValueSuffix("%");}reference.setSliderStyle(juce::Slider::LinearHorizontal);reference.setTextBoxStyle(juce::Slider::TextBoxRight,false,62,20);reference.setTextValueSuffix(" Hz");reference.textFromValueFunction=[](double v){return juce::String(v,0);};reference.updateText();doubler.setName("Doubler");width.setName("Width");reference.setName("Reference");shift.setSliderStyle(juce::Slider::LinearHorizontal);shift.setTextBoxStyle(juce::Slider::TextBoxRight,false,46,20);shift.setTextValueSuffix(" st");shift.textFromValueFunction=[](double v){return juce::String((int)std::lround(v));};shift.updateText();shift.setName("Shift");range.setSliderStyle(juce::Slider::LinearHorizontal);range.setTextBoxStyle(juce::Slider::TextBoxRight,false,40,20);range.setTextValueSuffix(" st");range.textFromValueFunction=[](double v){return juce::String((int)std::lround(v));};range.updateText();range.setName("Range");
+ Editor(MegaTune& p):AudioProcessorEditor(p),proc(p){setSize(860,680);auto setup=[&](juce::Slider& s,const char* id){addAndMakeVisible(s);s.setLookAndFeel(&tunerLook);s.textFromValueFunction=[](double value){return juce::String(value,1);};s.setNumDecimalPlacesToDisplay(1);s.setDoubleClickReturnValue(true,proc.state.getParameter(id)->convertFrom0to1(proc.state.getParameter(id)->getDefaultValue()));s.setColour(juce::Slider::thumbColourId,juce::Colour(0xffbb8de9));s.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);s.setTextBoxStyle(juce::Slider::TextBoxBelow,false,75,22);s.setColour(juce::Slider::rotarySliderFillColourId,juce::Colour(0xffc48cea));s.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colour(0xff343137));s.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::transparentBlack);s.setColour(juce::Slider::textBoxTextColourId,juce::Colour(0xfff4f1ff));s.setColour(juce::Slider::textBoxBackgroundColourId,juce::Colours::transparentBlack);auto attachment=std::make_unique<SA>(proc.state,id,s);s.textFromValueFunction=[](double value){return juce::String(value,1);};s.updateText();return attachment;};a=setup(speed,"speed");b=setup(sustain,"sustain");c=setup(amount,"amount");da=setup(doubler,"doubler");wa=setup(width,"width");ra=setup(reference,"reference");sa=setup(shift,"shift");rga=setup(range,"range");for(auto* slider:{&doubler,&width}){slider->setSliderStyle(juce::Slider::LinearHorizontal);slider->setTextBoxStyle(juce::Slider::TextBoxRight,false,38,20);slider->setTextValueSuffix("%");}reference.setSliderStyle(juce::Slider::LinearHorizontal);reference.setTextBoxStyle(juce::Slider::TextBoxRight,false,62,20);reference.setTextValueSuffix(" Hz");reference.textFromValueFunction=[](double v){return juce::String(v,0);};reference.updateText();doubler.setName("Doubler");width.setName("Width");reference.setName("Reference");shift.setSliderStyle(juce::Slider::LinearHorizontal);shift.setTextBoxStyle(juce::Slider::TextBoxRight,false,46,20);shift.setTextValueSuffix(" st");shift.textFromValueFunction=[](double v){return juce::String((int)std::lround(v));};shift.updateText();shift.setName("Shift");range.setSliderStyle(juce::Slider::LinearHorizontal);range.setTextBoxStyle(juce::Slider::TextBoxRight,false,40,20);range.setTextValueSuffix(" st");range.textFromValueFunction=[](double v){return juce::String((int)std::lround(v));};range.updateText();range.setName("Range");
  addAndMakeVisible(presets);for(int i=0;i<proc.getNumPrograms();++i)presets.addItem(proc.getProgramName(i),i+1);presets.setSelectedId(proc.getCurrentProgram()+1,juce::dontSendNotification);presets.onChange=[this]{edit([&]{proc.setCurrentProgram(presets.getSelectedId()-1);});};
  for(auto* button:{&previous,&next,&undo,&redo,&slotA,&slotB,&copyAB})addAndMakeVisible(button);
  previous.setTooltip("Previous factory preset");next.setTooltip("Next factory preset");copyAB.setTooltip("Copy the current sound to the other comparison slot");
@@ -283,18 +358,8 @@ public:
  undo.onClick=[this]{remember();if(past.empty())return;future.push_back(capture());auto sound=past.back();past.pop_back();restore(sound);};
  redo.onClick=[this]{if(future.empty())return;past.push_back(capture());auto sound=future.back();future.pop_back();restore(sound);};
  slotA.onClick=[this]{if(activeSlot!=0)compare(0);};slotB.onClick=[this]{if(activeSlot!=1)compare(1);};copyAB.onClick=[this]{comparison[1-activeSlot]=capture();};
- speed.setName("Speed");sustain.setName("Sustain");amount.setName("Amount");speed.setComponentID("control-speed");sustain.setComponentID("control-sustain");amount.setComponentID("control-amount");doubler.setComponentID("control-doubler");width.setComponentID("control-width");reference.setComponentID("control-reference");stabilize.setComponentID("control-stabilize");undo.setComponentID("undo-button");for(auto* v:{&bypass,&stabilize,&lowLatency})addAndMakeVisible(v);d=std::make_unique<BA>(proc.state,"bypass",bypass);e=std::make_unique<BA>(proc.state,"stabilize",stabilize);ll=std::make_unique<BA>(proc.state,"lowlatency",lowLatency);
- const char* names[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};for(int i=0;i<12;++i){addAndMakeVisible(notes[i]);notes[i].setButtonText(names[i]);notes[i].setClickingTogglesState(true);bool black=i==1||i==3||i==6||i==8||i==10;notes[i].setColour(juce::TextButton::buttonOnColourId,juce::Colour(black?0xff232329:0xff3a3a42));notes[i].setColour(juce::TextButton::buttonColourId,juce::Colour(black?0xff1b1b20:0xff33333a));na[i]=std::make_unique<BA>(proc.state,"note"+juce::String(i),notes[i]);
-  notes[i].overlay=[this,i](juce::Graphics& g,juce::Rectangle<float> r){
-   const float pv=proc.pitch.load();
-   const int ip=pv>0?(((int)std::lround(pv))%12+12)%12:-1;
-   const int target=megatune::currentTargetNote(proc);
-   const int op=target>0?((target%12)+12)%12:-1;
-   if(i==op){g.setColour(juce::Colour(0xff9a6bff).withAlpha(.62f));g.fillRoundedRectangle(r.reduced(1.f),5.f);}
-   if(i==ip){g.setColour(juce::Colour(0xffe2d6ff));g.drawRoundedRectangle(r.reduced(2.f),5.f,2.f);}
-   const int root2=(int)proc.value("key");if(proc.noteValue(((i-root2)+24)%12)>.5f){g.setColour(juce::Colour(0xffb49aff));g.fillEllipse(r.getCentreX()-3.5f,r.getBottom()-14.f,7.f,7.f);}
-   if(i==selectedPc){g.setColour(juce::Colours::white);g.drawRoundedRectangle(r.reduced(4.f),6.f,2.5f);g.fillRect(r.getCentreX()-5.f,r.getY()+3.f,10.f,3.f);}
-  };}
+ speed.setName("Speed");sustain.setName("Sustain");amount.setName("Amount");speed.textFromValueFunction=[](double v){return juce::String(v,1)+" ms";};sustain.textFromValueFunction=[](double v){return juce::String(v,1)+" %";};amount.textFromValueFunction=[](double v){return juce::String(v,1)+" %";};speed.updateText();sustain.updateText();amount.updateText();speed.setComponentID("control-speed");sustain.setComponentID("control-sustain");amount.setComponentID("control-amount");doubler.setComponentID("control-doubler");width.setComponentID("control-width");reference.setComponentID("control-reference");stabilize.setComponentID("control-stabilize");undo.setComponentID("undo-button");for(auto* v:{&bypass,&stabilize,&lowLatency})addAndMakeVisible(v);d=std::make_unique<BA>(proc.state,"bypass",bypass);e=std::make_unique<BA>(proc.state,"stabilize",stabilize);ll=std::make_unique<BA>(proc.state,"lowlatency",lowLatency);
+ const char* names[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};for(int i=0;i<12;++i){addAndMakeVisible(notes[i]);notes[i].setButtonText(names[i]);notes[i].setClickingTogglesState(true);bool black=i==1||i==3||i==6||i==8||i==10;notes[i].blackKey=black;na[i]=std::make_unique<BA>(proc.state,"note"+juce::String(i),notes[i]);}
  addAndMakeVisible(key);const char* roots[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};for(int i=0;i<12;++i)key.addItem(roots[i],i+1);keyAttachment=std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(proc.state,"key",key);key.onChange=[this]{syncKey();repaint();};
  for(auto* v:{&major,&minor,&chromatic})addAndMakeVisible(v);major.onClick=[this]{setScale(false,false);};minor.onClick=[this]{setScale(true,false);};chromatic.onClick=[this]{setScale(false,true);};
  addAndMakeVisible(enginePick);addAndMakeVisible(why);why.setTooltip("Recent pitch decisions");addAndMakeVisible(historyPanel);historyPanel.setVisible(false);historyPanel.setWantsKeyboardFocus(true);
@@ -302,79 +367,97 @@ public:
  historyPanel.onEnable=[this](int pc){setTargetEnabled(pc,true);};historyPanel.onExclude=[this](int pc){setTargetEnabled(pc,false);};
  addAndMakeVisible(experimental);experimental.setComponentID("experimental-label");experimental.setText("EXPERIMENTAL",juce::dontSendNotification);experimental.setFont(10.f);experimental.setColour(juce::Label::textColourId,juce::Colour(0xff9a6bff));experimental.setVisible(false);experimental.setInterceptsMouseClicks(false,false);
  why.setComponentID("why-button");why.onClick=[this]{if(showWhy)closeHistory();else openHistory();};
- enginePick.addItem("Quality",1);enginePick.addItem("Low Latency",2);enginePick.addItem("TD-PSOLA (experimental)",3);enginePick.addItem("Signalsmith (experimental)",4);enginePick.setSelectedId(1,juce::dontSendNotification);enginePick.onChange=[this]{const int id=enginePick.getSelectedId();auto setP=[&](const char* pid,float v){auto* pr=proc.state.getParameter(pid);pr->beginChangeGesture();pr->setValueNotifyingHost(v);pr->endChangeGesture();};setP("lowlatency",id==2?1.f:0.f);setP("engine",id==3?1.f:0.f);setP("smith",id==4?1.f:0.f);};observed=capture();comparison[0]=comparison[1]=observed;resized();timerCallback();startTimerHz(30);}
+ enginePick.addItem("Quality",1);enginePick.addItem("Low Latency",2);enginePick.addItem("TD-PSOLA (experimental)",3);enginePick.addItem("Signalsmith (experimental)",4);enginePick.setSelectedId(1,juce::dontSendNotification);enginePick.onChange=[this]{const int id=enginePick.getSelectedId();auto setP=[&](const char* pid,float v){auto* pr=proc.state.getParameter(pid);pr->beginChangeGesture();pr->setValueNotifyingHost(v);pr->endChangeGesture();};setP("lowlatency",id==2?1.f:0.f);setP("engine",id==3?1.f:0.f);setP("smith",id==4?1.f:0.f);};
+ auto styleCombo=[&](juce::ComboBox& c){c.setColour(juce::ComboBox::backgroundColourId,juce::Colour(0xff1b1826));c.setColour(juce::ComboBox::textColourId,juce::Colour(0xfff4f1ff));c.setColour(juce::ComboBox::arrowColourId,juce::Colour(0xff8d879d));c.setColour(juce::ComboBox::outlineColourId,juce::Colour(0xff2d2939));};
+ styleCombo(presets);styleCombo(key);styleCombo(enginePick);
+ observed=capture();comparison[0]=comparison[1]=observed;resized();timerCallback();startTimerHz(30);}
  ~Editor()override{stopTimer();for(auto* slider:{&speed,&sustain,&amount,&doubler,&width,&reference,&shift,&range})slider->setLookAndFeel(nullptr);}
  void resized()override{
-  presets.setBounds(112,9,190,26);previous.setBounds(306,9,26,26);next.setBounds(334,9,26,26);
-  undo.setBounds(376,9,50,26);redo.setBounds(428,9,50,26);
+  presets.setBounds(112,9,190,26);previous.setBounds(308,9,26,26);next.setBounds(336,9,26,26);
+  undo.setBounds(378,9,50,26);redo.setBounds(430,9,50,26);
   slotA.setBounds(500,9,26,26);copyAB.setBounds(528,9,52,26);slotB.setBounds(582,9,26,26);
   bypass.setBounds(700,9,150,26);
-  enginePick.setBounds(470,46,170,26);
-  speed.setBounds(90,268,150,124);sustain.setBounds(355,268,150,124);amount.setBounds(620,268,150,124);
-  doubler.setBounds(62,414,232,22);width.setBounds(318,414,232,22);
-  stabilize.setBounds(576,412,140,24);
-  reference.setBounds(716,412,124,22);
-  key.setBounds(96,472,72,24);major.setBounds(186,472,60,24);minor.setBounds(248,472,60,24);chromatic.setBounds(310,472,84,24);
-  shift.setBounds(420,472,80,22);range.setBounds(512,472,80,22);why.setBounds(660,472,170,24);
-  experimental.setBounds(646,52,96,14);historyPanel.setBounds(20,246,820,208);
+  enginePick.setBounds(470,48,170,26);
+  speed.setBounds(80,266,170,150);sustain.setBounds(345,266,170,150);amount.setBounds(610,266,170,150);
+  doubler.setBounds(62,424,232,22);width.setBounds(318,424,232,22);
+  stabilize.setBounds(576,422,140,24);
+  reference.setBounds(716,422,124,22);
+  key.setBounds(96,462,72,26);major.setBounds(186,462,60,26);minor.setBounds(248,462,60,26);chromatic.setBounds(310,462,84,26);
+  shift.setBounds(420,462,80,22);range.setBounds(512,462,80,22);why.setBounds(660,462,170,26);
+  experimental.setBounds(646,54,96,14);historyPanel.setBounds(20,244,820,200);
   lowLatency.setBounds(-200,-200,10,10);
   const int white[]={0,2,4,5,7,9,11};
-  for(int j2=0;j2<7;++j2)notes[white[j2]].setBounds(40+j2*111,528,109,120);
+  for(int j2=0;j2<7;++j2)notes[white[j2]].setBounds(40+j2*111,516,110,132);
   const int black[]={1,3,6,8,10};const int gaps[]={1,2,4,5,6};
-  for(int j2=0;j2<5;++j2){notes[black[j2]].setBounds(40+gaps[j2]*111-28,528,56,74);notes[black[j2]].toFront(false);}}
+  for(int j2=0;j2<5;++j2){notes[black[j2]].setBounds(40+gaps[j2]*111-29,516,58,82);notes[black[j2]].toFront(false);}}
  void paint(juce::Graphics& g)override{
-  const auto bg=juce::Colour(0xff101013),panel=juce::Colour(0xff19191d),line=juce::Colour(0xff2a2a31),accent=juce::Colour(0xff9a6bff),muted=juce::Colour(0xff8d8a99);
-  g.fillAll(bg);
-  g.setColour(juce::Colour(0xffe9e7f0));g.setFont(22.f);g.drawText("MegaTune",14,8,96,26,juce::Justification::left);
-  g.setColour(line);g.fillRect(juce::Rectangle<int>(0,40,860,1));
-  g.setColour(panel);g.fillRoundedRectangle(20.f,86.f,820.f,152.f,6.f);
-  g.setColour(line);g.drawRoundedRectangle(20.f,86.f,820.f,152.f,6.f,1.f);
-  // orb (small)
-  auto c=juce::Point<float>(92.f,162.f);
-  for(int i=0;i<3;++i){float r=34.f+i*9.f;g.setColour(accent.withAlpha(.10f+.05f*i));g.drawEllipse(c.x-r,c.y-r,r*2,r*2,1.1f);}
-  g.setColour(accent.withAlpha(.16f));g.fillEllipse(c.x-20,c.y-20,40,40);
-  g.setColour(line);g.fillRect(juce::Rectangle<int>(168,110,1,104));
-  // labels
-  g.setColour(muted);g.setFont(11.f);
-  g.drawText("INPUT",300,100,130,14,juce::Justification::centred);
-  g.drawText("TARGET",560,100,130,14,juce::Justification::centred);
-  float p=proc.pitch.load();const int targetNote=megatune::currentTargetNote(proc);
-  g.setColour(juce::Colour(0xffefeef5));g.setFont(54.f);
-  g.drawText(megaTuneNoteName(p),300,116,130,66,juce::Justification::centred);
-  g.setColour(muted);g.setFont(26.f);g.drawText(">",445,126,30,44,juce::Justification::centred);
-  g.setColour(juce::Colour(0xffefeef5));g.setFont(54.f);
-  g.drawText(targetNote>0?megaTuneNoteName((float)targetNote):juce::String("--"),540,116,150,66,juce::Justification::centred);
-  juce::String dev;if(p>0&&targetNote>0){float cents=megaTuneCentsBetween(p,(float)targetNote);dev=(cents>=0?"+":"")+juce::String(cents,1)+juce::String(" cents");}
+  const auto ink=juce::Colour(0xfff4f1ff),muted=juce::Colour(0xff8d879d),accent=juce::Colour(0xffa78bfa),accentDeep=juce::Colour(0xff7c5cff),line=juce::Colour(0xff2d2939);
+  juce::ColourGradient background(juce::Colour(0xff090a0e),0,0,juce::Colour(0xff171121),860,680,false);g.setGradientFill(background);g.fillAll();
+  // top bar
+  juce::ColourGradient bar(juce::Colour(0xff14111c),0,0,juce::Colour(0xff0c0b11),0,44,false);g.setGradientFill(bar);g.fillRect(0,0,860,44);
+  g.setColour(line);g.fillRect(0,43,860,1);
+  juce::ColourGradient mark(accentDeep,14,11,accent,36,33,false);g.setGradientFill(mark);g.fillRoundedRectangle(14,11,22,22,7);
+  g.setColour(juce::Colour(0xff17121f));g.setFont(juce::Font(14.f,juce::Font::bold));g.drawText("M",14,11,22,22,juce::Justification::centred);
+  g.setColour(ink);g.setFont(juce::Font(14.f,juce::Font::bold));g.drawText("MegaTune",42,9,70,26,juce::Justification::left);
+  // engine strip
+  juce::ColourGradient engineGlow(accent.withAlpha(.10f),0,48,accent.withAlpha(0.f),0,78,false);g.setGradientFill(engineGlow);g.fillRect(0,44,860,34);
+  g.setColour(muted);g.setFont(juce::Font(8.5f));g.drawText("ENGINE",420,53,44,12,juce::Justification::right);
+  // main monitor card
+  auto card=[&](float x,float y,float w,float h,float radius){juce::ColourGradient c(juce::Colour(0xff191622),x,y,juce::Colour(0xff0f0d15),x,y+h,false);g.setGradientFill(c);g.fillRoundedRectangle(x,y,w,h,radius);g.setColour(juce::Colour(0xff332c44));g.drawRoundedRectangle(x,y,w,h,radius,1.f);};
+  card(20,82,820,158,12);
+  juce::Point<float> orb(108,161);const float pulse=1.f+smoothedLevel*.10f,orbR=44.f*pulse;
+  juce::ColourGradient halo(accent.withAlpha(.18f),orb.x,orb.y,accent.withAlpha(0.f),orb.x+128,orb.y,true);
+  g.setGradientFill(halo);g.fillEllipse(orb.x-128,orb.y-128,256,256);
+  for(int i=0;i<3;++i){const float r=orbR+i*12.f;g.setColour(accent.withAlpha(.18f-.045f*i));g.drawEllipse(orb.x-r,orb.y-r,r*2,r*2,1.2f);}
+  juce::Path core;const int facets=14;
+  for(int i=0;i<facets;++i){const float a=juce::MathConstants<float>::twoPi*i/facets+animationTime*.12f;const float r=21.f+7.f*std::sin(animationTime*1.4f+i*1.7f);const auto pt=juce::Point<float>(orb.x+std::cos(a)*r,orb.y+std::sin(a)*r);if(i==0)core.startNewSubPath(pt.x,pt.y);else core.lineTo(pt.x,pt.y);}
+  core.closeSubPath();juce::ColourGradient coreFill(accent,orb.x-20,orb.y-20,accentDeep,orb.x+20,orb.y+20,false);g.setGradientFill(coreFill);g.fillPath(core);
+  g.setColour(juce::Colour(0xffd9c9ff).withAlpha(.85f));g.drawEllipse(orb.x-30,orb.y-30,60,60,1.f);
+  g.setColour(line);g.fillRect(juce::Rectangle<int>(180,101,1,120));
+  const float p=proc.pitch.load();const int targetNote=megatune::currentTargetNote(proc);
+  g.setColour(muted);g.setFont(juce::Font(9.5f));g.drawText("INPUT",240,94,160,12,juce::Justification::centred);
+  g.drawText("TARGET",500,94,160,12,juce::Justification::centred);
+  g.setColour(ink);g.setFont(juce::Font(54.f,juce::Font::bold));g.drawText(megaTuneNoteName(p),240,106,160,68,juce::Justification::centred);
+  g.drawText(targetNote>0?megaTuneNoteName((float)targetNote):juce::String("--"),500,106,160,68,juce::Justification::centred);
+  g.setColour(muted);juce::Path arrow;arrow.startNewSubPath(429,139);arrow.lineTo(465,139);arrow.startNewSubPath(458,132);arrow.lineTo(465,139);arrow.lineTo(458,146);
+  g.strokePath(arrow,juce::PathStrokeType(1.6f,juce::PathStrokeType::curved,juce::PathStrokeType::rounded));
+  juce::String dev;if(p>0&&targetNote>0){const float cents=megaTuneCentsBetween(p,(float)targetNote);dev=(cents>=0?"+":"")+juce::String(cents,1)+" cents";}
   else dev="waiting for pitch";
-  g.setColour(accent);g.setFont(15.f);g.drawText(dev,300,182,390,20,juce::Justification::centred);
-  g.setColour(muted);g.setFont(10.f);g.drawText("Input vs Target",300,198,390,12,juce::Justification::centred);
-  // cents meter, negative on the left
-  float mx=250.f,mw=420.f,my=210.f;
-  g.setColour(line);g.fillRect(juce::Rectangle<float>(mx,my,mw,1.f));
-  for(int k=-2;k<=2;++k){float x=mx+mw*(k+2)/4.f;g.fillRect(juce::Rectangle<float>(x,my-4,1.f,8.f));}
-  if(p>0&&targetNote>0){float x=mx+mw*megaTuneMeterFraction(megaTuneCentsBetween(p,(float)targetNote));
-    g.setColour(accent);g.fillRect(juce::Rectangle<float>(x-2,my-7,4.f,14.f));}
-  g.setColour(muted);g.setFont(10.f);
-  g.drawText("-100c",mx-14,my+8,50,12,juce::Justification::centred);
-  g.drawText("0c",mx+mw/2-14,my+8,28,12,juce::Justification::centred);
-  g.drawText("+100c",mx+mw-36,my+8,50,12,juce::Justification::centred);
-  // readable labels for the always-visible secondary controls
-  g.setColour(juce::Colour(0xffb9b5c6));g.setFont(11.f);
-  g.drawText("Shift",420,456,80,14,juce::Justification::centred);
-  g.drawText("Range",512,456,80,14,juce::Justification::centred);
-  if(!showWhy){
-    g.setColour(muted);g.setFont(12.f);
-    g.drawText("SPEED",90,250,150,14,juce::Justification::centred);
-    g.drawText("SUSTAIN",355,250,150,14,juce::Justification::centred);
-    g.drawText("AMOUNT",620,250,150,14,juce::Justification::centred);
-    g.drawText("DOUBLER",62,398,120,14,juce::Justification::left);
-    g.drawText("STEREO WIDTH",318,398,140,14,juce::Justification::left);
-    g.drawText("Pitch Reference",716,394,124,14,juce::Justification::centred);
-  }
-  int lat=proc.getLatencySamples();
-  g.setColour(muted);g.setFont(12.f);
-  const double srate=proc.getSampleRate();g.drawText((lat>0&&srate>0)?(juce::String(lat*1000.0/srate,1)+" ms"):juce::String("-- ms"),
-             746,52,100,14,juce::Justification::right);
+  g.setColour(accent);g.setFont(juce::Font(15.f,juce::Font::bold));g.drawText(dev,240,174,420,20,juce::Justification::centred);
+  g.setColour(muted);g.setFont(juce::Font(9.f));g.drawText("INPUT vs TARGET",240,192,420,10,juce::Justification::centred);
+  // cents meter
+  const float mx=240,mw=420,my=216;
+  g.setColour(juce::Colour(0xff272233));g.fillRoundedRectangle(mx,my-3,mw,6,3);
+  g.setColour(line);g.fillRect(juce::Rectangle<float>(mx+mw*.5f-1,my-7,2,14));
+  for(int k=-2;k<=2;++k){const float x=mx+mw*(k+2)/4.f;g.setColour(muted.withAlpha(.55f));g.fillRect(juce::Rectangle<float>(x,my-2,1.f,4.f));}
+  if(p>0&&targetNote>0){const float x=mx+mw*megaTuneMeterFraction(megaTuneCentsBetween(p,(float)targetNote));
+    g.setColour(accent.withAlpha(.22f));g.fillRoundedRectangle(x-7,my-10,14,20,7);
+    g.setColour(accent);g.fillRoundedRectangle(x-2,my-8,4,16,2);}
+  g.setColour(muted);g.setFont(juce::Font(9.f));
+  g.drawText("-100c",mx-14,my+9,46,10,juce::Justification::centred);
+  g.drawText("0c",mx+mw/2-14,my+9,28,10,juce::Justification::centred);
+  g.drawText("+100c",mx+mw-32,my+9,46,10,juce::Justification::centred);
+  // control deck
+  if(!showWhy){card(20,246,820,192,12);g.setColour(line.withAlpha(.7f));g.fillRect(270,260,1,124);g.fillRect(535,260,1,124);
+   g.setColour(muted);g.setFont(juce::Font(9.5f));
+   g.drawText("SPEED",80,250,170,12,juce::Justification::centred);
+   g.drawText("SUSTAIN",345,250,170,12,juce::Justification::centred);
+   g.drawText("AMOUNT",610,250,170,12,juce::Justification::centred);
+   g.drawText("DOUBLER",62,404,120,12,juce::Justification::left);
+   g.drawText("STEREO WIDTH",318,404,140,12,juce::Justification::left);
+   g.drawText("PITCH REFERENCE",716,404,124,12,juce::Justification::centred);}
+  // key / scale / transpose row
+  g.setColour(muted);g.setFont(juce::Font(9.f));
+  g.drawText("KEY",96,446,72,12,juce::Justification::left);
+  g.drawText("SCALE",186,446,208,12,juce::Justification::left);
+  g.drawText("SHIFT",420,446,80,12,juce::Justification::centred);
+  g.drawText("RANGE",512,446,80,12,juce::Justification::centred);
+  // keyboard deck
+  card(28,504,816,152,12);
+  g.setColour(line);g.fillRect(40,658,780,1);
+  g.setColour(muted);g.setFont(juce::Font(9.f));g.drawText("MEGATUNE  /  VOCAL ENGINE",40,660,300,12,juce::Justification::left);
+  const int lat=proc.getLatencySamples();const double srate=proc.getSampleRate();
+  g.setColour(muted);g.setFont(juce::Font(10.f));g.drawText((lat>0&&srate>0)?(juce::String(lat*1000.0/srate,1)+" ms"):juce::String("-- ms"),746,52,100,12,juce::Justification::right);
  }
  };
 namespace megatune {

@@ -1,5 +1,22 @@
 # Mechanics and evidence
 
+## 0.1.2 editor redesign — 2026-11-05
+
+The VST3 editor was rebuilt visually while keeping the same controls and
+parameter IDs:
+
+- layered gradient cards, a branded top bar, and a stronger visual hierarchy
+- painted tick-ring knobs with value + unit readouts
+- styled combo boxes, pills, toggles and linear sliders
+- a custom piano: neutral white/black keys, scale dots, cyan input outline,
+  violet target fill and white selected-decision outline
+- improved key/scale/shift/range and secondary-control labels
+- an opaque history deck matching the new surface system
+
+The 860×680 size, all control IDs, the history behavior, Undo/Redo and A/B are
+unchanged. Native, Rosetta x86_64, AddressSanitizer and host checks pass; the
+idle, active and history screenshots were regenerated.
+
 ## 0.1.1 behavior and range pass — 2026-11-05
 
 - Negative Speed now selects an immediate ratio update instead of the zero-speed

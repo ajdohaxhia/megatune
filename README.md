@@ -4,15 +4,14 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four selectable
 pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.1.1 (experimental).** Pitch correction, latency reporting,
+> **Status: 0.1.2 (experimental).** Pitch correction, latency reporting,
 > presets, automation and the exclude/undo workflow are verified. **Formant preservation is
 > unvalidated** and the build is **ad-hoc signed, not notarized**. See [Status](#status)
 > before shipping anything.
 >
-> 0.1.1 adds hard-correction behavior for negative Speed, makes Shift work independently of
-> Amount, and supports Signalsmith bypass at sample rates up to 768 kHz. It keeps the 0.1.0
-> fixes for oversized host blocks, sample-rate changes, audio-thread allocations,
-> Signalsmith bypass/doubler/latency, non-finite input and `reset()`.
+> 0.1.2 is a visual redesign: layered cards, painted tick-ring knobs, styled menus and
+> toggles, a responsive custom piano with clear scale/input/target states, and a cleaner
+> history view. Controls, parameter IDs and DSP are unchanged from 0.1.1.
 
 ---
 
@@ -78,9 +77,9 @@ Declared latency matches measured impulse onset and cross-correlation lag at 44.
 
 ## Install
 
-Version 0.1.1 (universal arm64 + x86_64):
+Version 0.1.2 (universal arm64 + x86_64):
 
-https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.1
+https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.2
 
 ```bash
 # from the release archive or app/dist
