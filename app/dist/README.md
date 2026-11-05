@@ -9,9 +9,9 @@ Logic or GarageBand. Both formats share the same editor, presets and DSP.
 
 ## Engines
 - **Quality** — 4-grain shifter, 2048 samples (42.7 ms @ 48 kHz)
-- **Low Latency** — 2-grain shifter, 128 samples (2.67 ms @ 48 kHz)
-- **TD-PSOLA (experimental)** — pitch-synchronous OLA, opt-in
-- **Signalsmith (experimental)** — 120 ms, opt-in; Smith Comp toggles formant compensation
+- **Low Latency** — TD-PSOLA, 512 samples (10.7 ms @ 48 kHz)
+- **TD-PSOLA** — pitch-synchronous OLA (runtime default)
+- **Signalsmith** — 120 ms; Smith Comp toggles formant compensation
 
 ## Known limitations
 - Ad-hoc signed, **not notarized**. Gatekeeper may block it on other Macs.

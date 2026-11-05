@@ -167,7 +167,7 @@ int main (int argc, char** argv)
     setNorm ("Low Latency", 0.0f); flushOneBlock(); inst->prepareToPlay (48000.0, 512); pump();
     const int latQuality = inst->getLatencySamples();
     std::cout << "latency_quality=" << latQuality << " latency_low=" << latLow << "\n";
-    const bool latencyOk = latQuality == 2048 && latLow == 128;
+    const bool latencyOk = latQuality == 2048 && latLow == 512;
 
     double fAuto=0,sdAuto=0,fZero=0,sdZero=0,fFast=0,sdFast=0,fSlow=0,sdSlow=0,fWide=0,sdWide=0;
     setNorm ("Key", 0.0f);

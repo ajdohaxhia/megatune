@@ -40,7 +40,7 @@ their owners.
 
 | Area | What you get |
 |---|---|
-| Pitch engines | Quality (4-grain OLA), Low Latency (2-grain), TD-PSOLA*, Signalsmith Stretch* |
+| Pitch engines | Quality (TD-PSOLA), Low Latency (TD-PSOLA, 512), Signalsmith Stretch |
 | Controls | Speed, Sustain, Amount, Doubler, Stereo Width, Key, Scale, Shift, Range, Pitch Reference (A4) |
 | Keyboard | One octave, scale membership dots, live input outline, target fill |
 | Pitch monitor | Input → Target with signed cents and a ±100¢ meter |
@@ -48,7 +48,6 @@ their owners.
 | Presets | 16 factory programs with per-preset key and scale |
 | Host integration | VST3 + AUv2; preset recall, parameter automation, Undo/Redo, A/B comparison, bypass |
 
-\* experimental, opt-in.
 
 ---
 
@@ -57,9 +56,9 @@ their owners.
 | Engine | Latency @ 48 kHz | Notes |
 |---|---|---|
 | Quality | **2048 samples / 42.7 ms** | default; 4-grain overlap-add with cubic interpolation |
-| Low Latency | **128 samples / 2.67 ms** | 2-grain crossfade; only corrects notes above ~375 Hz |
-| TD-PSOLA (experimental) | 2048 samples | pitch-synchronous overlap-add |
-| Signalsmith (experimental) | **5760 samples / 120 ms** | with optional formant compensation |
+| Low Latency | **512 samples / 10.7 ms** | same TD-PSOLA engine, shorter analysis window |
+| TD-PSOLA | 2048 samples | pitch-synchronous overlap-add (also Low Latency) |
+| Signalsmith | **5760 samples / 120 ms** | with optional formant compensation |
 
 Declared latency matches measured impulse onset and cross-correlation lag at 44.1 and
 48 kHz. A live engine switch republishes the correct latency on the next
@@ -223,7 +222,7 @@ app/
 |---|---|
 | Pitch accuracy (synthetic vibrato) | ✅ 1.4¢ median / 1.4¢ p95 |
 | Pitch accuracy (dry vocal) | ✅ 5.63¢ median, jumps 4.17 % |
-| Low latency | ✅ 128 samples verified |
+| Low latency | ✅ 512 samples (10.7 ms); tunes 200 Hz correctly |
 | Large host blocks / sample-rate changes | ✅ 16384-sample block and 48 → 96 kHz verified |
 | Audio-thread allocations in analysis | ✅ none after prepare |
 | Signalsmith bypass / doubler / latency | ✅ verified through 768 kHz |
@@ -240,9 +239,8 @@ app/
 | **Distribution signing** | ❌ ad-hoc only; no Developer ID in this environment |
 | **Parity with the original DSP** | ❌ not attempted; documented as unknown |
 
-Known engine limits: Low Latency cannot correct notes below roughly 375 Hz (its window is
-shorter than the period); polyphonic material is out of scope; the experimental engines are
-opt-in until formant behaviour can be measured.
+Known engine limits: low notes below roughly 90 Hz exceed the analysis window; polyphonic
+material is out of scope; formant behaviour is still unvalidated (measurement tooling).
 
 ---
 
