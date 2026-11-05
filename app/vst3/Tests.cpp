@@ -1,5 +1,6 @@
 #include <juce_audio_utils/juce_audio_utils.h>
 #include <iostream>
+#include "EditorApi.h"
 #include "TuningRules.h"
 #include "TuningDsp.h"
 #include <vector>
@@ -8,6 +9,14 @@ int main(){
  const float neutral=megaTuneSmoothingSeconds(100,0,1);
  if (!(megaTuneSmoothingSeconds(100,100,1)<neutral && neutral<megaTuneSmoothingSeconds(100,-100,1))) { std::cerr<<"Sustain must speed up positive and slow down negative held notes\n";return 11; }
  if (megaTuneSmoothingSeconds(100,100,0)!=neutral || megaTuneSmoothingSeconds(100,-100,0)!=neutral) return 12;
+ // 432 Hz input against a 440 Hz reference/target must read about -31.8 cents,
+ // with the marker left of zero. Zero and positive values use the same mapping.
+ {const float flat=69.f+12.f*std::log2(432.f/440.f);
+  const float negative=megaTuneCentsBetween(flat,69.f);
+  if(std::abs(negative+31.8f)>.2f||megaTuneMeterFraction(negative)>=.5f||megaTuneMeterFraction(negative)<.3f)return 60;
+  if(std::abs(megaTuneCentsBetween(69.f,69.f))>.001f||std::abs(megaTuneMeterFraction(0.f)-.5f)>.001f)return 61;
+  if(megaTuneCentsBetween(69.3f,69.f)<=0.f||megaTuneMeterFraction(30.f)<=.5f)return 62;
+  if(std::abs(megaTuneMeterFraction(-200.f))>.001f||std::abs(megaTuneMeterFraction(200.f)-1.f)>.001f)return 63;}
 juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(createPluginFilter());auto* rangedSpeed=dynamic_cast<juce::RangedAudioParameter*>(p->getParameters()[1]);
  auto* rangedAmount=dynamic_cast<juce::RangedAudioParameter*>(p->getParameters()[3]);
  if(!rangedSpeed || !rangedAmount || std::abs(rangedSpeed->convertFrom0to1(0.f)-200.f)>.001f || std::abs(rangedSpeed->convertFrom0to1(.392f)-25.f)>.001f || std::abs(rangedSpeed->convertFrom0to1(.784f))>.001f || std::abs(rangedSpeed->convertFrom0to1(1.f)+3.f)>.001f || std::abs(rangedAmount->convertFrom0to1(.5f)-75.f)>.001f) {std::cerr<<"Recovered parameter landmarks differ\n";return 13;}
@@ -188,10 +197,15 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   auto* ed=r->createEditorIfNeeded();
   auto click=[&](const juce::String& txt)->bool{for(int i=0;i<ed->getNumChildComponents();++i)if(auto* bt=dynamic_cast<juce::TextButton*>(ed->getChildComponent(i)))if(bt->getButtonText().startsWith(txt)){bt->onClick();return true;}return false;};
   click("Why this note?");
-  juce::String act;for(int i=0;i<ed->getNumChildComponents();++i)if(auto* bt=dynamic_cast<juce::TextButton*>(ed->getChildComponent(i)))if(bt->getButtonText().startsWith("Exclude")||bt->getButtonText().startsWith("Enable"))act=bt->getButtonText();
-  const bool excluded=click("Exclude");const double f0b=feed();
+  std::function<juce::Component*(juce::Component*,const juce::String&)> find=[&](juce::Component* root,const juce::String& id)->juce::Component*{if(root->getComponentID()==id)return root;for(int i=0;i<root->getNumChildComponents();++i)if(auto* c=find(root->getChildComponent(i),id))return c;return nullptr;};
+  auto* panel=find(ed,"history-panel");
+  auto* row=panel?find(panel,"history-row-0"):nullptr;
+  auto* ex=panel?find(panel,"history-exclude"):nullptr;
+  if(row)dynamic_cast<juce::Button*>(row)->onClick();
+  const bool excluded=ex&&ex->isEnabled();if(ex)dynamic_cast<juce::Button*>(ex)->onClick();
+  const double f0b=feed();
   const bool undone=click("Undo");const double f0c=feed();
-  std::cout<<"WHY act=\""<<act<<"\" excluded="<<excluded<<" F0="<<f0a<<" -> "<<f0b<<" undo "<<f0c<<"\n";
+  std::cout<<"WHY excluded="<<excluded<<" F0="<<f0a<<" -> "<<f0b<<" undo "<<f0c<<"\n";
   if(!((std::abs(f0a-440)<4)&&(std::abs(f0b-415.3)<5)&&(std::abs(f0c-440)<4)&&excluded&&undone)){std::cerr<<"WHY interaction failed\n";return 60;}
   r->editorBeingDeleted(ed);delete ed;
  }
@@ -274,12 +288,59 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
  }
 if(p->getName()!="MegaTune")return 1;for(auto* parameter:p->getParameters()){auto name=parameter->getName(64);if(name=="Speed")parameter->setValueNotifyingHost(rangedSpeed->convertTo0to1(0.f));if(name.length()<=2)parameter->setValueNotifyingHost(1);}
 p->prepareToPlay(48000,256);std::vector<float> steady;juce::MidiBuffer midi;juce::AudioBuffer<float> buffer(2,256);double peak=0;for(int block=0;block<200;++block){for(int i=0;i<256;++i)for(int c=0;c<2;++c)buffer.setSample(c,i,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(block*256+i)/48000));p->processBlock(buffer,midi);for(int i=0;i<256;++i){float sample=buffer.getSample(0,i);if(!std::isfinite(sample)||std::abs(sample)>1)return 2;peak=juce::jmax(peak,(double)std::abs(sample));if(block>100)steady.push_back(sample);}}if(peak<.1)return 3;int bestLag=0;double bestScore=-1;for(int lag=100;lag<120;++lag){double cross=0;for(int i=0;i<16000;++i)cross+=steady[i]*steady[i+lag];if(cross>bestScore){bestScore=cross;bestLag=lag;}}double frequency=48000.0/bestLag;std::cout<<"Corrected frequency: "<<frequency<<" Hz\n";if(std::abs(frequency-440)>3)return 7;std::unique_ptr<juce::AudioProcessor> visual(createPluginFilter());std::unique_ptr<juce::AudioProcessorEditor> editor(visual->createEditorAndMakeActive());if(!editor||editor->getWidth()!=860)return 6;
- {auto idle=editor->createComponentSnapshot(editor->getLocalBounds());juce::File f0=juce::File::getCurrentWorkingDirectory().getChildFile("MegaTune-vst3-idle.png");f0.deleteFile();juce::FileOutputStream s0(f0);juce::PNGImageFormat p0;p0.writeImageToStream(idle,s0);}
- {visual->setRateAndBufferSizeDetails(48000,256);visual->prepareToPlay(48000,256);juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);for(int blk=0;blk<120;++blk){for(int i2=0;i2<256;++i2)for(int c2=0;c2<2;++c2)b.setSample(c2,i2,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(blk*256+i2)/48000));visual->processBlock(b,mb);}}
- {auto aimg=editor->createComponentSnapshot(editor->getLocalBounds());juce::File fa=juce::File::getCurrentWorkingDirectory().getChildFile("MegaTune-vst3-active.png");fa.deleteFile();juce::FileOutputStream sa(fa);juce::PNGImageFormat pa;pa.writeImageToStream(aimg,sa);}
- for(int ci=0;ci<editor->getNumChildComponents();++ci)if(auto* bt=dynamic_cast<juce::TextButton*>(editor->getChildComponent(ci)))if(bt->getButtonText()=="Why this note?")bt->onClick();
- {auto himg=editor->createComponentSnapshot(editor->getLocalBounds());juce::File fh=juce::File::getCurrentWorkingDirectory().getChildFile("MegaTune-vst3-history.png");fh.deleteFile();juce::FileOutputStream sh(fh);juce::PNGImageFormat ph;ph.writeImageToStream(himg,sh);}
- auto image=editor->createComponentSnapshot(editor->getLocalBounds());auto shotFile=juce::File::getCurrentWorkingDirectory().getChildFile("MegaTune-vst3.png");shotFile.deleteFile();juce::FileOutputStream shot(shotFile);juce::PNGImageFormat png;png.writeImageToStream(image,shot);for(auto* parameter:p->getParameters()){auto* identified=dynamic_cast<juce::AudioProcessorParameterWithID*>(parameter);if(identified&&identified->paramID.startsWith("note"))parameter->setValueNotifyingHost(identified->paramID=="note6"?1.f:0.f);}steady.clear();for(int block=0;block<200;++block){for(int i=0;i<256;++i)for(int ch=0;ch<2;++ch)buffer.setSample(ch,i,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(block*256+i)/48000));p->processBlock(buffer,midi);if(block>100)for(int i=0;i<256;++i)steady.push_back(buffer.getSample(0,i));}std::vector<double> sc(115,0.0);bestScore=-1;for(int lag=95;lag<112;++lag){double cross=0;for(int i=0;i<16000;++i)cross+=steady[i]*steady[i+lag];sc[lag]=cross;if(cross>bestScore){bestScore=cross;bestLag=lag;}}const double den=sc[bestLag-1]-2*sc[bestLag]+sc[bestLag+1];const double off=std::abs(den)>1e-12?std::clamp(.5*(sc[bestLag-1]-sc[bestLag+1])/den,-.5,.5):0.0;frequency=48000.0/(bestLag+off);std::cout<<"Disabled-target stabilizer frequency: "<<frequency<<" Hz\n";if(std::abs(frequency-466.16)>4)return 8;rangedSpeed->setValueNotifyingHost(rangedSpeed->convertTo0to1(25));rangedAmount->setValueNotifyingHost(rangedAmount->convertTo0to1(75));
+ auto pumpEditor=[&]{megatune::tickEditor(*editor);};
+ auto* speedControl=editor->findChildWithID("control-speed");
+ auto* experimental=editor->findChildWithID("experimental-label");
+ if(!speedControl||!experimental){std::cerr<<"Editor control IDs missing\n";return 64;}
+ if(experimental->isVisible()){std::cerr<<"Experimental label shown for Quality\n";return 65;}
+ auto clickButton=[&](const juce::String& label){for(int i=0;i<editor->getNumChildComponents();++i)if(auto* button=dynamic_cast<juce::TextButton*>(editor->getChildComponent(i)))if(button->getButtonText()==label){button->onClick();return true;}return false;};
+ auto paramById=[&](const juce::String& id)->juce::AudioProcessorParameterWithID*{for(auto* value:visual->getParameters())if(auto* identified=dynamic_cast<juce::AudioProcessorParameterWithID*>(value))if(identified->paramID==id)return identified;return nullptr;};
+ auto writeShot=[&](const juce::String& name){auto shot=editor->createComponentSnapshot(editor->getLocalBounds());juce::File f=juce::File::getCurrentWorkingDirectory().getChildFile(name);f.deleteFile();juce::FileOutputStream stream(f);juce::PNGImageFormat png2;png2.writeImageToStream(shot,stream);};
+ writeShot("MegaTune-vst3-idle.png");
+ {visual->setRateAndBufferSizeDetails(48000,256);visual->prepareToPlay(48000,256);juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);for(int blk=0;blk<140;++blk){for(int i2=0;i2<256;++i2)for(int c2=0;c2<2;++c2)b.setSample(c2,i2,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(blk*256+i2)/48000));visual->processBlock(b,mb);}}
+ pumpEditor();writeShot("MegaTune-vst3-active.png");writeShot("MegaTune-vst3.png");
+ const float speedBefore=paramById("speed")->getValue();
+ if(!clickButton("Why this note?")){std::cerr<<"Why this note action missing\n";return 66;}
+ auto* panel=editor->findChildWithID("history-panel");
+ if(!panel||!panel->isVisible()){std::cerr<<"History panel did not open\n";return 67;}
+ for(const char* id:{"control-speed","control-sustain","control-amount","control-doubler","control-width","control-reference","control-stabilize"})
+  {auto* covered=editor->findChildWithID(id);if(!covered||covered->isVisible()){std::cerr<<"Covered control still visible: "<<id<<"\n";return 68;}}
+ pumpEditor();
+ auto* row0=panel->findChildWithID("history-row-0");
+ auto* enableButton=panel->findChildWithID("history-enable");
+ auto* excludeButton=panel->findChildWithID("history-exclude");
+ auto* closeButton=panel->findChildWithID("history-close");
+ if(!row0||!enableButton||!excludeButton||!closeButton){std::cerr<<"History panel controls missing\n";return 69;}
+ dynamic_cast<juce::Button*>(row0)->onClick();pumpEditor();
+ if(!excludeButton->isEnabled()){std::cerr<<"Exclude disabled for enabled target\n";return 70;}
+ const int seqBefore=megatune::historySequence(*visual);
+ const int targetBefore=megatune::historyDecision(*visual,seqBefore-1).target;
+ if(targetBefore!=69){std::cerr<<"Expected A4 target, got "<<targetBefore<<"\n";return 71;}
+ dynamic_cast<juce::Button*>(excludeButton)->onClick();pumpEditor();
+ auto* noteA=paramById("note5");if(!noteA||noteA->getValue()>.5f){std::cerr<<"Excluding A did not clear its mask bit\n";return 72;}
+ auto* undoButton=editor->findChildWithID("undo-button");if(!undoButton||!undoButton->isEnabled()){std::cerr<<"Exclude did not enter Undo history\n";return 73;}
+ {juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);for(int blk=0;blk<40;++blk){for(int i2=0;i2<256;++i2)for(int c2=0;c2<2;++c2)b.setSample(c2,i2,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(blk*256+i2)/48000));visual->processBlock(b,mb);}}
+ const int seqAfter=megatune::historySequence(*visual);
+ const int targetAfter=megatune::historyDecision(*visual,seqAfter-1).target;
+ if(seqAfter<=seqBefore||targetAfter==69){std::cerr<<"Next loop kept excluded target\n";return 74;}
+ pumpEditor();writeShot("MegaTune-vst3-history.png");
+ dynamic_cast<juce::Button*>(undoButton)->onClick();
+ if(noteA->getValue()<.5f){std::cerr<<"Undo did not restore the note\n";return 75;}
+ {juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);for(int blk=0;blk<40;++blk){for(int i2=0;i2<256;++i2)for(int c2=0;c2<2;++c2)b.setSample(c2,i2,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(blk*256+i2)/48000));visual->processBlock(b,mb);}}
+ const int targetUndone=megatune::historyDecision(*visual,megatune::historySequence(*visual)-1).target;
+ if(targetUndone!=69){std::cerr<<"Undo did not restore the target\n";return 76;}
+ megatune::appendDecision(*visual,0,0,3);pumpEditor();dynamic_cast<juce::Button*>(row0)->onClick();pumpEditor();
+ if(enableButton->isEnabled()||excludeButton->isEnabled()){std::cerr<<"No-target decision offered an edit action\n";return 77;}
+ auto* engine=paramById("engine");engine->setValueNotifyingHost(1.f);pumpEditor();
+ if(!experimental->isVisible()){std::cerr<<"Experimental label hidden for TD-PSOLA\n";return 78;}
+ engine->setValueNotifyingHost(0.f);pumpEditor();
+ if(experimental->isVisible()){std::cerr<<"Experimental label shown after TD-PSOLA off\n";return 79;}
+ dynamic_cast<juce::Button*>(closeButton)->onClick();
+ if(panel->isVisible()||!speedControl->isVisible()){std::cerr<<"Close did not restore covered controls\n";return 80;}
+ for(const char* id:{"control-sustain","control-amount","control-doubler","control-width","control-reference","control-stabilize"})
+  {auto* covered=editor->findChildWithID(id);if(!covered||!covered->isVisible()){std::cerr<<"Close did not restore: "<<id<<"\n";return 82;}}
+ if(std::abs(paramById("speed")->getValue()-speedBefore)>.0001f){std::cerr<<"Close changed a control value\n";return 81;}
+ for(auto* parameter:p->getParameters()){auto* identified=dynamic_cast<juce::AudioProcessorParameterWithID*>(parameter);if(identified&&identified->paramID.startsWith("note"))parameter->setValueNotifyingHost(identified->paramID=="note6"?1.f:0.f);}steady.clear();for(int block=0;block<200;++block){for(int i=0;i<256;++i)for(int ch=0;ch<2;++ch)buffer.setSample(ch,i,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(block*256+i)/48000));p->processBlock(buffer,midi);if(block>100)for(int i=0;i<256;++i)steady.push_back(buffer.getSample(0,i));}std::vector<double> sc(115,0.0);bestScore=-1;for(int lag=95;lag<112;++lag){double cross=0;for(int i=0;i<16000;++i)cross+=steady[i]*steady[i+lag];sc[lag]=cross;if(cross>bestScore){bestScore=cross;bestLag=lag;}}const double den=sc[bestLag-1]-2*sc[bestLag]+sc[bestLag+1];const double off=std::abs(den)>1e-12?std::clamp(.5*(sc[bestLag-1]-sc[bestLag+1])/den,-.5,.5):0.0;frequency=48000.0/(bestLag+off);std::cout<<"Disabled-target stabilizer frequency: "<<frequency<<" Hz\n";if(std::abs(frequency-466.16)>4)return 8;rangedSpeed->setValueNotifyingHost(rangedSpeed->convertTo0to1(25));rangedAmount->setValueNotifyingHost(rangedAmount->convertTo0to1(75));
  juce::MemoryBlock state;p->getStateInformation(state);if(state.getSize()==0)return 4;std::unique_ptr<juce::AudioProcessor> restored(createPluginFilter());
  auto* restoredSpeed=dynamic_cast<juce::RangedAudioParameter*>(restored->getParameters()[1]);
  auto* restoredAmount=dynamic_cast<juce::RangedAudioParameter*>(restored->getParameters()[3]);

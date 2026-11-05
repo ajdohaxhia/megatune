@@ -1,5 +1,29 @@
 # Mechanics and evidence
 
+## Editor repair — 2026-11-05
+
+The native editor now has an opaque, keyboard-focusable history panel in the main
+control area. It replaces the covered knobs, hides them from hit-testing and
+focus, keeps the monitor, key/scale, shift/range and piano visible, and closes
+without changing values. History rows are clickable; the selected target gets a
+white piano outline. Enable/Exclude edits the selected note through the existing
+Undo path, and a decision with no target disables both actions.
+
+The cents readout and marker now use input against the selected target, so 432 Hz
+against 440 Hz reads about -31.8 cents and draws left of zero. Negative, zero and
+positive mapping is tested. Shift, Range, Doubler, Stereo Width and Pitch
+Reference labels are readable again. The Experimental badge is now a child shown
+only while TD-PSOLA or Signalsmith is selected. Keys use neutral fills, scale dots
+come from the effective processor mask, live input draws an outline and the
+current target draws violet.
+
+DSP, parameter IDs, presets and A/B/Undo/Redo behavior are unchanged. Verification:
+the CTest suite passes, the packaged VST3 is re-signed and passes strict signature
+verification, an independent VST3 host loads it and passes audio/parameter/latency
+probes, and RenderCheck measures 2048/128/5760-sample declared latency for
+quality/low-latency/Signalsmith. Idle, active and selected-history screenshots are
+in `docs/screenshots/`.
+
 ## Fresh binary reads and build — current pass
 
 Opened workspace original main program `original/MetaTune.vst3/Contents/MacOS/MetaTune` with core_target_open; SHA-256 `7453f5ec9f816261f935f3d19d371ee4a65f741e2ffa8394e2bc19f5567f2010`, Deep mode. Name search `ev_5bec3ca89950d7dc7ca166b09a0e7cbaddac0f78fed3702e1a4ccfc1ccb425b9` covers all 17 matches. Settings/messages search `ev_447ef97cfb53f0d1a01dd09cf18bb7f04d48cdadaeeacc36a0680d17b24b4ac5` covers 45/125 matches. Explicit Speed string xrefs `ev_a62ed7a5606c357eaf1af98feb18934ecd943e558189579bb6dd7f9782beb3d8` lead to registration 0xfa1e98. Read its broad fallback function 0xead874 (`ev_b9fa3b395d53df3602ca272b2e9ee9cc02a3587cbd05afcc2427114b6350ad81`) and followed calls into the curve constructors. Awaited each pseudocode result sequentially:

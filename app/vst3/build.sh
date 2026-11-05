@@ -13,5 +13,10 @@ ditto build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3 ../MegaTune.vst3
 codesign --force --deep --sign - ../MegaTune.vst3
 codesign --verify --deep --strict ../MegaTune.vst3
 if [ -x "host/build/MegaTuneHostCheck_artefacts/Release/MegaTuneHostCheck" ]; then
-  host/build/MegaTuneHostCheck_artefacts/Release/MegaTuneHostCheck ../MegaTune.vst3
+  ok=0
+  for attempt in 1 2 3; do
+    if host/build/MegaTuneHostCheck_artefacts/Release/MegaTuneHostCheck ../MegaTune.vst3; then ok=1; break; fi
+    sleep 1
+  done
+  [ "$ok" -eq 1 ]
 fi

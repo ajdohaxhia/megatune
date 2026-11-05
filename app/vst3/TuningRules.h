@@ -41,3 +41,11 @@ inline float megaTuneAmountToNormalized(float amount) {
  const double v = std::clamp((double)amount, 0., 100.);
  return (float)(std::log(1. - v / 112.5) / std::log(1. / 9.));
 }
+// Editor meter: positive means the input is sharp of the target.
+inline float megaTuneCentsBetween(float inputMidi, float targetMidi) {
+ return (inputMidi - targetMidi) * 100.f;
+}
+// -100..+100 cents maps to left..right; values outside stay on the end stops.
+inline float megaTuneMeterFraction(float cents) {
+ return std::clamp((cents + 100.f) / 200.f, 0.f, 1.f);
+}
