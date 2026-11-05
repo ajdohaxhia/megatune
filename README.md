@@ -4,9 +4,14 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four selectable
 pitch engines, factory presets and a fully themed editor.
 
-> **Status: experimental.** Pitch correction, latency reporting, presets, automation and
-> the exclude/undo workflow are verified. **Formant preservation is unvalidated** and the
-> build is **ad-hoc signed, not notarized**. See [Status](#status) before shipping anything.
+> **Status: release candidate 2 (experimental).** Pitch correction, latency reporting,
+> presets, automation and the exclude/undo workflow are verified. **Formant preservation is
+> unvalidated** and the build is **ad-hoc signed, not notarized**. See [Status](#status)
+> before shipping anything.
+>
+> RC2 fixes oversized host blocks, sample-rate changes in the Signalsmith engine, audio-thread
+> allocations during pitch analysis, and an inaccurate held-target history reason. `build.sh`
+> now produces a universal binary.
 
 ---
 
@@ -72,10 +77,12 @@ Declared latency matches measured impulse onset and cross-correlation lag at 44.
 
 ## Install
 
-Prebuilt universal binary (arm64 + x86_64):
+Latest release candidate (universal arm64 + x86_64):
+
+https://github.com/ajdohaxhia/megatune/releases/tag/v1.0.1-rc2
 
 ```bash
-# from app/dist
+# from the release archive or app/dist
 open "Install MegaTune.command"     # or:
 cp -R MegaTune.vst3 ~/Library/Audio/Plug-Ins/VST3/
 ```
@@ -136,6 +143,10 @@ The suite covers, among others:
 - 16 presets render finite audio; per-preset key/scale application
 - Range limiting, breath/uviolation gate, stereo-linked detection
 - engine switching republishes latency (2048 ↔ 5760 ↔ 128)
+- Signalsmith latency rescales after a 48 → 96 kHz sample-rate change
+- 16384-sample host blocks stay inside the staging buffers
+- a prepared analysis window performs no heap allocations
+- held-target decisions are distinguished from fresh target changes
 - **Why this note?** end-to-end: 432 Hz tone A4 → exclude A → G♯4 → Undo → A4
 - 490 Hz disabled-target control (with and without Note Stabilizer)
 - real-take target change: at 17.71 s of the dry fixture, excluding G retargets
@@ -190,6 +201,8 @@ app/
 | Pitch accuracy (synthetic vibrato) | ✅ 1.4¢ median / 1.4¢ p95 |
 | Pitch accuracy (dry vocal) | ✅ 5.63¢ median, jumps 4.17 % |
 | Low latency | ✅ 128 samples verified |
+| Large host blocks / sample-rate changes | ✅ 16384-sample block and 48 → 96 kHz verified |
+| Audio-thread allocations in analysis | ✅ none after prepare |
 | Why this note? → Exclude → Undo | ✅ verified on synthetic tone and on a real take |
 | Presets, automation, recall, A/B | ✅ verified |
 | **Formant preservation** | ❌ **unvalidated** — the estimator misclassifies known test cases |

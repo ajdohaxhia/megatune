@@ -1,10 +1,22 @@
 #include <juce_audio_utils/juce_audio_utils.h>
+#include <atomic>
+#include <cstdlib>
 #include <iostream>
+#include <new>
 #include "EditorApi.h"
 #include "TuningRules.h"
 #include "TuningDsp.h"
 #include <vector>
 extern juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter();
+
+static std::atomic<bool> countAllocations{false};
+static std::atomic<int> allocationCount{0};
+void* operator new(std::size_t n){if(countAllocations.load(std::memory_order_relaxed))allocationCount.fetch_add(1,std::memory_order_relaxed);if(void* p=std::malloc(n?n:1))return p;throw std::bad_alloc();}
+void* operator new[](std::size_t n){if(countAllocations.load(std::memory_order_relaxed))allocationCount.fetch_add(1,std::memory_order_relaxed);if(void* p=std::malloc(n?n:1))return p;throw std::bad_alloc();}
+void operator delete(void* p)noexcept{std::free(p);}
+void operator delete[](void* p)noexcept{std::free(p);}
+void operator delete(void* p,std::size_t)noexcept{std::free(p);}
+void operator delete[](void* p,std::size_t)noexcept{std::free(p);}
 int main(){
  const float neutral=megaTuneSmoothingSeconds(100,0,1);
  if (!(megaTuneSmoothingSeconds(100,100,1)<neutral && neutral<megaTuneSmoothingSeconds(100,-100,1))) { std::cerr<<"Sustain must speed up positive and slow down negative held notes\n";return 11; }
@@ -17,6 +29,39 @@ int main(){
   if(std::abs(megaTuneCentsBetween(69.f,69.f))>.001f||std::abs(megaTuneMeterFraction(0.f)-.5f)>.001f)return 61;
   if(megaTuneCentsBetween(69.3f,69.f)<=0.f||megaTuneMeterFraction(30.f)<=.5f)return 62;
   if(std::abs(megaTuneMeterFraction(-200.f))>.001f||std::abs(megaTuneMeterFraction(200.f)-1.f)>.001f)return 63;}
+ // Hosts may deliver blocks larger than the initial 8192-sample staging arrays.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  auto setP=[&](const char* id,float v){for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID==id){p->setValueNotifyingHost(v);return;}};
+  setP("smith",1.f);r->setRateAndBufferSizeDetails(48000,16384);r->prepareToPlay(48000,16384);
+  if(megatune::smithBufferCapacity(*r)<16384)return 83;
+  juce::AudioBuffer<float> b(2,16384);for(int i=0;i<16384;++i)for(int c=0;c<2;++c)b.setSample(c,i,.2f*std::sin(juce::MathConstants<double>::twoPi*440*i/48000));
+  juce::MidiBuffer mb;r->processBlock(b,mb);double energy=0;for(int i=0;i<16384;++i){if(!std::isfinite(b.getSample(0,i)))return 84;energy+=std::abs(b.getSample(0,i));}
+  if(energy<1)return 85;}
+ // Signalsmith latency must scale when the host changes sample rate.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID=="smith")p->setValueNotifyingHost(1.f);
+  r->setRateAndBufferSizeDetails(48000,512);r->prepareToPlay(48000,512);const int lat48=r->getLatencySamples();
+  r->setRateAndBufferSizeDetails(96000,512);r->prepareToPlay(96000,512);const int lat96=r->getLatencySamples();
+  if(lat48<5000||lat96<lat48*1.8)return 86;
+  juce::AudioBuffer<float> b(2,512);juce::MidiBuffer mb;for(int i=0;i<512;++i){float v=.2f*std::sin(juce::MathConstants<double>::twoPi*440*i/96000);b.setSample(0,i,v);b.setSample(1,i,v);}
+  r->processBlock(b,mb);if(!std::isfinite(b.getSample(0,511)))return 91;}
+ // A target change outside the stabilizer window is not a "previous target held".
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  auto setP=[&](const char* id,float v){for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID==id){p->setValueNotifyingHost(v);return;}};
+  for(int n=0;n<12;++n)setP(("note"+juce::String(n)).toRawUTF8(),0.f);setP("note9",1.f);setP("note11",1.f);
+  setP("key",0.f);setP("stabilize",1.f);setP("amount",1.f);setP("speed",1.f);setP("range",1.f);
+  r->setRateAndBufferSizeDetails(48000,256);r->prepareToPlay(48000,256);
+  juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);double phase=0;
+  auto feed=[&](double hz,int blocks){for(int blk=0;blk<blocks;++blk){for(int i=0;i<256;++i){float v=.25f*std::sin(phase);phase+=juce::MathConstants<double>::twoPi*hz/48000;b.setSample(0,i,v);b.setSample(1,i,v);}r->processBlock(b,mb);}};
+  feed(440,60);if(megatune::historyDecision(*r,megatune::historySequence(*r)-1).target!=69)return 87;
+  bool sawNewTarget=false;for(int blk=0;blk<100&&!sawNewTarget;++blk){feed(493.883,1);const auto d=megatune::historyDecision(*r,megatune::historySequence(*r)-1);if(d.target==71){sawNewTarget=true;if(d.reason==1)return 88;}}
+  if(!sawNewTarget)return 89;
+  feed(493.883,12);if(megatune::historyDecision(*r,megatune::historySequence(*r)-1).reason!=1)return 92;}
+ // Once prepared, one analysis window must not allocate on the audio thread.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());r->setRateAndBufferSizeDetails(48000,512);r->prepareToPlay(48000,512);
+  juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,512);for(int i=0;i<512;++i)for(int c=0;c<2;++c)b.setSample(c,i,.2f*std::sin(juce::MathConstants<double>::twoPi*440*i/48000));
+  r->processBlock(b,mb);allocationCount=0;countAllocations=true;r->processBlock(b,mb);countAllocations=false;
+  if(allocationCount.load()>0)return 90;}
 juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(createPluginFilter());auto* rangedSpeed=dynamic_cast<juce::RangedAudioParameter*>(p->getParameters()[1]);
  auto* rangedAmount=dynamic_cast<juce::RangedAudioParameter*>(p->getParameters()[3]);
  if(!rangedSpeed || !rangedAmount || std::abs(rangedSpeed->convertFrom0to1(0.f)-200.f)>.001f || std::abs(rangedSpeed->convertFrom0to1(.392f)-25.f)>.001f || std::abs(rangedSpeed->convertFrom0to1(.784f))>.001f || std::abs(rangedSpeed->convertFrom0to1(1.f)+3.f)>.001f || std::abs(rangedAmount->convertFrom0to1(.5f)-75.f)>.001f) {std::cerr<<"Recovered parameter landmarks differ\n";return 13;}

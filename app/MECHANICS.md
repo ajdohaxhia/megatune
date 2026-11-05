@@ -1,5 +1,26 @@
 # Mechanics and evidence
 
+## RC2 stability fixes — 2026-11-05
+
+Four host-facing defects found in review are fixed with regressions:
+
+- Signalsmith staging buffers now grow to the prepared block size, with an
+  additional audio-thread guard for hosts that exceed it. A 16,384-sample block
+  regression checks capacity, finite output and energy.
+- Signalsmith reconfigures when the host changes sample rate. The regression
+  moves 48 → 96 kHz and requires the declared latency to scale and output to stay
+  finite.
+- YIN keeps reusable scratch storage. `prepareToPlay` reserves it, so a
+  steady-state analysis window makes no heap allocation; a global allocation
+  counter verifies zero allocations inside `processBlock`.
+- The history reason now compares the target with the previous target. A fresh
+  target change is “nearest enabled note”; only a retained target is “previous
+  target held”.
+
+The same tests pass under AddressSanitizer and UndefinedBehaviorSanitizer with
+leak detection disabled. `build.sh` now builds universal arm64 + x86_64 by
+default. DSP behavior and parameter IDs are unchanged.
+
 ## Editor repair — 2026-11-05
 
 The native editor now has an opaque, keyboard-focusable history panel in the main

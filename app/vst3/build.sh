@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 export DEVELOPER_DIR=/Library/Developer/CommandLineTools
-cmake -S . -B build-cli -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER="$DEVELOPER_DIR/usr/bin/clang" -DCMAKE_CXX_COMPILER="$DEVELOPER_DIR/usr/bin/clang++" "-DJUCE_DIR=${JUCE_DIR:-/private/tmp/juce}"
+cmake -S . -B build-cli -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER="$DEVELOPER_DIR/usr/bin/clang" -DCMAKE_CXX_COMPILER="$DEVELOPER_DIR/usr/bin/clang++" "-DJUCE_DIR=${JUCE_DIR:-/private/tmp/juce}" "-DCMAKE_OSX_ARCHITECTURES=${OSX_ARCHITECTURES:-arm64;x86_64}"
 cmake --build build-cli -j 6
 (cd build-cli && ctest --output-on-failure)
 if [ -d ../MegaTune.vst3 ]; then mv ../MegaTune.vst3 "../MegaTune.previous-$(date +%Y%m%d-%H%M%S).vst3"; fi

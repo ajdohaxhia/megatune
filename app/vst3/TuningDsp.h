@@ -19,10 +19,25 @@ struct YinPitch {
     bool voiced = false;
 };
 
+// Reusable detector scratch. Prepare it off the audio thread so a steady-state
+// analysis window does not allocate.
+struct YinWorkspace {
+    std::vector<float> difference, normalised;
+    void ensure (int size)
+    {
+        if ((int) difference.size() < size)
+        {
+            difference.resize ((size_t) size);
+            normalised.resize ((size_t) size);
+        }
+    }
+};
+
 // YIN (de Cheveigne & Kawahara) with cumulative-mean-normalised difference,
 // absolute threshold and parabolic lag interpolation. x[0] is the newest sample.
 inline YinPitch detectYin (const float* x, int n, float sampleRate,
-                           float minHz, float maxHz, float threshold = 0.15f)
+                           float minHz, float maxHz, float threshold,
+                           YinWorkspace& workspace)
 {
     YinPitch out;
     if (n <= 0 || sampleRate <= 0.0f || minHz <= 0.0f || maxHz <= minHz) return out;
@@ -34,7 +49,9 @@ inline YinPitch detectYin (const float* x, int n, float sampleRate,
     const int w = n - maxTau;
     if (w < 64) return out;
 
-    std::vector<float> d ((size_t) maxTau + 1, 0.0f);
+    workspace.ensure (maxTau + 1);
+    auto& d = workspace.difference;
+    auto& dn = workspace.normalised;
     for (int tau = minTau; tau <= maxTau; ++tau)
     {
         float sum = 0.0f;
@@ -46,7 +63,6 @@ inline YinPitch detectYin (const float* x, int n, float sampleRate,
         d[(size_t) tau] = sum;
     }
 
-    std::vector<float> dn ((size_t) maxTau + 1, 1.0f);
     float running = 0.0f;
     for (int tau = 1; tau <= maxTau; ++tau)
     {

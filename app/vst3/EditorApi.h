@@ -9,5 +9,6 @@ int historySequence(const juce::AudioProcessor&);
 DecisionView historyDecision(const juce::AudioProcessor&, int sequence);
 void appendDecision(juce::AudioProcessor&, float in, float target, int reason);
 int currentTargetNote(const juce::AudioProcessor&);
+int smithBufferCapacity(const juce::AudioProcessor&);
 void tickEditor(juce::AudioProcessorEditor&);
 }
