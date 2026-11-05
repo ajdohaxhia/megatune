@@ -1,11 +1,11 @@
-# MegaTune 0.1.2 — VST3 (macOS, universal arm64 + x86_64)
+# MegaTune 0.1.3 — VST3 + AUv2 (macOS, universal arm64 + x86_64)
 
 Install: double-click `Install MegaTune.command` (or copy `MegaTune.vst3` to
-`~/Library/Audio/Plug-Ins/VST3/`), then rescan plug-ins in your DAW.
+`~/Library/Audio/Plug-Ins/VST3/` and `MegaTune.component` to
+`~/Library/Audio/Plug-Ins/Components/`), then rescan plug-ins in your DAW.
 
-0.1.2 is a visual redesign with layered cards, painted tick-ring knobs, styled
-menus/toggles and a custom piano. All controls, parameter IDs and DSP behavior
-are unchanged from 0.1.1.
+Use the VST3 in Ableton, Reaper, Cubase or Studio One. Use the AUv2 component in
+Logic or GarageBand. Both formats share the same editor, presets and DSP.
 
 ## Engines
 - **Quality** — 4-grain shifter, 2048 samples (42.7 ms @ 48 kHz)

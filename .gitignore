@@ -8,7 +8,9 @@ app/target/
 *.dSYM
 # release binaries (use GitHub Releases)
 app/dist/*.vst3/
+app/dist/*.component/
 app/MegaTune*.vst3/
+app/MegaTune*.component/
 # large or third-party audio/materials
 test-audio/*.wav
 capture/

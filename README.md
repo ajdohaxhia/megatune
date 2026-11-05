@@ -1,17 +1,17 @@
 # MegaTune
 
-A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUCE VST3
-plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four selectable
-pitch engines, factory presets and a fully themed editor.
+A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUCE VST3 +
+AUv2 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four
+selectable pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.1.2 (experimental).** Pitch correction, latency reporting,
+> **Status: 0.1.3 (experimental).** Pitch correction, latency reporting,
 > presets, automation and the exclude/undo workflow are verified. **Formant preservation is
 > unvalidated** and the build is **ad-hoc signed, not notarized**. See [Status](#status)
 > before shipping anything.
 >
-> 0.1.2 is a visual redesign: layered cards, painted tick-ring knobs, styled menus and
-> toggles, a responsive custom piano with clear scale/input/target states, and a cleaner
-> history view. Controls, parameter IDs and DSP are unchanged from 0.1.1.
+> 0.1.3 adds a native **AUv2** component (validated with `auval`) alongside the VST3, so
+> Logic and GarageBand can host it. It keeps the 0.1.2 editor redesign, 0.1.1 behavior fixes
+> and 0.1.0 host-safety work.
 
 ---
 
@@ -46,7 +46,7 @@ their owners.
 | Pitch monitor | Input → Target with signed cents and a ±100¢ meter |
 | Diagnostics | "Why this note?" history of recent decisions with a one-click Exclude/Enable action |
 | Presets | 16 factory programs with per-preset key and scale |
-| Host integration | Preset recall, parameter automation, Undo/Redo, A/B comparison, bypass |
+| Host integration | VST3 + AUv2; preset recall, parameter automation, Undo/Redo, A/B comparison, bypass |
 
 \* experimental, opt-in.
 
@@ -77,20 +77,22 @@ Declared latency matches measured impulse onset and cross-correlation lag at 44.
 
 ## Install
 
-Version 0.1.2 (universal arm64 + x86_64):
+Version 0.1.3 (universal arm64 + x86_64, VST3 + AUv2):
 
-https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.2
+https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.3
 
 ```bash
 # from the release archive or app/dist
 open "Install MegaTune.command"     # or:
 cp -R MegaTune.vst3 ~/Library/Audio/Plug-Ins/VST3/
+cp -R MegaTune.component ~/Library/Audio/Plug-Ins/Components/
 ```
 
-Then rescan plug-ins in your DAW. Logic/GarageBand only host AU; this build is **VST3
-only**.
+Then rescan plug-ins in your DAW. Use the VST3 in Ableton/Reaper/Cubase/Studio One and the
+AUv2 component in Logic/GarageBand.
 
-Uninstall: delete `~/Library/Audio/Plug-Ins/VST3/MegaTune.vst3`.
+Uninstall: delete `~/Library/Audio/Plug-Ins/VST3/MegaTune.vst3` and
+`~/Library/Audio/Plug-Ins/Components/MegaTune.component`.
 
 ---
 
@@ -124,8 +126,10 @@ environment):
 
 ```bash
 codesign --force --deep --options runtime --sign "Developer ID Application: …" MegaTune.vst3
+codesign --force --deep --options runtime --sign "Developer ID Application: …" MegaTune.component
 xcrun notarytool submit MegaTune.zip --keychain-profile … --wait
 xcrun stapler staple MegaTune.vst3
+xcrun stapler staple MegaTune.component
 ```
 
 ---
@@ -171,6 +175,7 @@ Host-level checks (load, instantiate, parameters, audio, editor) run through
 
 ```bash
 MegaTuneHostCheck /path/to/MegaTune.vst3
+auval -v aufx Mgtn Crft          # after installing the AU component
 ```
 
 Measurement harnesses used during development live in `app/vst3/verify/`
@@ -193,7 +198,7 @@ app/
     host/              VST3 host check, WAV renderer, latency probe
     verify/            measurement scripts and exported renders
     third_party/       vendored Signalsmith Stretch + Linear (MIT)
-  dist/                installer, universal VST3, README
+  dist/                installer, universal VST3 + AUv2, README
   MECHANICS.md         recovered semantics, evidence and open questions
 ```
 
@@ -221,6 +226,7 @@ app/
 | Negative Speed / zero-Amount Shift | ✅ verified |
 | Non-finite input / reset / channel safety | ✅ verified |
 | Long-session engine/parameter churn | ✅ 4000 blocks verified |
+| AUv2 | ✅ `auval` passes |
 | pluginval 1.0.4, strictness 8 | ✅ passes with two known JUCE state-cache tests disabled |
 | Full parameter state round-trip | ✅ in-process regression |
 | Why this note? → Exclude → Undo | ✅ verified on synthetic tone and on a real take |

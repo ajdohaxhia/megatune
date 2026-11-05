@@ -1,5 +1,17 @@
 # Mechanics and evidence
 
+## 0.1.3 AUv2 component — 2026-11-05
+
+Added `AU` to the JUCE plug-in formats. The component is built as
+`MegaTune.component` (type `aufx`, subtype `Mgtn`, manufacturer `Crft`), universal
+arm64 + x86_64. It shares the same processor/editor source as the VST3.
+
+Validation: installed temporarily to `~/Library/Audio/Plug-Ins/Components`,
+registered through `AudioComponentRegistrar`, and `auval -v aufx Mgtn Crft`
+reported **AU VALIDATION SUCCEEDED**. The component was removed after validation.
+`build.sh` now packages/signs the AU alongside the VST3, and the installer copies
+both formats.
+
 ## 0.1.2 editor redesign — 2026-11-05
 
 The VST3 editor was rebuilt visually while keeping the same controls and

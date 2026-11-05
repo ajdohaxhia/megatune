@@ -12,6 +12,16 @@ ditto build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3 ../MegaTune.vst3
 # by system policy"). Re-seal the finished bundle, then verify and load-test it.
 codesign --force --deep --sign - ../MegaTune.vst3
 codesign --verify --deep --strict ../MegaTune.vst3
+rm -rf ../dist/MegaTune.vst3
+ditto ../MegaTune.vst3 ../dist/MegaTune.vst3
+# AUv2 component, packaged alongside the VST3.
+if [ -d build-cli/MegaTune_artefacts/Release/AU/MegaTune.component ]; then
+  rm -rf ../dist/MegaTune.component
+  ditto build-cli/MegaTune_artefacts/Release/AU/MegaTune.component ../dist/MegaTune.component
+  xattr -cr ../dist/MegaTune.component
+  codesign --force --deep --sign - ../dist/MegaTune.component
+  codesign --verify --deep --strict ../dist/MegaTune.component
+fi
 if [ -x "host/build/MegaTuneHostCheck_artefacts/Release/MegaTuneHostCheck" ]; then
   ok=0
   for attempt in 1 2 3; do
