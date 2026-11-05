@@ -1,4 +1,4 @@
-# MegaTune 0.1.3 — VST3 + AUv2 (macOS, universal arm64 + x86_64)
+# MegaTune 0.1.4 — VST3 + AUv2 (macOS, universal arm64 + x86_64)
 
 Install: double-click `Install MegaTune.command` (or copy `MegaTune.vst3` to
 `~/Library/Audio/Plug-Ins/VST3/` and `MegaTune.component` to

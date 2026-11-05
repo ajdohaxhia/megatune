@@ -1,5 +1,24 @@
 # Mechanics and evidence
 
+## 0.1.4 reference-layout pass — 2026-11-05
+
+The editor now uses the 1480×1060 reference composition:
+
+- full-width top bar with logo, preset selector, Browse, navigation, Undo/Redo, A/B and bypass
+- separate engine strip with latency
+- wide monitor card with large note readouts and ±100¢ meter
+- 210 px tick-ring knobs and secondary slider row
+- Key/Scale/Shift/Range row and a full-width custom keyboard
+- side-by-side Why panel with tall decision rows, selected-row detail, primary
+  Enable/Exclude action and an Undo bar
+- factory preset browser modal with search, scrollable list, detailed preview,
+  Cancel and Load preset
+
+The 860 layout and its overlay behavior are superseded. Controls keep their
+IDs and attachments; DSP and parameter IDs are unchanged. Both VST3 and AUv2
+build from the same editor; AU validation still passes. Screenshots for idle,
+active, history and presets are regenerated.
+
 ## 0.1.3 AUv2 component — 2026-11-05
 
 Added `AU` to the JUCE plug-in formats. The component is built as

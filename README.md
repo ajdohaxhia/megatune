@@ -4,14 +4,14 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four
 selectable pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.1.3 (experimental).** Pitch correction, latency reporting,
+> **Status: 0.1.4 (experimental).** Pitch correction, latency reporting,
 > presets, automation and the exclude/undo workflow are verified. **Formant preservation is
 > unvalidated** and the build is **ad-hoc signed, not notarized**. See [Status](#status)
 > before shipping anything.
 >
-> 0.1.3 adds a native **AUv2** component (validated with `auval`) alongside the VST3, so
-> Logic and GarageBand can host it. It keeps the 0.1.2 editor redesign, 0.1.1 behavior fixes
-> and 0.1.0 host-safety work.
+> 0.1.4 brings the editor to the new 1480×1060 layout: side-by-side Why panel, painted
+> 210 px knobs, a full-width keyboard, a factory-preset browser with search and detailed
+> preview, and a matching footer/legend. It keeps AUv2 + VST3 and all 0.1.3 behavior.
 
 ---
 
@@ -73,13 +73,17 @@ Declared latency matches measured impulse onset and cross-correlation lag at 44.
 |---|---|---|
 | ![](docs/screenshots/idle.png) | ![](docs/screenshots/active.png) | ![](docs/screenshots/history.png) |
 
+| Factory presets |
+|---|
+| ![](docs/screenshots/presets.png) |
+
 ---
 
 ## Install
 
-Version 0.1.3 (universal arm64 + x86_64, VST3 + AUv2):
+Version 0.1.4 (universal arm64 + x86_64, VST3 + AUv2):
 
-https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.3
+https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.4
 
 ```bash
 # from the release archive or app/dist
