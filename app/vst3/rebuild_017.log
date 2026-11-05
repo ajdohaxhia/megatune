@@ -1,0 +1,1273 @@
+-- Configuring juceaide
+-- Building juceaide
+-- Exporting juceaide
+-- Testing juceaide
+-- Finished setting up juceaide
+-- Configuring done (1.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli
+-- Configuring juceaide
+-- Building juceaide
+-- Exporting juceaide
+-- Testing juceaide
+-- Finished setting up juceaide
+-- Configuring done (1.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli
+[  1%] Building VST3 manifest helper for MegaTune
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/vst3_helpers/MegaTune
+make[3]: warning: jobserver unavailable: using -j1.  Add `+' to parent make rule.
+[ 50%] Building CXX object CMakeFiles/vst3_helper.dir/private/tmp/juce/modules/juce_audio_plugin_client/VST3/juce_VST3ManifestHelper.cpp.o
+[  2%] Building CXX object CMakeFiles/MegaTune.dir/Plugin.cpp.o
+[  4%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_processors/juce_audio_processors.mm.o
+[  5%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_2.cpp.o
+[  6%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_extra/juce_gui_extra.mm.o
+[  8%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_3.cpp.o
+[100%] Linking CXX executable vst3_helper
+[100%] Built target vst3_helper
+[  8%] Built target MegaTune_vst3_helper
+[  9%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_4.cpp.o
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:261:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  261 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(19.f,juce::Font::bold));
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:261:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  261 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(19.f,juce::Font::bold));
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:263:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  263 |   g.setFont(juce::Font(16.f));g.setColour(juce::Colour(0xffb9b2c8));
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:265:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  265 |   g.setFont(juce::Font(19.f,juce::Font::bold));g.setColour(juce::Colour(0xfff4f1ff));
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:265:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  265 |   g.setFont(juce::Font(19.f,juce::Font::bold));g.setColour(juce::Colour(0xfff4f1ff));
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:267:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  267 |   g.setFont(juce::Font(15.f));g.setColour(juce::Colour(0xffd7d0e4));
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:308:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  308 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(30.f,juce::Font::bold));g.drawText("Why this note?",24,18,420,40,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:308:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  308 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(30.f,juce::Font::bold));g.drawText("Why this note?",24,18,420,40,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:309:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  309 |   g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(18.f));g.drawText("Recent pitch decisions",24,60,420,26,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:310:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  310 |   g.setColour(juce::Colour(0xff8d879d));g.setFont(juce::Font(13.f));
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:316:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  316 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(27.f,juce::Font::bold));g.drawText(title,24,548,getWidth()-48,40,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:316:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  316 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(27.f,juce::Font::bold));g.drawText(title,24,548,getWidth()-48,40,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:321:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  321 |   g.setColour(juce::Colour(0xffd7d0e4));g.setFont(juce::Font(17.f));g.drawFittedText(body,24,596,getWidth()-48,52,juce::Justification::topLeft,2);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:325:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  325 |   g.setColour(juce::Colour(0xffd7d0e4));g.setFont(juce::Font(17.f));
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:342:85: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  342 |   g.setColour(selected?juce::Colour(0xff17121f):juce::Colour(0xfff4f1ff));g.setFont(juce::Font(16.f,selected?juce::Font::bold:juce::Font::plain));
+      |                                                                                     ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:342:85: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  342 |   g.setColour(selected?juce::Colour(0xff17121f):juce::Colour(0xfff4f1ff));g.setFont(juce::Font(16.f,selected?juce::Font::bold:juce::Font::plain));
+      |                                                                                     ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:354:18: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  354 |   search.setFont(juce::Font(16.f));search.onTextChange=[this]{filter();};
+      |                  ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:386:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  386 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(28.f,juce::Font::bold));g.drawText("Factory presets",px+32,py+24,300,38,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:386:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  386 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(28.f,juce::Font::bold));g.drawText("Factory presets",px+32,py+24,300,38,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:388:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  388 |   g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(15.f));g.drawText(juce::String(proc.getNumPrograms())+" presets",px+270,py+30,160,26,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:392:52: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  392 |    g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(27.f,juce::Font::bold));g.drawText(p.name,px+528,py+104,380,38,juce::Justification::left);
+      |                                                    ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:392:52: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  392 |    g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(27.f,juce::Font::bold));g.drawText(p.name,px+528,py+104,380,38,juce::Justification::left);
+      |                                                    ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:393:52: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  393 |    g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(15.f));g.drawText("Factory preset",px+528,py+144,300,22,juce::Justification::left);
+      |                                                    ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:400:85: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  400 |    int y=py+180;for(auto& f:fields){g.setColour(juce::Colour(0xffd7d0e4));g.setFont(juce::Font(15.f));g.drawText(f.first,px+528,y,180,22,juce::Justification::left);
+      |                                                                                     ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:401:53: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  401 |     g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(15.f,juce::Font::bold));g.drawText(f.second,px+700,y,200,22,juce::Justification::right);
+      |                                                     ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:401:53: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  401 |     g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(15.f,juce::Font::bold));g.drawText(f.second,px+700,y,200,22,juce::Justification::right);
+      |                                                     ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:403:52: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  403 |    g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(13.f));g.drawText("Loading a preset also recalls its key and enabled notes.",px+528,py+ph-122,390,20,juce::Justification::left);
+      |                                                    ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:477:169: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  477 |  addAndMakeVisible(experimental);experimental.setComponentID("experimental-label");experimental.setText("EXPERIMENTAL",juce::dontSendNotification);experimental.setFont(10.f);experimental.setColour(juce::Label::textColourId,juce::Colour(0xff9a6bff));experimental.setVisible(false);experimental.setInterceptsMouseClicks(false,false);
+      |                                                                                                                                                                         ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:526:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  526 |   g.setColour(juce::Colour(0xff17121f));g.setFont(juce::Font(18.f,juce::Font::bold));g.drawText("M",28,22,34,34,juce::Justification::centred);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:526:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  526 |   g.setColour(juce::Colour(0xff17121f));g.setFont(juce::Font(18.f,juce::Font::bold));g.drawText("M",28,22,34,34,juce::Justification::centred);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:527:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  527 |   g.setColour(ink);g.setFont(juce::Font(26.f,juce::Font::bold));g.drawText("MegaTune",74,18,180,40,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:527:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  527 |   g.setColour(ink);g.setFont(juce::Font(26.f,juce::Font::bold));g.drawText("MegaTune",74,18,180,40,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:529:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  529 |   g.setColour(muted);g.setFont(juce::Font(13.f));g.drawText("ENGINE",62,99,64,20,juce::Justification::left);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:531:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  531 |   g.setFont(juce::Font(15.f));g.setColour(muted);g.drawText((lat>0&&srate>0)?(juce::String(lat*1000.0/srate,1)+" ms"):juce::String("-- ms"),1280,98,160,20,juce::Justification::right);
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:546:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  546 |   g.setColour(muted);g.setFont(juce::Font(14.f));g.drawText("INPUT",inputC-110,155,220,20,juce::Justification::centred);g.drawText("TARGET",targetC-110,155,220,20,juce::Justification::centred);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:547:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  547 |   g.setColour(ink);g.setFont(juce::Font(86.f,juce::Font::bold));g.drawText(megaTuneNoteName(p),inputC-160,175,320,100,juce::Justification::centred);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:547:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  547 |   g.setColour(ink);g.setFont(juce::Font(86.f,juce::Font::bold));g.drawText(megaTuneNoteName(p),inputC-160,175,320,100,juce::Justification::centred);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:552:33: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  552 |   g.setColour(accent);g.setFont(juce::Font(20.f,juce::Font::bold));g.drawText(dev,31+280,268,cw-350,28,juce::Justification::centred);
+      |                                 ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:552:33: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  552 |   g.setColour(accent);g.setFont(juce::Font(20.f,juce::Font::bold));g.drawText(dev,31+280,268,cw-350,28,juce::Justification::centred);
+      |                                 ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:553:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  553 |   g.setColour(muted);g.setFont(juce::Font(12.f));g.drawText("INPUT vs TARGET",31+280,294,cw-350,16,juce::Justification::centred);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:559:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  559 |   g.setColour(muted);g.setFont(juce::Font(11.f));g.drawText("-100c",mx-20,my+13,50,14,juce::Justification::centred);g.drawText("0c",mx+mw/2-16,my+13,32,14,juce::Justification::centred);g.drawText("+100c",mx+mw-30,my+13,50,14,juce::Justification::centred);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:563:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  563 |   g.setColour(muted);g.setFont(juce::Font(13.f));
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:565:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  565 |   g.setFont(juce::Font(12.f));
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:568:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  568 |   g.setColour(muted);g.setFont(juce::Font(12.f));
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:575:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  575 |   g.setColour(muted);g.setFont(juce::Font(11.f));g.drawText("ENGINE",40,1038,56,18,juce::Justification::left);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:576:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  576 |   g.setColour(ink);g.setFont(juce::Font(16.f,juce::Font::bold));g.drawText(proc.value("smith")>.5f?"Signalsmith":proc.value("engine")>.5f?"TD-PSOLA":proc.value("lowlatency")>.5f?"Low Latency":"Quality",104,1036,170,22,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:576:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  576 |   g.setColour(ink);g.setFont(juce::Font(16.f,juce::Font::bold));g.drawText(proc.value("smith")>.5f?"Signalsmith":proc.value("engine")>.5f?"TD-PSOLA":proc.value("lowlatency")>.5f?"Low Latency":"Quality",104,1036,170,22,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:578:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  578 |   g.setColour(muted);g.setFont(juce::Font(14.f));g.drawText("ademusic MegaTune v"+juce::String(JucePlugin_VersionString),300,1036,260,22,juce::Justification::left);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:582:112: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  582 |   g.setColour(accent);g.fillRoundedRectangle(650,1038,18,18,5);g.setColour(juce::Colour(0xff17121f));g.setFont(juce::Font(12.f,juce::Font::bold));g.drawText("✓",650,1038,18,18,juce::Justification::centred);
+      |                                                                                                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:582:112: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  582 |   g.setColour(accent);g.fillRoundedRectangle(650,1038,18,18,5);g.setColour(juce::Colour(0xff17121f));g.setFont(juce::Font(12.f,juce::Font::bold));g.drawText("✓",650,1038,18,18,juce::Justification::centred);
+      |                                                                                                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:583:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  583 |   g.setColour(ink);g.setFont(juce::Font(13.f));g.drawText("Enabled",676,1038,80,18,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:591:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  591 |   g.setColour(ink);g.setFont(juce::Font(14.f));g.drawText(p>0?"Audio: Active":"Audio: Idle",1294,1036,140,22,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+52 warnings generated.
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:261:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  261 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(19.f,juce::Font::bold));
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:261:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  261 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(19.f,juce::Font::bold));
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:263:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  263 |   g.setFont(juce::Font(16.f));g.setColour(juce::Colour(0xffb9b2c8));
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:265:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  265 |   g.setFont(juce::Font(19.f,juce::Font::bold));g.setColour(juce::Colour(0xfff4f1ff));
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:265:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  265 |   g.setFont(juce::Font(19.f,juce::Font::bold));g.setColour(juce::Colour(0xfff4f1ff));
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:267:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  267 |   g.setFont(juce::Font(15.f));g.setColour(juce::Colour(0xffd7d0e4));
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:308:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  308 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(30.f,juce::Font::bold));g.drawText("Why this note?",24,18,420,40,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:308:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  308 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(30.f,juce::Font::bold));g.drawText("Why this note?",24,18,420,40,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:309:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  309 |   g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(18.f));g.drawText("Recent pitch decisions",24,60,420,26,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:310:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  310 |   g.setColour(juce::Colour(0xff8d879d));g.setFont(juce::Font(13.f));
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:316:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  316 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(27.f,juce::Font::bold));g.drawText(title,24,548,getWidth()-48,40,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:316:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  316 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(27.f,juce::Font::bold));g.drawText(title,24,548,getWidth()-48,40,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:321:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  321 |   g.setColour(juce::Colour(0xffd7d0e4));g.setFont(juce::Font(17.f));g.drawFittedText(body,24,596,getWidth()-48,52,juce::Justification::topLeft,2);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:325:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  325 |   g.setColour(juce::Colour(0xffd7d0e4));g.setFont(juce::Font(17.f));
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:342:85: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  342 |   g.setColour(selected?juce::Colour(0xff17121f):juce::Colour(0xfff4f1ff));g.setFont(juce::Font(16.f,selected?juce::Font::bold:juce::Font::plain));
+      |                                                                                     ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:342:85: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  342 |   g.setColour(selected?juce::Colour(0xff17121f):juce::Colour(0xfff4f1ff));g.setFont(juce::Font(16.f,selected?juce::Font::bold:juce::Font::plain));
+      |                                                                                     ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:354:18: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  354 |   search.setFont(juce::Font(16.f));search.onTextChange=[this]{filter();};
+      |                  ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:386:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  386 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(28.f,juce::Font::bold));g.drawText("Factory presets",px+32,py+24,300,38,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:386:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  386 |   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(28.f,juce::Font::bold));g.drawText("Factory presets",px+32,py+24,300,38,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:388:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  388 |   g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(15.f));g.drawText(juce::String(proc.getNumPrograms())+" presets",px+270,py+30,160,26,juce::Justification::left);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:392:52: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  392 |    g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(27.f,juce::Font::bold));g.drawText(p.name,px+528,py+104,380,38,juce::Justification::left);
+      |                                                    ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:392:52: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  392 |    g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(27.f,juce::Font::bold));g.drawText(p.name,px+528,py+104,380,38,juce::Justification::left);
+      |                                                    ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:393:52: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  393 |    g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(15.f));g.drawText("Factory preset",px+528,py+144,300,22,juce::Justification::left);
+      |                                                    ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:400:85: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  400 |    int y=py+180;for(auto& f:fields){g.setColour(juce::Colour(0xffd7d0e4));g.setFont(juce::Font(15.f));g.drawText(f.first,px+528,y,180,22,juce::Justification::left);
+      |                                                                                     ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:401:53: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  401 |     g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(15.f,juce::Font::bold));g.drawText(f.second,px+700,y,200,22,juce::Justification::right);
+      |                                                     ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:401:53: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  401 |     g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(15.f,juce::Font::bold));g.drawText(f.second,px+700,y,200,22,juce::Justification::right);
+      |                                                     ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:403:52: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  403 |    g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(13.f));g.drawText("Loading a preset also recalls its key and enabled notes.",px+528,py+ph-122,390,20,juce::Justification::left);
+      |                                                    ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:477:169: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  477 |  addAndMakeVisible(experimental);experimental.setComponentID("experimental-label");experimental.setText("EXPERIMENTAL",juce::dontSendNotification);experimental.setFont(10.f);experimental.setColour(juce::Label::textColourId,juce::Colour(0xff9a6bff));experimental.setVisible(false);experimental.setInterceptsMouseClicks(false,false);
+      |                                                                                                                                                                         ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:526:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  526 |   g.setColour(juce::Colour(0xff17121f));g.setFont(juce::Font(18.f,juce::Font::bold));g.drawText("M",28,22,34,34,juce::Justification::centred);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:526:51: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  526 |   g.setColour(juce::Colour(0xff17121f));g.setFont(juce::Font(18.f,juce::Font::bold));g.drawText("M",28,22,34,34,juce::Justification::centred);
+      |                                                   ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:527:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  527 |   g.setColour(ink);g.setFont(juce::Font(26.f,juce::Font::bold));g.drawText("MegaTune",74,18,180,40,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:527:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  527 |   g.setColour(ink);g.setFont(juce::Font(26.f,juce::Font::bold));g.drawText("MegaTune",74,18,180,40,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:529:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  529 |   g.setColour(muted);g.setFont(juce::Font(13.f));g.drawText("ENGINE",62,99,64,20,juce::Justification::left);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:531:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  531 |   g.setFont(juce::Font(15.f));g.setColour(muted);g.drawText((lat>0&&srate>0)?(juce::String(lat*1000.0/srate,1)+" ms"):juce::String("-- ms"),1280,98,160,20,juce::Justification::right);
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:546:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  546 |   g.setColour(muted);g.setFont(juce::Font(14.f));g.drawText("INPUT",inputC-110,155,220,20,juce::Justification::centred);g.drawText("TARGET",targetC-110,155,220,20,juce::Justification::centred);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:547:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  547 |   g.setColour(ink);g.setFont(juce::Font(86.f,juce::Font::bold));g.drawText(megaTuneNoteName(p),inputC-160,175,320,100,juce::Justification::centred);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:547:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  547 |   g.setColour(ink);g.setFont(juce::Font(86.f,juce::Font::bold));g.drawText(megaTuneNoteName(p),inputC-160,175,320,100,juce::Justification::centred);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:552:33: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  552 |   g.setColour(accent);g.setFont(juce::Font(20.f,juce::Font::bold));g.drawText(dev,31+280,268,cw-350,28,juce::Justification::centred);
+      |                                 ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:552:33: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  552 |   g.setColour(accent);g.setFont(juce::Font(20.f,juce::Font::bold));g.drawText(dev,31+280,268,cw-350,28,juce::Justification::centred);
+      |                                 ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:553:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  553 |   g.setColour(muted);g.setFont(juce::Font(12.f));g.drawText("INPUT vs TARGET",31+280,294,cw-350,16,juce::Justification::centred);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:559:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  559 |   g.setColour(muted);g.setFont(juce::Font(11.f));g.drawText("-100c",mx-20,my+13,50,14,juce::Justification::centred);g.drawText("0c",mx+mw/2-16,my+13,32,14,juce::Justification::centred);g.drawText("+100c",mx+mw-30,my+13,50,14,juce::Justification::centred);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:563:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  563 |   g.setColour(muted);g.setFont(juce::Font(13.f));
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:565:13: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  565 |   g.setFont(juce::Font(12.f));
+      |             ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:568:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  568 |   g.setColour(muted);g.setFont(juce::Font(12.f));
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:575:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  575 |   g.setColour(muted);g.setFont(juce::Font(11.f));g.drawText("ENGINE",40,1038,56,18,juce::Justification::left);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:576:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  576 |   g.setColour(ink);g.setFont(juce::Font(16.f,juce::Font::bold));g.drawText(proc.value("smith")>.5f?"Signalsmith":proc.value("engine")>.5f?"TD-PSOLA":proc.value("lowlatency")>.5f?"Low Latency":"Quality",104,1036,170,22,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:576:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  576 |   g.setColour(ink);g.setFont(juce::Font(16.f,juce::Font::bold));g.drawText(proc.value("smith")>.5f?"Signalsmith":proc.value("engine")>.5f?"TD-PSOLA":proc.value("lowlatency")>.5f?"Low Latency":"Quality",104,1036,170,22,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:578:32: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  578 |   g.setColour(muted);g.setFont(juce::Font(14.f));g.drawText("ademusic MegaTune v"+juce::String(JucePlugin_VersionString),300,1036,260,22,juce::Justification::left);
+      |                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:582:112: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  582 |   g.setColour(accent);g.fillRoundedRectangle(650,1038,18,18,5);g.setColour(juce::Colour(0xff17121f));g.setFont(juce::Font(12.f,juce::Font::bold));g.drawText("✓",650,1038,18,18,juce::Justification::centred);
+      |                                                                                                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:582:112: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  582 |   g.setColour(accent);g.fillRoundedRectangle(650,1038,18,18,5);g.setColour(juce::Colour(0xff17121f));g.setFont(juce::Font(12.f,juce::Font::bold));g.drawText("✓",650,1038,18,18,juce::Justification::centred);
+      |                                                                                                                ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:583:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  583 |   g.setColour(ink);g.setFont(juce::Font(13.f));g.drawText("Enabled",676,1038,80,18,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Plugin.cpp:591:30: warning: 'Font' is deprecated: Use the constructor that takes a FontOptions argument [-Wdeprecated-declarations]
+  591 |   g.setColour(ink);g.setFont(juce::Font(14.f));g.drawText(p>0?"Audio: Active":"Audio: Idle",1294,1036,140,22,juce::Justification::left);
+      |                              ^
+/private/tmp/juce/modules/juce_graphics/fonts/juce_Font.h:76:7: note: 'Font' has been explicitly marked deprecated here
+   76 |     [[deprecated ("Use the constructor that takes a FontOptions argument")]]
+      |       ^
+[ 10%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_5.cpp.o
+[ 12%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm.o
+52 warnings generated.
+[ 13%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_graphics/juce_graphics_Harfbuzz.cpp.o
+[ 14%] Building C object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_graphics/juce_graphics_Sheenbidi.c.o
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:257:66: warning: 'MTLResourceStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  257 |                                                                  MTLResourceStorageModeManaged
+      |                                                                  ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:177:5: note: 'MTLResourceStorageModeManaged' has been explicitly marked deprecated here
+  177 |     MTLResourceStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = MTLStorageModeManaged << MTLResourceStorageModeShift,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:269:39: warning: 'MTLStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  269 |                                       MTLStorageModeManaged;
+      |                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:85:5: note: 'MTLStorageModeManaged' has been explicitly marked deprecated here
+   85 |     MTLStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = 1,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:301:27: warning: 'didModifyRange:' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  301 |             [buffer.get() didModifyRange: { 0, buffer.get().length }];
+      |                           ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLBuffer.h:60:1: note: 'didModifyRange:' has been explicitly marked deprecated here
+   60 | - (void)didModifyRange:(NSRange)range API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios);
+      | ^
+[ 16%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_graphics/juce_graphics.mm.o
+[ 17%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_events/juce_events.mm.o
+[ 18%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_core/juce_core_CompilationTime.cpp.o
+[ 20%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_core/juce_core.mm.o
+[ 21%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_data_structures/juce_data_structures.mm.o
+[ 22%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless_ara.cpp.o
+[ 24%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless_lv2_libs.cpp.o
+[ 25%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless.mm.o
+3 warnings generated.
+[ 27%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_basics/juce_audio_basics.mm.o
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:257:66: warning: 'MTLResourceStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  257 |                                                                  MTLResourceStorageModeManaged
+      |                                                                  ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:177:5: note: 'MTLResourceStorageModeManaged' has been explicitly marked deprecated here
+  177 |     MTLResourceStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = MTLStorageModeManaged << MTLResourceStorageModeShift,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:269:39: warning: 'MTLStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  269 |                                       MTLStorageModeManaged;
+      |                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:85:5: note: 'MTLStorageModeManaged' has been explicitly marked deprecated here
+   85 |     MTLStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = 1,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:301:27: warning: 'didModifyRange:' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  301 |             [buffer.get() didModifyRange: { 0, buffer.get().length }];
+      |                           ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLBuffer.h:60:1: note: 'didModifyRange:' has been explicitly marked deprecated here
+   60 | - (void)didModifyRange:(NSRange)range API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios);
+      | ^
+[ 28%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_utils/juce_audio_utils.mm.o
+3 warnings generated.
+[ 29%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_formats/juce_audio_formats.mm.o
+[ 31%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_audio_devices/juce_audio_devices.mm.o
+[ 32%] Building CXX object CMakeFiles/MegaTune.dir/private/tmp/juce/modules/juce_dsp/juce_dsp.mm.o
+[ 33%] Linking CXX static library MegaTune_artefacts/Release/libMegaTune_SharedCode.a
+[ 33%] Built target MegaTune
+[ 35%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX_utils.cpp.o
+[ 36%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_ARA.cpp.o
+[ 37%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_Unity.cpp.o
+[ 39%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_Standalone.cpp.o
+[ 40%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX_utils.cpp.o
+[ 41%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX.mm.o
+[ 43%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_1.mm.o
+[ 44%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_ARA.cpp.o
+[ 45%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_Standalone.cpp.o
+[ 47%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_2.mm.o
+[ 48%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_Unity.cpp.o
+[ 50%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_LV2.mm.o
+[ 51%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AUv3.mm.o
+[ 52%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST2.mm.o
+[ 54%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX.mm.o
+[ 55%] Building CXX object CMakeFiles/MegaTune_VST3.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST3.mm.o
+[ 56%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_2.mm.o
+[ 58%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_1.mm.o
+[ 59%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_AUv3.mm.o
+[ 60%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_LV2.mm.o
+[ 62%] Building CXX object CMakeFiles/MegaTuneTests.dir/Tests.cpp.o
+[ 63%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST3.mm.o
+[ 64%] Building CXX object CMakeFiles/MegaTune_AU.dir/private/tmp/juce/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST2.mm.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+[ 66%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_utils/juce_audio_utils.mm.o
+[ 67%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_processors/juce_audio_processors.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Tests.cpp:375:15: warning: 'createEditorIfNeeded' is deprecated: Prefer createEditorAndMakeActive() [-Wdeprecated-declarations]
+  375 |   auto* ed=r->createEditorIfNeeded();
+      |               ^
+/private/tmp/juce/modules/juce_audio_processors_headless/processors/juce_AudioProcessor.h:1062:7: note: 'createEditorIfNeeded' has been explicitly marked deprecated here
+ 1062 |     [[deprecated ("Prefer createEditorAndMakeActive()")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Tests.cpp:426:51: warning: 'createWriterFor' is deprecated: Use the function taking an AudioFormatWriterOptions instead. [-Wdeprecated-declarations]
+  426 |     std::unique_ptr<juce::AudioFormatWriter> wr(w.createWriterFor(new juce::FileOutputStream(f),sr2,1,24,{},0));if(wr)wr->writeFromAudioSampleBuffer(o,0,o.getNumSamples());};
+      |                                                   ^
+/private/tmp/juce/modules/juce_audio_formats/format/juce_AudioFormat.h:178:7: note: 'createWriterFor' has been explicitly marked deprecated here
+  178 |     [[deprecated ("Use the function taking an AudioFormatWriterOptions instead.")]]
+      |       ^
+3 warnings generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+[ 68%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_extra/juce_gui_extra.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Tests.cpp:375:15: warning: 'createEditorIfNeeded' is deprecated: Prefer createEditorAndMakeActive() [-Wdeprecated-declarations]
+  375 |   auto* ed=r->createEditorIfNeeded();
+      |               ^
+/private/tmp/juce/modules/juce_audio_processors_headless/processors/juce_AudioProcessor.h:1062:7: note: 'createEditorIfNeeded' has been explicitly marked deprecated here
+ 1062 |     [[deprecated ("Prefer createEditorAndMakeActive()")]]
+      |       ^
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/Tests.cpp:426:51: warning: 'createWriterFor' is deprecated: Use the function taking an AudioFormatWriterOptions instead. [-Wdeprecated-declarations]
+  426 |     std::unique_ptr<juce::AudioFormatWriter> wr(w.createWriterFor(new juce::FileOutputStream(f),sr2,1,24,{},0));if(wr)wr->writeFromAudioSampleBuffer(o,0,o.getNumSamples());};
+      |                                                   ^
+/private/tmp/juce/modules/juce_audio_formats/format/juce_AudioFormat.h:178:7: note: 'createWriterFor' has been explicitly marked deprecated here
+  178 |     [[deprecated ("Use the function taking an AudioFormatWriterOptions instead.")]]
+      |       ^
+3 warnings generated.
+[ 70%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_2.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 71%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_3.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+[ 72%] Linking CXX CFBundle shared module MegaTune_artefacts/Release/AU/MegaTune.component/Contents/MacOS/MegaTune
+[ 74%] Built target MegaTune_AU
+1 warning generated.
+[ 75%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_4.cpp.o
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 77%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics_5.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 78%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 79%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_graphics/juce_graphics_Harfbuzz.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:257:66: warning: 'MTLResourceStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  257 |                                                                  MTLResourceStorageModeManaged
+      |                                                                  ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:177:5: note: 'MTLResourceStorageModeManaged' has been explicitly marked deprecated here
+  177 |     MTLResourceStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = MTLStorageModeManaged << MTLResourceStorageModeShift,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:269:39: warning: 'MTLStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  269 |                                       MTLStorageModeManaged;
+      |                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:85:5: note: 'MTLStorageModeManaged' has been explicitly marked deprecated here
+   85 |     MTLStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = 1,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:301:27: warning: 'didModifyRange:' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  301 |             [buffer.get() didModifyRange: { 0, buffer.get().length }];
+      |                           ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLBuffer.h:60:1: note: 'didModifyRange:' has been explicitly marked deprecated here
+   60 | - (void)didModifyRange:(NSRange)range API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios);
+      | ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+[ 81%] Linking CXX CFBundle shared module MegaTune_artefacts/Release/VST3/MegaTune.vst3/Contents/MacOS/MegaTune
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3: code object is not signed at all
+-- Replacing invalid signature with ad-hoc signature
+/Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3: replacing existing signature
+removing moduleinfo.json
+creating /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3/Contents/Resources/moduleinfo.json
+[ 82%] Built target MegaTune_VST3
+[ 83%] Building C object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_graphics/juce_graphics_Sheenbidi.c.o
+In file included from <built-in>:484:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:447:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 85%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_graphics/juce_graphics.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 86%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_events/juce_events.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 87%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_core/juce_core_CompilationTime.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 89%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_core/juce_core.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 90%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_data_structures/juce_data_structures.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+4 warnings generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 91%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless_ara.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 93%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless_lv2_libs.cpp.o
+In file included from <built-in>:551:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 94%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_processors_headless/juce_audio_processors_headless.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:257:66: warning: 'MTLResourceStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  257 |                                                                  MTLResourceStorageModeManaged
+      |                                                                  ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:177:5: note: 'MTLResourceStorageModeManaged' has been explicitly marked deprecated here
+  177 |     MTLResourceStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = MTLStorageModeManaged << MTLResourceStorageModeShift,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:269:39: warning: 'MTLStorageModeManaged' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  269 |                                       MTLStorageModeManaged;
+      |                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h:85:5: note: 'MTLStorageModeManaged' has been explicitly marked deprecated here
+   85 |     MTLStorageModeManaged API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios) = 1,
+      |     ^
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.mm:35:
+In file included from /private/tmp/juce/modules/juce_gui_basics/juce_gui_basics.cpp:168:
+/private/tmp/juce/modules/juce_gui_basics/native/juce_CGMetalLayerRenderer_mac.h:301:27: warning: 'didModifyRange:' is deprecated: first deprecated in macOS 27.0 - Managed storage has no effect on Apple Silicon, use Shared storage instead [-Wdeprecated-declarations]
+  301 |             [buffer.get() didModifyRange: { 0, buffer.get().length }];
+      |                           ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLBuffer.h:60:1: note: 'didModifyRange:' has been explicitly marked deprecated here
+   60 | - (void)didModifyRange:(NSRange)range API_DEPRECATED("Managed storage has no effect on Apple Silicon, use Shared storage instead", macos(10.11, 27.0), macCatalyst(13.0, 27.0)) API_UNAVAILABLE(ios);
+      | ^
+1 warning generated.
+[ 95%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_basics/juce_audio_basics.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+[ 97%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_formats/juce_audio_formats.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+4 warnings generated.
+[ 98%] Building CXX object CMakeFiles/MegaTuneTests.dir/private/tmp/juce/modules/juce_audio_devices/juce_audio_devices.mm.o
+In file included from <built-in>:562:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:514:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+In file included from <built-in>:525:
+<command line>:18:9: warning: 'JUCE_STANDALONE_APPLICATION' macro redefined [-Wmacro-redefined]
+   18 | #define JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+      |         ^
+<command line>:17:9: note: previous definition is here
+   17 | #define JUCE_STANDALONE_APPLICATION 1
+      |         ^
+1 warning generated.
+1 warning generated.
+1 warning generated.
+1 warning generated.
+1 warning generated.
+[100%] Linking CXX executable MegaTuneTests_artefacts/Release/MegaTuneTests
+[100%] Built target MegaTuneTests
+Test project /Users/ade/Documents/Craft Anything/metatune/app/vst3/build-cli
+    Start 1: MegaTuneStreaming
+1/1 Test #1: MegaTuneStreaming ................   Passed    2.99 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   3.00 sec
+../MegaTune.vst3: replacing existing signature
+/var/folders/y9/z2nw355914b94z9fyv7gl5jw0000gn/T/tmp.VkVnrpDbv4/MegaTune.component: replacing existing signature
+bundle=/Users/ade/Documents/Craft Anything/metatune/app/MegaTune.vst3
+format=VST3 types=1 name="MegaTune" vendor="ademusic" version="0.1.7"
+params=28 latency=0
+  [0] id="?" name="Key" min=C max=B default="E"
+  [1] id="?" name="Speed" min=200.0000000 max=-3.0000000 default="25.0000019"
+  [2] id="?" name="Sustain" min=-100.0 max=100.0 default="0.0"
+  [3] id="?" name="Amount" min=0.0000000 max=100.0000000 default="100.0000000"
+  [4] id="?" name="Global Bypass" min=Off max=On default="Off"
+  [5] id="?" name="Note Stabilizer" min=Off max=On default="On"
+  [6] id="?" name="C" min=Off max=On default="On"
+  [7] id="?" name="C#" min=Off max=On default="Off"
+  [8] id="?" name="D" min=Off max=On default="On"
+  [9] id="?" name="D#" min=Off max=On default="On"
+  [10] id="?" name="E" min=Off max=On default="Off"
+  [11] id="?" name="F" min=Off max=On default="On"
+  [12] id="?" name="F#" min=Off max=On default="Off"
+  [13] id="?" name="G" min=Off max=On default="On"
+  [14] id="?" name="G#" min=Off max=On default="On"
+  [15] id="?" name="A" min=Off max=On default="Off"
+  [16] id="?" name="A#" min=Off max=On default="On"
+  [17] id="?" name="B" min=Off max=On default="Off"
+  [18] id="?" name="Doubler" min=0.0 max=100.0 default="0.0"
+  [19] id="?" name="Width" min=0.0 max=100.0 default="0.0"
+  [20] id="?" name="Reference" min=415.0 max=466.0 default="440.0"
+  [21] id="?" name="Low Latency" min=Off max=On default="Off"
+  [22] id="?" name="Shift" min=-12 max=12 default="0"
+  [23] id="?" name="Range" min=1 max=12 default="12"
+  [24] id="?" name="TD-PSOLA" min=Off max=On default="On"
+  [25] id="?" name="Signalsmith" min=Off max=On default="Off"
+  [26] id="?" name="Smith Comp" min=Off max=On default="On"
+  [27] id="?" name="Program" min=Default max=Spoken Word default="Default"
+programs=16
+  program[0]=Default
+  program[1]=Natural Tune
+  program[2]=Modern Pop
+  program[3]=Polished Pop
+  program[4]=R&B Smooth
+  program[5]=Hip-Hop Lead
+  program[6]=Doubler Wide
+  program[7]=Trap Robotic
+  program[8]=EDM Vocal
+  program[9]=Rock Anthem
+  program[10]=Indie Folk
+  program[11]=Lo-Fi Bed
+  program[12]=Doubler Tight
+  program[13]=Subtle Assist
+  program[14]=Extreme Tune
+  program[15]=Spoken Word
+latency_after_prepare=2048
+audio in=6638.52 out=5791.45 finite=yes
+ll_value=1
+latency_quality=2048 latency_low=512
+probe_low_latency_200Hz=220.071Hz ok=1 target A3 220
+probe_quality_200Hz=220.093Hz ok=1 target A3 220
+probe_autotune=439.658Hz (432 in), amount0=432.085Hz
+probe_negative_speed_steady=439.67Hz, slow_speed_steady=439.681Hz
+probe_doubler_stereo_diff=1476.34, dry_stereo_diff=0
+RESULT PASS
+editor=1120x802 created=yes

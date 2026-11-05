@@ -22,3 +22,7 @@ app/vst3/verify/out/
 app/vst3/build-cli/
 **/whyclip_*.wav
 **/whyvocal_*.wav
+
+# release binaries
+app/dist/*.component/
+app/dist/*.zip
