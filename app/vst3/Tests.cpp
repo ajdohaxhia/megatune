@@ -126,6 +126,49 @@ int main(){
   for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID=="smith")p->setValueNotifyingHost(1.f);
   r->prepareToPlay(48000,512);juce::AudioBuffer<float> four(4,512);four.clear();juce::MidiBuffer m4;r->processBlock(four,m4);
   for(int c=0;c<2;++c)for(int i=0;i<512;++i)if(!std::isfinite(four.getSample(c,i)))return 101;}
+ // Negative Speed is the hard-correction path; zero and positive smooth.
+ {if(megaTuneRatioBlend(-3.f,0.f,1.f,48000.f)!=1.f)return 102;
+  const float soft=megaTuneRatioBlend(25.f,0.f,1.f,48000.f);if(!(soft>0.f&&soft<1.f))return 103;}
+ // Shift remains an independent transpose when Amount is zero.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  auto setP=[&](const char* id,float v){for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID==id){p->setValueNotifyingHost(v);return;}};
+  for(int n=0;n<12;++n)setP(("note"+juce::String(n)).toRawUTF8(),1.f);setP("key",0.f);setP("amount",0.f);
+  for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID=="shift")if(auto* ranged=dynamic_cast<juce::RangedAudioParameter*>(p))ranged->setValueNotifyingHost(ranged->convertTo0to1(2.f));
+  r->setRateAndBufferSizeDetails(48000,512);r->prepareToPlay(48000,512);
+  juce::AudioBuffer<float> b(2,512);juce::MidiBuffer mb;std::vector<float> steady;
+  for(int blk=0;blk<300;++blk){for(int i=0;i<512;++i){float v=.25f*std::sin(juce::MathConstants<double>::twoPi*440*(blk*512+i)/48000);b.setSample(0,i,v);b.setSample(1,i,v);}r->processBlock(b,mb);if(blk>200)for(int i=0;i<512;++i)steady.push_back(b.getSample(0,i));}
+  int bestLag=0;double best=-1;for(int lag=90;lag<115;++lag){double cross=0;for(size_t i=0;i+lag<steady.size();++i)cross+=steady[i]*steady[i+lag];if(cross>best){best=cross;bestLag=lag;}}
+  if(bestLag<=0)return 104;const double f=48000.0/bestLag;if(std::abs(f-493.88)>5){std::cerr<<"Amount-zero Shift output "<<f<<" Hz\n";return 104;}}
+ // Signalsmith bypass remains aligned at 768 kHz (120 ms = 92160 samples).
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID=="smith")p->setValueNotifyingHost(1.f);
+  r->setRateAndBufferSizeDetails(768000,512);r->prepareToPlay(768000,512);const int latency=r->getLatencySamples();
+  juce::AudioBuffer<float> b(2,512);juce::MidiBuffer mb;int onset=-1;
+  for(int blk=0;blk<200&&onset<0;++blk){b.clear();if(blk==0){b.setSample(0,0,1.f);b.setSample(1,0,1.f);}r->processBlockBypassed(b,mb);
+   for(int i=0;i<512;++i)if(std::abs(b.getSample(0,i))>1.0e-4f){onset=blk*512+i;break;}}
+  if(onset!=latency||latency<90000){std::cerr<<"768k bypass onset "<<onset<<" latency "<<latency<<"\n";return 105;}}
+ // Every parameter must survive a state save/restore, not just the audio controls.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());auto& params=r->getParameters();
+  auto validValue=[&](size_t i,bool second){if(dynamic_cast<juce::AudioParameterBool*>(params[(int)i])!=nullptr)return second?1.f:0.f;
+   if(auto* choice=dynamic_cast<juce::AudioParameterChoice*>(params[(int)i])){const int count=juce::jmax(1,choice->choices.size());return (float)((second?count-1:i)%count)/(float)juce::jmax(1,count-1);}
+   return second?.8f:.2f;};
+  std::vector<float> expected;
+  for(size_t i=0;i<params.size();++i){params[(int)i]->setValueNotifyingHost(validValue(i,false));expected.push_back(params[(int)i]->getValue());}
+  juce::MemoryBlock saved;r->getStateInformation(saved);
+  for(size_t i=0;i<params.size();++i)params[(int)i]->setValueNotifyingHost(validValue(i,true));
+  r->setStateInformation(saved.getData(),(int)saved.getSize());
+  for(size_t i=0;i<params.size();++i)if(std::abs(params[(int)i]->getValue()-expected[i])>.001f){std::cerr<<"state restore failed for "<<params[(int)i]->getName(64)<<" expected "<<expected[i]<<" got "<<params[(int)i]->getValue()<<"\n";return 107;}}
+ // Long-session parameter and engine churn must remain finite.
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  auto setP=[&](const char* id,float v){for(auto* p:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(p))if(w->paramID==id){p->setValueNotifyingHost(v);return;}};
+  for(int n=0;n<12;++n)setP(("note"+juce::String(n)).toRawUTF8(),1.f);setP("key",0.f);
+  r->setRateAndBufferSizeDetails(48000,256);r->prepareToPlay(48000,256);
+  juce::AudioBuffer<float> b(2,256);juce::MidiBuffer mb;double phase=0;
+  for(int blk=0;blk<4000;++blk){
+   if(blk%200==0){const int step=(blk/200)%6;setP("lowlatency",step==1?1.f:0.f);setP("engine",step==2?1.f:0.f);setP("smith",step==3?1.f:0.f);setP("bypass",step==4?1.f:0.f);
+    setP("speed",step==5?-3.f:25.f);setP("amount",step==5?0.f:1.f);setP("doubler",step==2?.65f:0.f);}
+   for(int i=0;i<256;++i){const float v=.2f*std::sin(phase);phase+=juce::MathConstants<double>::twoPi*220/48000;b.setSample(0,i,v);b.setSample(1,i,v);}
+   r->processBlock(b,mb);for(int c=0;c<2;++c)for(int i=0;i<256;++i)if(!std::isfinite(b.getSample(c,i))){std::cerr<<"long-session non-finite at block "<<blk<<"\n";return 106;}}}
 juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(createPluginFilter());auto* rangedSpeed=dynamic_cast<juce::RangedAudioParameter*>(p->getParameters()[1]);
  auto* rangedAmount=dynamic_cast<juce::RangedAudioParameter*>(p->getParameters()[3]);
  if(!rangedSpeed || !rangedAmount || std::abs(rangedSpeed->convertFrom0to1(0.f)-200.f)>.001f || std::abs(rangedSpeed->convertFrom0to1(.392f)-25.f)>.001f || std::abs(rangedSpeed->convertFrom0to1(.784f))>.001f || std::abs(rangedSpeed->convertFrom0to1(1.f)+3.f)>.001f || std::abs(rangedAmount->convertFrom0to1(.5f)-75.f)>.001f) {std::cerr<<"Recovered parameter landmarks differ\n";return 13;}

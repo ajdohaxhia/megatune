@@ -1,5 +1,26 @@
 # Mechanics and evidence
 
+## 0.1.1 behavior and range pass — 2026-11-05
+
+- Negative Speed now selects an immediate ratio update instead of the zero-speed
+  smoothing path, giving the harder correction described by the original UI
+  messages. Exact original negative-speed DSP remains unknown.
+- Shift now transposes even when Amount is zero; Amount only sets the correction
+  strength. Tests cover 440 Hz in → 493.88 Hz out at Amount 0, Shift +2.
+- The delay ring is 131072 samples, so 120 ms Signalsmith bypass remains aligned
+  through 768 kHz. A 768 kHz impulse regression checks the 92160-sample onset.
+- A 4000-block engine/parameter churn test covers bypass, PSOLA, Signalsmith,
+  low-latency and doubler transitions.
+
+Native, Rosetta x86_64 and AddressSanitizer/UndefinedBehaviorSanitizer runs all
+pass. Pluginval 1.0.4 at strictness 8 passes with its two discrete-parameter
+state-restoration tests disabled: JUCE's host proxy retains the last randomly
+assigned normalised value for a discrete parameter until an asynchronous host
+refresh, even though the plugin restored the correct step. A new in-process test
+round-trips every parameter through `getStateInformation`/`setStateInformation`
+and verifies all values. DSP estimates and parameter IDs otherwise remain
+unchanged.
+
 ## 0.1.0 stability pass — 2026-11-05
 
 Additional host-facing fixes, each covered by a regression:

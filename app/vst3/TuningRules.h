@@ -41,6 +41,13 @@ inline float megaTuneAmountToNormalized(float amount) {
  const double v = std::clamp((double)amount, 0., 100.);
  return (float)(std::log(1. - v / 112.5) / std::log(1. / 9.));
 }
+// Negative Speed is the hard-correction side of the control: use an immediate
+// ratio update instead of the smoothing used by zero and positive speeds.
+inline float megaTuneRatioBlend(float speed, float sustain, float heldSeconds, float sampleRate) {
+ if (speed < 0.f) return 1.f;
+ const float seconds = megaTuneSmoothingSeconds(speed, sustain, heldSeconds);
+ return 1.f - std::exp(-1.f / (sampleRate * std::max(.001f, seconds)));
+}
 // Editor meter: positive means the input is sharp of the target.
 inline float megaTuneCentsBetween(float inputMidi, float targetMidi) {
  return (inputMidi - targetMidi) * 100.f;

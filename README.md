@@ -4,15 +4,15 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four selectable
 pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.1.0 (experimental).** Pitch correction, latency reporting,
+> **Status: 0.1.1 (experimental).** Pitch correction, latency reporting,
 > presets, automation and the exclude/undo workflow are verified. **Formant preservation is
 > unvalidated** and the build is **ad-hoc signed, not notarized**. See [Status](#status)
 > before shipping anything.
 >
-> 0.1.0 fixes oversized host blocks, sample-rate changes in the Signalsmith engine,
-> audio-thread allocations during pitch analysis, an inaccurate held-target history reason,
-> and Signalsmith bypass/doubler/latency handling. It also hardens non-finite input and
-> `reset()`.
+> 0.1.1 adds hard-correction behavior for negative Speed, makes Shift work independently of
+> Amount, and supports Signalsmith bypass at sample rates up to 768 kHz. It keeps the 0.1.0
+> fixes for oversized host blocks, sample-rate changes, audio-thread allocations,
+> Signalsmith bypass/doubler/latency, non-finite input and `reset()`.
 
 ---
 
@@ -78,9 +78,9 @@ Declared latency matches measured impulse onset and cross-correlation lag at 44.
 
 ## Install
 
-Version 0.1.0 (universal arm64 + x86_64):
+Version 0.1.1 (universal arm64 + x86_64):
 
-https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.0
+https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.1
 
 ```bash
 # from the release archive or app/dist
@@ -149,13 +149,23 @@ The suite covers, among others:
 - a prepared analysis window performs no heap allocations
 - held-target decisions are distinguished from fresh target changes
 - Signalsmith obeys Global Bypass and still applies Doubler/Width
-- host bypass stays latency-aligned at the Signalsmith latency
+- host bypass stays latency-aligned at the Signalsmith latency, through 768 kHz
+- negative Speed uses the hard-correction path
+- Shift transposes independently when Amount is zero
 - non-finite input, `reset()` and extra/mono channel buffers stay safe
 - the engine × sample-rate × block-size matrix produces finite audio
+- 4000-block engine/parameter churn remains finite
 - **Why this note?** end-to-end: 432 Hz tone A4 → exclude A → G♯4 → Undo → A4
 - 490 Hz disabled-target control (with and without Note Stabilizer)
 - real-take target change: at 17.71 s of the dry fixture, excluding G retargets
   110/110 analysed blocks and Undo restores it bit-identically
+
+Pluginval 1.0.4 at strictness 8 passes with its `Plugin state restoration` and
+`Discrete parameter state restoration` tests disabled. Those two hit a known JUCE
+host-proxy cache issue for discrete parameters: the plugin restores the correct
+step, but the host-side proxy keeps the last random normalised value until its
+next asynchronous refresh. An in-process test round-trips every parameter through
+state instead.
 
 Host-level checks (load, instantiate, parameters, audio, editor) run through
 `app/vst3/host/`:
@@ -208,8 +218,12 @@ app/
 | Low latency | ✅ 128 samples verified |
 | Large host blocks / sample-rate changes | ✅ 16384-sample block and 48 → 96 kHz verified |
 | Audio-thread allocations in analysis | ✅ none after prepare |
-| Signalsmith bypass / doubler / latency | ✅ verified |
+| Signalsmith bypass / doubler / latency | ✅ verified through 768 kHz |
+| Negative Speed / zero-Amount Shift | ✅ verified |
 | Non-finite input / reset / channel safety | ✅ verified |
+| Long-session engine/parameter churn | ✅ 4000 blocks verified |
+| pluginval 1.0.4, strictness 8 | ✅ passes with two known JUCE state-cache tests disabled |
+| Full parameter state round-trip | ✅ in-process regression |
 | Why this note? → Exclude → Undo | ✅ verified on synthetic tone and on a real take |
 | Presets, automation, recall, A/B | ✅ verified |
 | **Formant preservation** | ❌ **unvalidated** — the estimator misclassifies known test cases |
