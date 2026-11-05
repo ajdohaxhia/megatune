@@ -10,6 +10,8 @@
 #include <vector>
 extern juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
+static juce::Component* findById(juce::Component* root,const juce::String& id){if(root->getComponentID()==id)return root;for(int i=0;i<root->getNumChildComponents();++i)if(auto* c=findById(root->getChildComponent(i),id))return c;return nullptr;}
+static void visitChildren(juce::Component* root,const std::function<void(juce::Component*)>& fn){for(int i=0;i<root->getNumChildComponents();++i){auto* c=root->getChildComponent(i);fn(c);visitChildren(c,fn);}}
 static std::atomic<bool> countAllocations{false};
 static std::atomic<int> allocationCount{0};
 void* operator new(std::size_t n){if(countAllocations.load(std::memory_order_relaxed))allocationCount.fetch_add(1,std::memory_order_relaxed);if(void* p=std::malloc(n?n:1))return p;throw std::bad_alloc();}
@@ -31,14 +33,14 @@ int main(int argc,char** argv){
    p->processBlock(b,mb);
    if(i%5==0)megatune::tickEditor(*editor);
    if(i%1000==0){
-    auto* panel=editor->findChildWithID("history-panel");
+    auto* panel=findById(editor.get(),"history-panel");
     if(panel&&panel->isVisible()){if(auto* c=panel->findChildWithID("history-close"))dynamic_cast<juce::Button*>(c)->onClick();}
-    else if(auto* w=editor->findChildWithID("why-button"))dynamic_cast<juce::Button*>(w)->onClick();
+    else if(auto* w=findById(editor.get(),"why-button"))dynamic_cast<juce::Button*>(w)->onClick();
    }
    if(i%2000==1000){
-    auto* browser=editor->findChildWithID("preset-browser");
+    auto* browser=findById(editor.get(),"preset-browser");
     if(browser&&browser->isVisible()){if(auto* l=browser->findChildWithID("preset-load"))dynamic_cast<juce::Button*>(l)->onClick();}
-    else if(auto* br=editor->findChildWithID("preset-browse"))dynamic_cast<juce::Button*>(br)->onClick();
+    else if(auto* br=findById(editor.get(),"preset-browse"))dynamic_cast<juce::Button*>(br)->onClick();
    }
    if(i%5000==0){auto shot=editor->createComponentSnapshot(editor->getLocalBounds());juce::ignoreUnused(shot);p->setCurrentProgram((p->getCurrentProgram()+1)%p->getNumPrograms());}
    for(int n=0;n<512;++n)if(!std::isfinite(b.getSample(0,n))||!std::isfinite(b.getSample(1,n)))return 2;
@@ -224,36 +226,34 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
  reopened->setStateInformation(session.getData(),(int)session.getSize());
  if(reopened->getCurrentProgram()!=6){std::cerr<<"Factory program lost on session reopen\n";return 24;}
  std::unique_ptr<juce::AudioProcessorEditor> view(reopened->createEditorAndMakeActive());
- bool presetCorrect=false;for(int i=0;i<view->getNumChildComponents();++i)
- if(auto* combo=dynamic_cast<juce::ComboBox*>(view->getChildComponent(i)))
- if(combo->getNumItems()==reopened->getNumPrograms())presetCorrect=combo->getSelectedId()==7;
+ auto* presetCombo=dynamic_cast<juce::ComboBox*>(findById(view.get(),"preset-combo"));
+ const bool presetCorrect=presetCombo!=nullptr&&presetCombo->getNumItems()==reopened->getNumPrograms()&&presetCombo->getSelectedId()==7;
  if(!presetCorrect){std::cerr<<"Preset menu disagrees with host program\n";return 25;}
  // Exercise each visible switch and scale action through its actual UI callback.
  auto parameter=[&](const juce::String& id)->juce::AudioProcessorParameterWithID*{
  for(auto* value:reopened->getParameters())if(auto* identified=dynamic_cast<juce::AudioProcessorParameterWithID*>(value))if(identified->paramID==id)return identified;return nullptr;};
- for(int i=0;i<view->getNumChildComponents();++i){auto* child=view->getChildComponent(i);
- if(auto* combo=dynamic_cast<juce::ComboBox*>(child))if(combo->getNumItems()==12)combo->setSelectedId(3,juce::sendNotificationSync);
- }
+ visitChildren(view.get(),[&](juce::Component* child){if(auto* combo=dynamic_cast<juce::ComboBox*>(child))if(combo->getNumItems()==12)combo->setSelectedId(3,juce::sendNotificationSync);});
  if(std::abs(parameter("key")->getValue()-2.f/11.f)>.001f)return 26;
- for(int i=0;i<view->getNumChildComponents();++i)if(auto* button=dynamic_cast<juce::TextButton*>(view->getChildComponent(i)))
- if(button->getButtonText()=="Chromatic")button->onClick();
+ visitChildren(view.get(),[&](juce::Component* child){if(auto* button=dynamic_cast<juce::TextButton*>(child))if(button->getButtonText()=="Chromatic"&&button->onClick)button->onClick();});
  for(int i=0;i<12;++i)if(parameter("note"+juce::String(i))->getValue()!=1)return 27;
- for(int i=0;i<view->getNumChildComponents();++i)if(auto* button=dynamic_cast<juce::TextButton*>(view->getChildComponent(i)))
- if(button->getButtonText()=="C")button->setToggleState(false,juce::sendNotificationSync);
+ visitChildren(view.get(),[&](juce::Component* child){if(auto* button=dynamic_cast<juce::TextButton*>(child))if(button->getButtonText()=="C")button->setToggleState(false,juce::sendNotificationSync);});
  if(parameter("note10")->getValue()!=0 || parameter("note0")->getValue()!=1){std::cerr<<"Key change left stale keyboard wiring\n";return 28;}
- for(int i=0;i<view->getNumChildComponents();++i)if(auto* toggle=dynamic_cast<juce::ToggleButton*>(view->getChildComponent(i))){
+ int uiFailure=0;
+ visitChildren(view.get(),[&](juce::Component* child){if(auto* toggle=dynamic_cast<juce::ToggleButton*>(child)){
  toggle->setToggleState(true,juce::sendNotificationSync);
- if(toggle->getButtonText()=="Global Bypass"&&parameter("bypass")->getValue()!=1)return 29;
- if(toggle->getButtonText()=="Note Stabilizer"){toggle->setToggleState(false,juce::sendNotificationSync);if(parameter("stabilize")->getValue()!=0)return 30;}}
- for(int i=0;i<view->getNumChildComponents();++i)if(auto* slider=dynamic_cast<juce::Slider*>(view->getChildComponent(i))){
+ if(toggle->getButtonText()=="Global Bypass"&&parameter("bypass")->getValue()!=1)uiFailure=29;
+ if(toggle->getButtonText()=="Note Stabilizer"){toggle->setToggleState(false,juce::sendNotificationSync);if(parameter("stabilize")->getValue()!=0)uiFailure=30;}}});
+ if(uiFailure)return uiFailure;
+ visitChildren(view.get(),[&](juce::Component* child){if(auto* slider=dynamic_cast<juce::Slider*>(child)){
  slider->setValue(slider->getMaximum(),juce::sendNotificationSync);
- const auto id=slider->getName().toLowerCase();auto* ranged=dynamic_cast<juce::RangedAudioParameter*>(parameter(id));if(ranged==nullptr||std::abs(ranged->convertFrom0to1(ranged->getValue())-slider->getMaximum())>.01f)return 31;}
+ const auto id=slider->getName().toLowerCase();auto* ranged=dynamic_cast<juce::RangedAudioParameter*>(parameter(id));if(ranged==nullptr||std::abs(ranged->convertFrom0to1(ranged->getValue())-slider->getMaximum())>.01f)uiFailure=31;}});
+ if(uiFailure)return uiFailure;
 
  }
  // Toolbar actions must affect the actual host parameters, including A/B recall.
  {std::unique_ptr<juce::AudioProcessor> host(createPluginFilter());
  std::unique_ptr<juce::AudioProcessorEditor> view(host->createEditorAndMakeActive());
- auto click=[&](const juce::String& label){for(int i=0;i<view->getNumChildComponents();++i)if(auto* button=dynamic_cast<juce::TextButton*>(view->getChildComponent(i)))if(button->getButtonText()==label){button->onClick();return true;}return false;};
+ auto click=[&](const juce::String& label){bool did=false;visitChildren(view.get(),[&](juce::Component* child){if(!did)if(auto* button=dynamic_cast<juce::TextButton*>(child))if(button->getButtonText()==label&&button->onClick){button->onClick();did=true;}});return did;};
  if(!click(">")||host->getCurrentProgram()!=1){std::cerr<<"Next preset button missing or inactive\n";return 32;}
  if(!click("<")||host->getCurrentProgram()!=0)return 33;
  if(!click("Undo")||host->getCurrentProgram()!=1)return 34;
@@ -373,7 +373,7 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
     return best>0?48000.0/best:0.0;};
   const double f0a=feed();
   auto* ed=r->createEditorIfNeeded();
-  auto click=[&](const juce::String& txt)->bool{for(int i=0;i<ed->getNumChildComponents();++i)if(auto* bt=dynamic_cast<juce::TextButton*>(ed->getChildComponent(i)))if(bt->getButtonText().startsWith(txt)){bt->onClick();return true;}return false;};
+  auto click=[&](const juce::String& txt)->bool{bool did=false;visitChildren(ed,[&](juce::Component* child){if(!did)if(auto* bt=dynamic_cast<juce::TextButton*>(child))if(bt->getButtonText().startsWith(txt)&&bt->onClick){bt->onClick();did=true;}});return did;};
   click("Why this note?");
   std::function<juce::Component*(juce::Component*,const juce::String&)> find=[&](juce::Component* root,const juce::String& id)->juce::Component*{if(root->getComponentID()==id)return root;for(int i=0;i<root->getNumChildComponents();++i)if(auto* c=find(root->getChildComponent(i),id))return c;return nullptr;};
   auto* panel=find(ed,"history-panel");
@@ -466,13 +466,13 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   if(!(q0==2048&&s1==5760&&p2==2048&&l3==128&&q4==2048)){std::cerr<<"SWITCH latency transition wrong\n";return 63;}
  }
 if(p->getName()!="MegaTune")return 1;for(auto* parameter:p->getParameters()){auto name=parameter->getName(64);if(name=="Speed")parameter->setValueNotifyingHost(rangedSpeed->convertTo0to1(0.f));if(name.length()<=2)parameter->setValueNotifyingHost(1);}
-p->prepareToPlay(48000,256);std::vector<float> steady;juce::MidiBuffer midi;juce::AudioBuffer<float> buffer(2,256);double peak=0;for(int block=0;block<200;++block){for(int i=0;i<256;++i)for(int c=0;c<2;++c)buffer.setSample(c,i,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(block*256+i)/48000));p->processBlock(buffer,midi);for(int i=0;i<256;++i){float sample=buffer.getSample(0,i);if(!std::isfinite(sample)||std::abs(sample)>1)return 2;peak=juce::jmax(peak,(double)std::abs(sample));if(block>100)steady.push_back(sample);}}if(peak<.1)return 3;int bestLag=0;double bestScore=-1;for(int lag=100;lag<120;++lag){double cross=0;for(int i=0;i<16000;++i)cross+=steady[i]*steady[i+lag];if(cross>bestScore){bestScore=cross;bestLag=lag;}}double frequency=48000.0/bestLag;std::cout<<"Corrected frequency: "<<frequency<<" Hz\n";if(std::abs(frequency-440)>3)return 7;std::unique_ptr<juce::AudioProcessor> visual(createPluginFilter());std::unique_ptr<juce::AudioProcessorEditor> editor(visual->createEditorAndMakeActive());if(!editor||editor->getWidth()!=1480)return 6;
+p->prepareToPlay(48000,256);std::vector<float> steady;juce::MidiBuffer midi;juce::AudioBuffer<float> buffer(2,256);double peak=0;for(int block=0;block<200;++block){for(int i=0;i<256;++i)for(int c=0;c<2;++c)buffer.setSample(c,i,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(block*256+i)/48000));p->processBlock(buffer,midi);for(int i=0;i<256;++i){float sample=buffer.getSample(0,i);if(!std::isfinite(sample)||std::abs(sample)>1)return 2;peak=juce::jmax(peak,(double)std::abs(sample));if(block>100)steady.push_back(sample);}}if(peak<.1)return 3;int bestLag=0;double bestScore=-1;for(int lag=100;lag<120;++lag){double cross=0;for(int i=0;i<16000;++i)cross+=steady[i]*steady[i+lag];if(cross>bestScore){bestScore=cross;bestLag=lag;}}double frequency=48000.0/bestLag;std::cout<<"Corrected frequency: "<<frequency<<" Hz\n";if(std::abs(frequency-440)>3)return 7;std::unique_ptr<juce::AudioProcessor> visual(createPluginFilter());std::unique_ptr<juce::AudioProcessorEditor> editor(visual->createEditorAndMakeActive());if(!editor||editor->getWidth()!=1120)return 6;
  auto pumpEditor=[&]{megatune::tickEditor(*editor);};
- auto* speedControl=editor->findChildWithID("control-speed");
- auto* experimental=editor->findChildWithID("experimental-label");
+ auto* speedControl=findById(editor.get(),"control-speed");
+ auto* experimental=findById(editor.get(),"experimental-label");
  if(!speedControl||!experimental){std::cerr<<"Editor control IDs missing\n";return 64;}
  if(experimental->isVisible()){std::cerr<<"Experimental label shown for Quality\n";return 65;}
- auto clickButton=[&](const juce::String& label){for(int i=0;i<editor->getNumChildComponents();++i)if(auto* button=dynamic_cast<juce::TextButton*>(editor->getChildComponent(i)))if(button->getButtonText()==label){button->onClick();return true;}return false;};
+ auto clickButton=[&](const juce::String& label){bool did=false;visitChildren(editor.get(),[&](juce::Component* child){if(!did)if(auto* button=dynamic_cast<juce::TextButton*>(child))if(button->getButtonText()==label&&button->onClick){button->onClick();did=true;}});return did;};
  auto paramById=[&](const juce::String& id)->juce::AudioProcessorParameterWithID*{for(auto* value:visual->getParameters())if(auto* identified=dynamic_cast<juce::AudioProcessorParameterWithID*>(value))if(identified->paramID==id)return identified;return nullptr;};
  auto writeShot=[&](const juce::String& name){auto shot=editor->createComponentSnapshot(editor->getLocalBounds());juce::File f=juce::File::getCurrentWorkingDirectory().getChildFile(name);f.deleteFile();juce::FileOutputStream stream(f);juce::PNGImageFormat png2;png2.writeImageToStream(shot,stream);};
  writeShot("MegaTune-vst3-idle.png");
@@ -480,10 +480,10 @@ p->prepareToPlay(48000,256);std::vector<float> steady;juce::MidiBuffer midi;juce
  pumpEditor();writeShot("MegaTune-vst3-active.png");writeShot("MegaTune-vst3.png");
  const float speedBefore=paramById("speed")->getValue();
  if(!clickButton("Why this note?")){std::cerr<<"Why this note action missing\n";return 66;}
- auto* panel=editor->findChildWithID("history-panel");
+ auto* panel=findById(editor.get(),"history-panel");
  if(!panel||!panel->isVisible()){std::cerr<<"History panel did not open\n";return 67;}
  for(const char* id:{"control-speed","control-sustain","control-amount","control-doubler","control-width","control-reference","control-stabilize"})
-  {auto* control=editor->findChildWithID(id);if(!control||!control->isVisible()){std::cerr<<"Side-by-side control hidden: "<<id<<"\n";return 68;}}
+  {auto* control=findById(editor.get(),id);if(!control||!control->isVisible()){std::cerr<<"Side-by-side control hidden: "<<id<<"\n";return 68;}}
  pumpEditor();
  auto* row0=panel->findChildWithID("history-row-0");
  auto* enableButton=panel->findChildWithID("history-enable");
@@ -497,7 +497,7 @@ p->prepareToPlay(48000,256);std::vector<float> steady;juce::MidiBuffer midi;juce
  if(targetBefore!=69){std::cerr<<"Expected A4 target, got "<<targetBefore<<"\n";return 71;}
  dynamic_cast<juce::Button*>(excludeButton)->onClick();pumpEditor();
  auto* noteA=paramById("note5");if(!noteA||noteA->getValue()>.5f){std::cerr<<"Excluding A did not clear its mask bit\n";return 72;}
- auto* undoButton=editor->findChildWithID("undo-button");if(!undoButton||!undoButton->isEnabled()){std::cerr<<"Exclude did not enter Undo history\n";return 73;}
+ auto* undoButton=findById(editor.get(),"undo-button");if(!undoButton||!undoButton->isEnabled()){std::cerr<<"Exclude did not enter Undo history\n";return 73;}
  {juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);for(int blk=0;blk<40;++blk){for(int i2=0;i2<256;++i2)for(int c2=0;c2<2;++c2)b.setSample(c2,i2,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(blk*256+i2)/48000));visual->processBlock(b,mb);}}
  const int seqAfter=megatune::historySequence(*visual);
  const int targetAfter=megatune::historyDecision(*visual,seqAfter-1).target;
@@ -517,13 +517,16 @@ p->prepareToPlay(48000,256);std::vector<float> steady;juce::MidiBuffer midi;juce
  dynamic_cast<juce::Button*>(closeButton)->onClick();
  if(panel->isVisible()||!speedControl->isVisible()){std::cerr<<"Close did not restore covered controls\n";return 80;}
  for(const char* id:{"control-sustain","control-amount","control-doubler","control-width","control-reference","control-stabilize"})
-  {auto* covered=editor->findChildWithID(id);if(!covered||!covered->isVisible()){std::cerr<<"Close did not restore: "<<id<<"\n";return 82;}}
+  {auto* covered=findById(editor.get(),id);if(!covered||!covered->isVisible()){std::cerr<<"Close did not restore: "<<id<<"\n";return 82;}}
  if(std::abs(paramById("speed")->getValue()-speedBefore)>.0001f){std::cerr<<"Close changed a control value\n";return 81;}
- auto* browse=editor->findChildWithID("preset-browse");if(!browse){std::cerr<<"Preset browser button missing\n";return 108;}
+ auto* browse=findById(editor.get(),"preset-browse");if(!browse){std::cerr<<"Preset browser button missing\n";return 108;}
  dynamic_cast<juce::Button*>(browse)->onClick();
- auto* browser=editor->findChildWithID("preset-browser");if(!browser||!browser->isVisible()){std::cerr<<"Preset browser did not open\n";return 109;}
+ auto* browser=findById(editor.get(),"preset-browser");if(!browser||!browser->isVisible()){std::cerr<<"Preset browser did not open\n";return 109;}
  writeShot("MegaTune-vst3-presets.png");
  dynamic_cast<juce::Button*>(browser->findChildWithID("preset-load"))->onClick();
+ if(!editor->isResizable()){std::cerr<<"Editor is not resizable\n";return 110;}
+ editor->setSize(800,573);if(editor->getWidth()!=800||editor->getHeight()!=573){std::cerr<<"Editor resize failed\n";return 111;}
+ editor->setSize(1120,802);
  for(auto* parameter:p->getParameters()){auto* identified=dynamic_cast<juce::AudioProcessorParameterWithID*>(parameter);if(identified&&identified->paramID.startsWith("note"))parameter->setValueNotifyingHost(identified->paramID=="note6"?1.f:0.f);}steady.clear();for(int block=0;block<200;++block){for(int i=0;i<256;++i)for(int ch=0;ch<2;++ch)buffer.setSample(ch,i,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(block*256+i)/48000));p->processBlock(buffer,midi);if(block>100)for(int i=0;i<256;++i)steady.push_back(buffer.getSample(0,i));}std::vector<double> sc(115,0.0);bestScore=-1;for(int lag=95;lag<112;++lag){double cross=0;for(int i=0;i<16000;++i)cross+=steady[i]*steady[i+lag];sc[lag]=cross;if(cross>bestScore){bestScore=cross;bestLag=lag;}}const double den=sc[bestLag-1]-2*sc[bestLag]+sc[bestLag+1];const double off=std::abs(den)>1e-12?std::clamp(.5*(sc[bestLag-1]-sc[bestLag+1])/den,-.5,.5):0.0;frequency=48000.0/(bestLag+off);std::cout<<"Disabled-target stabilizer frequency: "<<frequency<<" Hz\n";if(std::abs(frequency-466.16)>4)return 8;rangedSpeed->setValueNotifyingHost(rangedSpeed->convertTo0to1(25));rangedAmount->setValueNotifyingHost(rangedAmount->convertTo0to1(75));
  juce::MemoryBlock state;p->getStateInformation(state);if(state.getSize()==0)return 4;std::unique_ptr<juce::AudioProcessor> restored(createPluginFilter());
  auto* restoredSpeed=dynamic_cast<juce::RangedAudioParameter*>(restored->getParameters()[1]);

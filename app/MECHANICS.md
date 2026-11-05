@@ -1,5 +1,23 @@
 # Mechanics and evidence
 
+## 0.1.6 scalable editor and ademusic identity — 2026-11-05
+
+- The 1480×1060 design now lives on an internal `Canvas`. The editor defaults to
+  1120×802, has a fixed 1480:1060 aspect ratio, is resizable, and scales down to
+  740×530. This fits Logic and smaller screens while preserving the reference
+  composition.
+- The resize corner is created after the UI tree is moved onto the Canvas, so it
+  remains a child of the editor rather than being scaled into the UI.
+- Vendor and bundle identity changed to **ademusic**:
+  - AU manufacturer code `AdMs` (was `Crft`)
+  - bundle ID `com.ademusic.megatune` (was `com.craftanything.megatune`)
+  - AU display name `ademusic: MegaTune`
+- The installer now clears extended attributes before re-signing, which prevents
+  false “resource fork / Finder information” signature failures on iCloud paths.
+
+Validation: CTest and the full parameter-state regression pass; the AU must be
+validated with `auval -v aufx Mgtn AdMs`. The editor snapshots are now 1120×802.
+
 ## 0.1.5 long-run stability pass — 2026-11-05
 
 Two editor-side long-run hazards were removed:

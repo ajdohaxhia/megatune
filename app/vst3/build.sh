@@ -16,14 +16,22 @@ ditto build-cli/MegaTune_artefacts/Release/VST3/MegaTune.vst3 ../MegaTune.vst3
 codesign --force --deep --sign - ../MegaTune.vst3
 codesign --verify --deep --strict ../MegaTune.vst3
 rm -rf ../dist/MegaTune.vst3
-ditto ../MegaTune.vst3 ../dist/MegaTune.vst3
-# AUv2 component, packaged alongside the VST3.
+ditto --norsrc --noextattr --noqtn ../MegaTune.vst3 ../dist/MegaTune.vst3
+# AUv2 component, packaged alongside the VST3. Sign and verify in a temp
+# directory outside iCloud, then copy without extended attributes so the seal
+# is not invalidated by Finder/fileprovider metadata.
 if [ -d build-cli/MegaTune_artefacts/Release/AU/MegaTune.component ]; then
+  au_tmp="$(mktemp -d)"
+  ditto build-cli/MegaTune_artefacts/Release/AU/MegaTune.component "$au_tmp/MegaTune.component"
+  find "$au_tmp/MegaTune.component" -exec xattr -c {} \; 2>/dev/null || true
+  xattr -c "$au_tmp/MegaTune.component"
+  xattr -d com.apple.FinderInfo "$au_tmp/MegaTune.component" 2>/dev/null || true
+  xattr -d 'com.apple.fileprovider.fpfs#P' "$au_tmp/MegaTune.component" 2>/dev/null || true
+  codesign --force --deep --sign - "$au_tmp/MegaTune.component"
+  codesign --verify --deep --strict "$au_tmp/MegaTune.component"
   rm -rf ../dist/MegaTune.component
-  ditto build-cli/MegaTune_artefacts/Release/AU/MegaTune.component ../dist/MegaTune.component
-  xattr -cr ../dist/MegaTune.component
-  codesign --force --deep --sign - ../dist/MegaTune.component
-  codesign --verify --deep --strict ../dist/MegaTune.component
+  ditto --norsrc --noextattr --noqtn "$au_tmp/MegaTune.component" ../dist/MegaTune.component
+  rm -rf "$au_tmp"
 fi
 if [ -x "host/build/MegaTuneHostCheck_artefacts/Release/MegaTuneHostCheck" ]; then
   ok=0

@@ -409,15 +409,21 @@ private:
  MegaTune& proc;juce::TextButton close{"X"},cancel{"Cancel"},load{"Load preset"};juce::TextEditor search;
  juce::Component listContent;juce::Viewport list;juce::OwnedArray<PresetRow> rows;
 };
+class Canvas final:public juce::Component {
+public:
+ std::function<void(juce::Graphics&)> onPaint;std::function<void()> onResized;
+ void paint(juce::Graphics& g)override{if(onPaint)onPaint(g);}
+ void resized()override{if(onResized)onResized();}
+};
 class Editor final:public juce::AudioProcessorEditor,private juce::Timer {
- TunerLook tunerLook;MegaTune& proc;juce::Slider speed,sustain,amount,doubler,width,reference,shift,range;juce::ComboBox presets;juce::ToggleButton bypass{"Global Bypass"},stabilize{"Note Stabilizer"},lowLatency{"Low Latency"};juce::ComboBox key;int displayedKey=-1;std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> keyAttachment;juce::TextButton major{"Major"},minor{"Minor"},chromatic{"Chromatic"};
+ TunerLook tunerLook;Canvas canvas;MegaTune& proc;juce::Slider speed,sustain,amount,doubler,width,reference,shift,range;juce::ComboBox presets;juce::ToggleButton bypass{"Global Bypass"},stabilize{"Note Stabilizer"},lowLatency{"Low Latency"};juce::ComboBox key;int displayedKey=-1;std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> keyAttachment;juce::TextButton major{"Major"},minor{"Minor"},chromatic{"Chromatic"};
  struct Sound {std::vector<float> values;int program=0;};
  juce::TextButton previous{"<"},next{">"},undo{"Undo"},redo{"Redo"},slotA{"A"},slotB{"B"},copyAB{"A > B"};juce::TextButton why{"Why this note?"},browse{"Browse"};bool showWhy=false;int selSeq=-1,selectedPc=-1,shownProgram=-1;HistoryPanel historyPanel;PresetBrowser presetBrowser;juce::Label experimental;juce::ComboBox enginePick;int shownEngine=-1;
  Sound comparison[2],observed;std::vector<Sound> past,future;int activeSlot=0;
  float animationTime=0,smoothedLevel=0;
  Sound capture()const{Sound sound;sound.program=proc.getCurrentProgram();for(auto* p:proc.getParameters())sound.values.push_back(p->getValue());return sound;}
  bool same(const Sound& a,const Sound& b)const{return a.program==b.program&&a.values==b.values;}
- void restore(const Sound& sound){proc.currentProgram=sound.program;auto& parameters=proc.getParameters();for(size_t i=0;i<sound.values.size()&&i<(size_t)parameters.size();++i){parameters[(int)i]->beginChangeGesture();parameters[(int)i]->setValueNotifyingHost(sound.values[i]);parameters[(int)i]->endChangeGesture();}observed=capture();repaint();}
+ void restore(const Sound& sound){proc.currentProgram=sound.program;auto& parameters=proc.getParameters();for(size_t i=0;i<sound.values.size()&&i<(size_t)parameters.size();++i){parameters[(int)i]->beginChangeGesture();parameters[(int)i]->setValueNotifyingHost(sound.values[i]);parameters[(int)i]->endChangeGesture();}observed=capture();canvas.repaint();}
  void remember(){auto now=capture();if(!same(now,observed)){past.push_back(observed);if(past.size()>100)past.erase(past.begin());future.clear();observed=now;}}
  void edit(const std::function<void()>& action){remember();auto before=capture();action();auto after=capture();if(!same(before,after)){past.push_back(before);future.clear();}observed=after;}
  void compare(int slot){comparison[activeSlot]=capture();activeSlot=slot;restore(comparison[slot]);past.clear();future.clear();}
@@ -427,14 +433,14 @@ class Editor final:public juce::AudioProcessorEditor,private juce::Timer {
  void setSelectedPc(int pc){if(pc==selectedPc)return;selectedPc=pc;for(auto& note:notes)note.repaint();}
  void refreshHistory(){const int seq=proc.historySeq.load();if(selSeq>=seq)selSeq=seq-1;if(selSeq<0&&seq>0)selSeq=seq-1;if(selSeq>=0&&seq-selSeq>16)selSeq=seq-1;historyPanel.refresh(proc,selSeq);setSelectedPc(historyPanel.actionPc);}
  void openHistory(){if(showWhy)return;showWhy=true;selSeq=proc.historySeq.load()-1;why.setButtonText("Close");why.setVisible(false);resized();
-  refreshHistory();historyPanel.setVisible(true);historyPanel.toFront(false);historyPanel.grabKeyboardFocus();repaint();}
+  refreshHistory();historyPanel.setVisible(true);historyPanel.toFront(false);historyPanel.grabKeyboardFocus();canvas.repaint();}
  void closeHistory(){if(!showWhy)return;showWhy=false;selSeq=-1;setSelectedPc(-1);historyPanel.setVisible(false);
-  why.setButtonText("Why this note?");why.setVisible(true);resized();why.grabKeyboardFocus();repaint();}
+  why.setButtonText("Why this note?");why.setVisible(true);resized();why.grabKeyboardFocus();canvas.repaint();}
  void setTargetEnabled(int pc,bool enable){const int root=(int)proc.value("key");const int degree=((pc-root)%12+12)%12;
   auto* parameter=proc.state.getParameter("note"+juce::String(degree));if(parameter==nullptr)return;
   if((parameter->getValue()>.5f)==enable)return;
   edit([&]{parameter->beginChangeGesture();parameter->setValueNotifyingHost(enable?1.f:0.f);parameter->endChangeGesture();});
-  refreshHistory();repaint();}
+  refreshHistory();canvas.repaint();}
  void timerCallback()override{animationTime+=1.f/30.f;smoothedLevel+=(juce::jlimit(0.f,1.f,proc.level.load()*2)-smoothedLevel)*.18f;
  const float detected=proc.pitch.load();const int target=megatune::currentTargetNote(proc);
  const int ip=detected>0?(((int)std::lround(detected))%12+12)%12:-1;
@@ -447,14 +453,14 @@ class Editor final:public juce::AudioProcessorEditor,private juce::Timer {
  experimental.setVisible(wantEngine==3||wantEngine==4);
  undo.setEnabled(!past.empty());redo.setEnabled(!future.empty());slotA.setToggleState(activeSlot==0,juce::dontSendNotification);slotB.setToggleState(activeSlot==1,juce::dontSendNotification);
  const int program=proc.getCurrentProgram();if(program!=shownProgram){shownProgram=program;presets.setSelectedId(program+1,juce::dontSendNotification);}
- syncKey();repaint(31,135,(showWhy?844:1419),220);repaint(0,1028,1480,32);}
+ syncKey();canvas.repaint(31,135,(showWhy?844:1419),220);canvas.repaint(0,1028,1480,32);}
  void setScale(bool isMinor,bool all){const int scaleMajor[]={0,2,4,5,7,9,11};const int scaleMinor[]={0,2,3,5,7,8,10};for(int i=0;i<12;++i){bool selected=all;for(int j=0;j<7;++j)if(i==(isMinor?scaleMinor[j]:scaleMajor[j]))selected=true;auto* p=proc.state.getParameter("note"+juce::String(i));p->beginChangeGesture();p->setValueNotifyingHost(selected?1.f:0.f);p->endChangeGesture();}}
 public:
  void tick(){timerCallback();}
- Editor(MegaTune& p):AudioProcessorEditor(p),proc(p),presetBrowser(p){setLookAndFeel(&tunerLook);setSize(1480,1060);auto setup=[&](juce::Slider& s,const char* id){addAndMakeVisible(s);s.setLookAndFeel(&tunerLook);s.textFromValueFunction=[](double value){return juce::String(value,1);};s.setNumDecimalPlacesToDisplay(1);s.setDoubleClickReturnValue(true,proc.state.getParameter(id)->convertFrom0to1(proc.state.getParameter(id)->getDefaultValue()));s.setColour(juce::Slider::thumbColourId,juce::Colour(0xffbb8de9));s.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);s.setTextBoxStyle(juce::Slider::TextBoxBelow,false,75,22);s.setColour(juce::Slider::rotarySliderFillColourId,juce::Colour(0xffc48cea));s.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colour(0xff343137));s.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::transparentBlack);s.setColour(juce::Slider::textBoxTextColourId,juce::Colour(0xfff4f1ff));s.setColour(juce::Slider::textBoxBackgroundColourId,juce::Colours::transparentBlack);auto attachment=std::make_unique<SA>(proc.state,id,s);s.textFromValueFunction=[](double value){return juce::String(value,1);};s.updateText();return attachment;};a=setup(speed,"speed");b=setup(sustain,"sustain");c=setup(amount,"amount");da=setup(doubler,"doubler");wa=setup(width,"width");ra=setup(reference,"reference");sa=setup(shift,"shift");rga=setup(range,"range");for(auto* slider:{&doubler,&width}){slider->setSliderStyle(juce::Slider::LinearHorizontal);slider->setTextBoxStyle(juce::Slider::TextBoxRight,false,38,20);slider->setTextValueSuffix("%");}reference.setSliderStyle(juce::Slider::LinearHorizontal);reference.setTextBoxStyle(juce::Slider::TextBoxRight,false,62,20);reference.setTextValueSuffix(" Hz");reference.textFromValueFunction=[](double v){return juce::String(v,0);};reference.updateText();doubler.setName("Doubler");width.setName("Width");reference.setName("Reference");shift.setSliderStyle(juce::Slider::LinearHorizontal);shift.setTextBoxStyle(juce::Slider::TextBoxRight,false,46,20);shift.setTextValueSuffix(" st");shift.textFromValueFunction=[](double v){return juce::String((int)std::lround(v));};shift.updateText();shift.setName("Shift");range.setSliderStyle(juce::Slider::LinearHorizontal);range.setTextBoxStyle(juce::Slider::TextBoxRight,false,40,20);range.setTextValueSuffix(" st");range.textFromValueFunction=[](double v){return juce::String((int)std::lround(v));};range.updateText();range.setName("Range");
- addAndMakeVisible(presets);for(int i=0;i<proc.getNumPrograms();++i)presets.addItem(proc.getProgramName(i),i+1);presets.setSelectedId(proc.getCurrentProgram()+1,juce::dontSendNotification);presets.onChange=[this]{edit([&]{proc.setCurrentProgram(presets.getSelectedId()-1);});};
+ Editor(MegaTune& p):AudioProcessorEditor(p),proc(p),presetBrowser(p){setLookAndFeel(&tunerLook);addAndMakeVisible(canvas);canvas.onPaint=[this](juce::Graphics& g){paintCanvas(g);};canvas.onResized=[this]{layoutCanvas();};setSize(1120,802);auto setup=[&](juce::Slider& s,const char* id){addAndMakeVisible(s);s.setLookAndFeel(&tunerLook);s.textFromValueFunction=[](double value){return juce::String(value,1);};s.setNumDecimalPlacesToDisplay(1);s.setDoubleClickReturnValue(true,proc.state.getParameter(id)->convertFrom0to1(proc.state.getParameter(id)->getDefaultValue()));s.setColour(juce::Slider::thumbColourId,juce::Colour(0xffbb8de9));s.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);s.setTextBoxStyle(juce::Slider::TextBoxBelow,false,75,22);s.setColour(juce::Slider::rotarySliderFillColourId,juce::Colour(0xffc48cea));s.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colour(0xff343137));s.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::transparentBlack);s.setColour(juce::Slider::textBoxTextColourId,juce::Colour(0xfff4f1ff));s.setColour(juce::Slider::textBoxBackgroundColourId,juce::Colours::transparentBlack);auto attachment=std::make_unique<SA>(proc.state,id,s);s.textFromValueFunction=[](double value){return juce::String(value,1);};s.updateText();return attachment;};a=setup(speed,"speed");b=setup(sustain,"sustain");c=setup(amount,"amount");da=setup(doubler,"doubler");wa=setup(width,"width");ra=setup(reference,"reference");sa=setup(shift,"shift");rga=setup(range,"range");for(auto* slider:{&doubler,&width}){slider->setSliderStyle(juce::Slider::LinearHorizontal);slider->setTextBoxStyle(juce::Slider::TextBoxRight,false,38,20);slider->setTextValueSuffix("%");}reference.setSliderStyle(juce::Slider::LinearHorizontal);reference.setTextBoxStyle(juce::Slider::TextBoxRight,false,62,20);reference.setTextValueSuffix(" Hz");reference.textFromValueFunction=[](double v){return juce::String(v,0);};reference.updateText();doubler.setName("Doubler");width.setName("Width");reference.setName("Reference");shift.setSliderStyle(juce::Slider::LinearHorizontal);shift.setTextBoxStyle(juce::Slider::TextBoxRight,false,46,20);shift.setTextValueSuffix(" st");shift.textFromValueFunction=[](double v){return juce::String((int)std::lround(v));};shift.updateText();shift.setName("Shift");range.setSliderStyle(juce::Slider::LinearHorizontal);range.setTextBoxStyle(juce::Slider::TextBoxRight,false,40,20);range.setTextValueSuffix(" st");range.textFromValueFunction=[](double v){return juce::String((int)std::lround(v));};range.updateText();range.setName("Range");
+ addAndMakeVisible(presets);presets.setComponentID("preset-combo");for(int i=0;i<proc.getNumPrograms();++i)presets.addItem(proc.getProgramName(i),i+1);presets.setSelectedId(proc.getCurrentProgram()+1,juce::dontSendNotification);presets.onChange=[this]{edit([&]{proc.setCurrentProgram(presets.getSelectedId()-1);});};
  addAndMakeVisible(browse);browse.setComponentID("preset-browse");browse.onClick=[this]{presetBrowser.show();};
- addChildComponent(presetBrowser);presetBrowser.setVisible(false);presetBrowser.onLoad=[this](int index){edit([&]{proc.setCurrentProgram(index);});};presetBrowser.onClose=[this]{repaint();};
+ addChildComponent(presetBrowser);presetBrowser.setVisible(false);presetBrowser.onLoad=[this](int index){edit([&]{proc.setCurrentProgram(index);});};presetBrowser.onClose=[this]{canvas.repaint();};
  for(auto* button:{&previous,&next,&undo,&redo,&slotA,&slotB,&copyAB})addAndMakeVisible(button);
  previous.setTooltip("Previous factory preset");next.setTooltip("Next factory preset");copyAB.setTooltip("Copy the current sound to the other comparison slot");
  previous.onClick=[this]{edit([&]{proc.setCurrentProgram((proc.getCurrentProgram()+proc.getNumPrograms()-1)%proc.getNumPrograms());});};next.onClick=[this]{edit([&]{proc.setCurrentProgram((proc.getCurrentProgram()+1)%proc.getNumPrograms());});};
@@ -463,7 +469,7 @@ public:
  slotA.onClick=[this]{if(activeSlot!=0)compare(0);};slotB.onClick=[this]{if(activeSlot!=1)compare(1);};copyAB.onClick=[this]{comparison[1-activeSlot]=capture();};
  speed.setName("Speed");sustain.setName("Sustain");amount.setName("Amount");speed.textFromValueFunction=[](double v){return juce::String(v,1)+" ms";};sustain.textFromValueFunction=[](double v){return juce::String(v,1)+" %";};amount.textFromValueFunction=[](double v){return juce::String(v,1)+" %";};speed.updateText();sustain.updateText();amount.updateText();speed.setComponentID("control-speed");sustain.setComponentID("control-sustain");amount.setComponentID("control-amount");doubler.setComponentID("control-doubler");width.setComponentID("control-width");reference.setComponentID("control-reference");stabilize.setComponentID("control-stabilize");undo.setComponentID("undo-button");for(auto* v:{&bypass,&stabilize,&lowLatency})addAndMakeVisible(v);d=std::make_unique<BA>(proc.state,"bypass",bypass);e=std::make_unique<BA>(proc.state,"stabilize",stabilize);ll=std::make_unique<BA>(proc.state,"lowlatency",lowLatency);
  const char* names[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};for(int i=0;i<12;++i){addAndMakeVisible(notes[i]);notes[i].setButtonText(names[i]);notes[i].setClickingTogglesState(true);bool black=i==1||i==3||i==6||i==8||i==10;notes[i].blackKey=black;na[i]=std::make_unique<BA>(proc.state,"note"+juce::String(i),notes[i]);}
- addAndMakeVisible(key);const char* roots[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};for(int i=0;i<12;++i)key.addItem(roots[i],i+1);keyAttachment=std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(proc.state,"key",key);key.onChange=[this]{syncKey();repaint();};
+ addAndMakeVisible(key);const char* roots[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};for(int i=0;i<12;++i)key.addItem(roots[i],i+1);keyAttachment=std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(proc.state,"key",key);key.onChange=[this]{syncKey();canvas.repaint();};
  for(auto* v:{&major,&minor,&chromatic})addAndMakeVisible(v);major.onClick=[this]{setScale(false,false);};minor.onClick=[this]{setScale(true,false);};chromatic.onClick=[this]{setScale(false,true);};
  addAndMakeVisible(enginePick);addAndMakeVisible(why);why.setTooltip("Recent pitch decisions");addAndMakeVisible(historyPanel);historyPanel.setVisible(false);historyPanel.setWantsKeyboardFocus(true);
  historyPanel.onClose=[this]{closeHistory();};historyPanel.onSelect=[this](int row){selSeq=proc.historySeq.load()-1-row;refreshHistory();};
@@ -473,14 +479,23 @@ public:
  enginePick.addItem("Quality",1);enginePick.addItem("Low Latency",2);enginePick.addItem("TD-PSOLA (experimental)",3);enginePick.addItem("Signalsmith (experimental)",4);enginePick.setSelectedId(1,juce::dontSendNotification);enginePick.onChange=[this]{const int id=enginePick.getSelectedId();auto setP=[&](const char* pid,float v){auto* pr=proc.state.getParameter(pid);pr->beginChangeGesture();pr->setValueNotifyingHost(v);pr->endChangeGesture();};setP("lowlatency",id==2?1.f:0.f);setP("engine",id==3?1.f:0.f);setP("smith",id==4?1.f:0.f);};
  auto styleCombo=[&](juce::ComboBox& c){c.setColour(juce::ComboBox::backgroundColourId,juce::Colour(0xff1b1826));c.setColour(juce::ComboBox::textColourId,juce::Colour(0xfff4f1ff));c.setColour(juce::ComboBox::arrowColourId,juce::Colour(0xff8d879d));c.setColour(juce::ComboBox::outlineColourId,juce::Colour(0xff2d2939));};
  styleCombo(presets);styleCombo(key);styleCombo(enginePick);
+ // Move the complete UI tree onto the scalable canvas.
+ for(int i=getNumChildComponents();--i>=0;){auto* child=getChildComponent(i);if(child!=&canvas)canvas.addChildComponent(child);}
+ setResizeLimits(740,530,1480,1060);setResizable(true,true);if(auto* c=getConstrainer())c->setFixedAspectRatio(1480.0/1060.0);
  observed=capture();comparison[0]=comparison[1]=observed;resized();timerCallback();startTimerHz(30);}
  ~Editor()override{stopTimer();for(auto* slider:{&speed,&sustain,&amount,&doubler,&width,&reference,&shift,&range})slider->setLookAndFeel(nullptr);setLookAndFeel(nullptr);}
  void resized()override{
+  const float scale=juce::jmin(getWidth()/1480.f,getHeight()/1060.f);
+  const float x=(getWidth()-1480.f*scale)*.5f,y=(getHeight()-1060.f*scale)*.5f;
+  canvas.setBounds(0,0,1480,1060);canvas.setTransform(juce::AffineTransform::scale(scale).translated(x,y));layoutCanvas();
+ }
+ void paint(juce::Graphics& g)override{g.fillAll(juce::Colour(0xff0b0c10));}
+ void layoutCanvas(){
   presets.setBounds(266,20,330,44);browse.setBounds(602,20,70,44);previous.setBounds(680,20,44,44);next.setBounds(730,20,44,44);
   undo.setBounds(830,20,94,44);redo.setBounds(932,20,94,44);
   slotA.setBounds(1034,20,42,44);copyAB.setBounds(1082,20,92,44);slotB.setBounds(1184,20,42,44);
   bypass.setBounds(1230,20,220,44);
-  presetBrowser.setBounds(getLocalBounds());
+  presetBrowser.setBounds(0,0,1480,1060);
   enginePick.setBounds(135,88,280,42);
   experimental.setBounds(426,100,140,18);
   const int cr=showWhy?875:1450;const int cw=cr-31;const int col=cw/3;const int knobY=400,knob=210;
@@ -501,7 +516,7 @@ public:
   const int black[]={1,3,6,8,10};const int gaps[]={1,2,4,5,6};
   for(int j=0;j<5;++j){const int bx=(int)(px+12+gaps[j]*kw-kw*.29f);notes[black[j]].setBounds(bx,py+10,(int)(kw*.58f),ph*.62f);notes[black[j]].toFront(false);}
  }
- void paint(juce::Graphics& g)override{
+ void paintCanvas(juce::Graphics& g){
   const auto ink=juce::Colour(0xfff4f1ff),muted=juce::Colour(0xff8d879d),accent=juce::Colour(0xffb592ff),accentDeep=juce::Colour(0xff7c5cff),line=juce::Colour(0xff2d2939);
   juce::ColourGradient background(juce::Colour(0xff101116),0,0,juce::Colour(0xff17121f),1480,1060,false);g.setGradientFill(background);g.fillAll();
   juce::ColourGradient bar(juce::Colour(0xff171821),0,0,juce::Colour(0xff101116),0,84,false);g.setGradientFill(bar);g.fillRect(0,0,1480,84);
@@ -560,7 +575,7 @@ public:
   g.setColour(muted);g.setFont(juce::Font(11.f));g.drawText("ENGINE",40,1038,56,18,juce::Justification::left);
   g.setColour(ink);g.setFont(juce::Font(16.f,juce::Font::bold));g.drawText(proc.value("smith")>.5f?"Signalsmith":proc.value("engine")>.5f?"TD-PSOLA":proc.value("lowlatency")>.5f?"Low Latency":"Quality",104,1036,170,22,juce::Justification::left);
   g.setColour(line);g.fillRect(280,1038,1,18);
-  g.setColour(muted);g.setFont(juce::Font(14.f));g.drawText("MegaTune v"+juce::String(JucePlugin_VersionString),300,1036,220,22,juce::Justification::left);
+  g.setColour(muted);g.setFont(juce::Font(14.f));g.drawText("ademusic MegaTune v"+juce::String(JucePlugin_VersionString),300,1036,260,22,juce::Justification::left);
   g.setColour(line);g.fillRect(520,1038,1,18);
   const int root=(int)proc.value("key");const char* rootNames[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
   const int legY=1046;

@@ -1,17 +1,17 @@
-# MegaTune
+# ademusic MegaTune
 
 A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUCE VST3 +
 AUv2 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four
 selectable pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.1.5 (experimental).** Pitch correction, latency reporting,
+> **Status: 0.1.6 (experimental).** Pitch correction, latency reporting,
 > presets, automation and the exclude/undo workflow are verified. **Formant preservation is
 > unvalidated** and the build is **ad-hoc signed, not notarized**. See [Status](#status)
 > before shipping anything.
 >
-> 0.1.5 is a stability pass over the 1480×1060 editor: the 30 Hz full-window repaint is
-> replaced with targeted monitor/footer repaints, the preset-browser viewport is destroyed
-> safely, and a 50k-block UI/audio soak passed native and under ASan. It keeps AUv2 + VST3.
+> 0.1.6 makes the 1480×1060 editor scale into a **resizable 1120×802 default window**
+> (fixed aspect, minimum 740×530), so it fits Logic and smaller displays. The vendor/bundle
+> identity is now **ademusic** (`AdMs`, `com.ademusic.megatune`).
 
 ---
 
@@ -81,9 +81,9 @@ Declared latency matches measured impulse onset and cross-correlation lag at 44.
 
 ## Install
 
-Version 0.1.5 (universal arm64 + x86_64, VST3 + AUv2):
+Version 0.1.6 (universal arm64 + x86_64, VST3 + AUv2):
 
-https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.5
+https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.6
 
 ```bash
 # from the release archive or app/dist
@@ -179,7 +179,7 @@ Host-level checks (load, instantiate, parameters, audio, editor) run through
 
 ```bash
 MegaTuneHostCheck /path/to/MegaTune.vst3
-auval -v aufx Mgtn Crft          # after installing the AU component
+auval -v aufx Mgtn AdMs          # after installing the AU component
 ```
 
 Measurement harnesses used during development live in `app/vst3/verify/`
