@@ -103,7 +103,13 @@ void changeProgramName(int,const juce::String&)override{}
  void processAudio(juce::AudioBuffer<float>& b,bool hostBypass){
   const bool smithActive=value("smith")>.5f&&!lowLatencyActive;
   if(!hostBypass&&value("bypass")<=.5f&&smithActive){const int n=b.getNumSamples();
-   if(n>(int)sIn[0].size()){const size_t size=(size_t)n;for(auto& channel:sIn)channel.assign(size,0.f);for(auto& channel:sOut)channel.assign(size,0.f);}
+   if(n>(int)sIn[0].size()){
+    // block larger than the preallocated staging area: process in slices, never allocate here
+    const int cap=juce::jmax(1,(int)sIn[0].size());
+    for(int off=0;off<n;off+=cap){const int m=juce::jmin(cap,n-off);
+     float* ptrs[2]={b.getWritePointer(0,off),b.getWritePointer(b.getNumChannels()>1?1:0,off)};
+     juce::AudioBuffer<float> slice(ptrs,b.getNumChannels(),m);processAudio(slice,hostBypass);}
+    return;}
    const int channels=juce::jmin(2,b.getNumChannels());if(channels<=0)return;const int second=juce::jmin(1,channels-1);float peak=0;
    for(int i=0;i<n;++i){float mono=0;for(int c=0;c<channels;++c){const float v=b.getSample(c,i);ring[c][write]=std::isfinite(v)?v:0.f;mono+=ring[c][write]/channels;peak=juce::jmax(peak,std::abs(ring[c][write]));}
     history[hist]=mono;hist=(hist+1)%16384;if(++analysisCount>=512){analysisCount=0;analyse();}write=(write+1)%ringSize;
@@ -133,11 +139,11 @@ void changeProgramName(int,const juce::String&)override{}
    if(lastNote>0)heldSeconds=juce::jmin(1.f,heldSeconds+1.f/(float)rate);
    const float blend=megaTuneRatioBlend(value("speed"),value("sustain"),heldSeconds,(float)rate);ratio+=(std::pow(2.f,target/12)-ratio)*blend;
    phase+=1-ratio;while(phase<0)phase+=window;while(phase>=window)phase-=window;
+   if(voicedHold>0)--voicedHold;psolaVoiced=voicedHold>0;psolaGain+=((psolaVoiced?1.f:0.f)-psolaGain)*(psolaVoiced?0.002f:0.0002f);
    for(int c=0;c<channels;++c){auto read=[&](float delay){float pos=write-delay;while(pos<0)pos+=ringSize;int a=(int)pos;float t=pos-a;
      auto tap=[&](int k){return ring[c][(a+k+ringSize)%ringSize];};float y0=tap(-1),y1=tap(0),y2=tap(1),y3=tap(2);
      return y1+.5f*t*(y2-y0+t*(2.f*y0-5.f*y1+4.f*y2-y3+t*(3.f*(y1-y2)+y3-y0)));};float out;
     const float ps=psola[c].process(ring[c][write]);
-    if(voicedHold>0)--voicedHold;psolaVoiced=voicedHold>0;psolaGain+=((psolaVoiced?1.f:0.f)-psolaGain)*(psolaVoiced?0.002f:0.0002f);
     if(bypass||(value("amount")==0&&value("shift")==0))out=read(dryDelay);
     else if(value("engine")>.5f)out=psolaGain*ps+(1.f-psolaGain)*read(window);
     else if(lowLatencyActive){float p2=std::fmod(phase+half,(float)window);float w=.5f-.5f*std::cos(juce::MathConstants<float>::twoPi*phase/window);out=read(half+phase)*w+read(half+p2)*(1-w);}

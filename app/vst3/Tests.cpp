@@ -465,6 +465,28 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   std::cout<<"SWITCH quality="<<q0<<" smith="<<s1<<" psola="<<p2<<" low="<<l3<<" back="<<q4<<"\n";
   if(!(q0==2048&&s1==5760&&p2==2048&&l3==512&&q4==2048)){std::cerr<<"SWITCH latency transition wrong\n";return 63;}
  }
+
+ // identical stereo input must yield identical channels when the doubler is off
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  auto setP=[&](const char* id,float v){for(auto* q:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(q))if(w->paramID==id){q->setValueNotifyingHost(v);return;}};
+  setP("doubler",0.f);setP("width",0.f);setP("amount",1.f);setP("shift",0.5f);
+  r->setRateAndBufferSizeDetails(48000,256);r->prepareToPlay(48000,256);
+  juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);double worst=0;
+  for(int blk=0;blk<200;++blk){for(int i=0;i<256;++i){const float v=.3f*std::sin(juce::MathConstants<double>::twoPi*432*(blk*256+i)/48000);b.setSample(0,i,v);b.setSample(1,i,v);}
+   r->processBlock(b,mb);for(int i=0;i<256;++i)worst=juce::jmax(worst,(double)std::abs(b.getSample(0,i)-b.getSample(1,i)));}
+  std::cout<<"STEREO max L/R difference="<<worst<<"\n";
+  if(worst>1e-6){std::cerr<<"stereo channels diverged\n";return 64;}
+ }
+
+ // oversized block with Signalsmith active must not allocate and must stay finite
+ {std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+  auto setP=[&](const char* id,float v){for(auto* q:r->getParameters())if(auto* w=dynamic_cast<juce::AudioProcessorParameterWithID*>(q))if(w->paramID==id){q->setValueNotifyingHost(v);return;}};
+  setP("smith",1.f);r->setRateAndBufferSizeDetails(48000,256);r->prepareToPlay(48000,256);
+  juce::MidiBuffer mb;juce::AudioBuffer<float> big(2,10000);for(int i=0;i<10000;++i){const float v=.2f*std::sin(juce::MathConstants<double>::twoPi*440*i/48000);big.setSample(0,i,v);big.setSample(1,i,v);}
+  r->processBlock(big,mb);bool finite=true;for(int c=0;c<2;++c)for(int i=0;i<10000;++i)if(!std::isfinite(big.getSample(c,i)))finite=false;
+  std::cout<<"BIGBLOCK finite="<<(finite?"yes":"no")<<"\n";
+  if(!finite){std::cerr<<"oversized smith block produced non-finite audio\n";return 66;}
+ }
 if(p->getName()!="MegaTune")return 1;for(auto* parameter:p->getParameters()){auto name=parameter->getName(64);if(name=="Speed")parameter->setValueNotifyingHost(rangedSpeed->convertTo0to1(0.f));if(name.length()<=2)parameter->setValueNotifyingHost(1);}
 p->prepareToPlay(48000,256);std::vector<float> steady;juce::MidiBuffer midi;juce::AudioBuffer<float> buffer(2,256);double peak=0;for(int block=0;block<200;++block){for(int i=0;i<256;++i)for(int c=0;c<2;++c)buffer.setSample(c,i,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(block*256+i)/48000));p->processBlock(buffer,midi);for(int i=0;i<256;++i){float sample=buffer.getSample(0,i);if(!std::isfinite(sample)||std::abs(sample)>1)return 2;peak=juce::jmax(peak,(double)std::abs(sample));if(block>100)steady.push_back(sample);}}if(peak<.1)return 3;int bestLag=0;double bestScore=-1;for(int lag=100;lag<120;++lag){double cross=0;for(int i=0;i<16000;++i)cross+=steady[i]*steady[i+lag];if(cross>bestScore){bestScore=cross;bestLag=lag;}}double frequency=48000.0/bestLag;std::cout<<"Corrected frequency: "<<frequency<<" Hz\n";if(std::abs(frequency-440)>3)return 7;std::unique_ptr<juce::AudioProcessor> visual(createPluginFilter());std::unique_ptr<juce::AudioProcessorEditor> editor(visual->createEditorAndMakeActive());if(!editor||editor->getWidth()!=1120)return 6;
  auto pumpEditor=[&]{megatune::tickEditor(*editor);};

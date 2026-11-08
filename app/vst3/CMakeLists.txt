@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(MegaTune VERSION 0.1.7 LANGUAGES C CXX)
+project(MegaTune VERSION 0.2.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(JUCE_DIR "/private/tmp/juce" CACHE PATH "JUCE source directory")
 add_subdirectory("${JUCE_DIR}" juce)

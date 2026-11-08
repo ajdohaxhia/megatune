@@ -26,3 +26,6 @@ app/vst3/build-cli/
 # release binaries
 app/dist/*.component/
 app/dist/*.zip
+
+# build logs
+*.log

@@ -52,7 +52,7 @@ inline YinPitch detectYin (const float* x, int n, float sampleRate,
     workspace.ensure (maxTau + 1);
     auto& d = workspace.difference;
     auto& dn = workspace.normalised;
-    for (int tau = minTau; tau <= maxTau; ++tau)
+    for (int tau = 1; tau <= maxTau; ++tau)
     {
         float sum = 0.0f;
         for (int j = 0; j < w; ++j)
