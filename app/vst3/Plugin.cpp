@@ -79,9 +79,31 @@ void changeProgramName(int,const juce::String&)override{}
  int smithBufferCapacity()const{return (int)std::min(sIn[0].capacity(),sOut[0].capacity());}
  juce::AudioProcessorParameter* getBypassParameter()const override{return state.getParameter("bypass");}
  enum DecisionReason{R_NEAREST=0,R_HELD=1,R_RANGE=2,R_UNVOICED=3,R_NONOTE=4};
- struct Decision{float in;float target;int reason;};
- std::array<Decision,16> decisions{};std::atomic<int> historySeq{0};std::atomic<int> currentTargetNote{0};
- void recordDecision(float in,float target,int reason){megatune::lastTargetPc.store(target>0?(((int)std::lround(target))%12+12)%12:-1,std::memory_order_relaxed);const int i=historySeq.load(std::memory_order_relaxed)&15;decisions[(size_t)i]={in,target,reason};historySeq.fetch_add(1,std::memory_order_relaxed);}
+ struct Decision{std::atomic<float> in{0.f},target{0.f};std::atomic<int> reason{0};};
+ std::array<Decision,16> decisions{};std::atomic<int> historySeq{0};std::atomic<unsigned> historyLock{0};std::atomic<int> currentTargetNote{0};
+ void recordDecision(float in,float target,int reason){
+  megatune::lastTargetPc.store(target>0?(((int)std::lround(target))%12+12)%12:-1,std::memory_order_relaxed);
+  const unsigned l=historyLock.load(std::memory_order_relaxed);
+  historyLock.store(l+1u,std::memory_order_release);           // odd: write in progress
+  const int i=historySeq.load(std::memory_order_relaxed)&15;
+  decisions[(size_t)i].in.store(in,std::memory_order_relaxed);
+  decisions[(size_t)i].target.store(target,std::memory_order_relaxed);
+  decisions[(size_t)i].reason.store(reason,std::memory_order_relaxed);
+  historyLock.store(l+2u,std::memory_order_release);           // even: consistent
+  historySeq.fetch_add(1,std::memory_order_release);
+ }
+ bool readDecision(int sequence,megatune::DecisionView& out)const{
+  for(int tries=0;tries<16;++tries){
+   const unsigned l1=historyLock.load(std::memory_order_acquire);
+   if(l1&1u) continue;
+   const auto& e=decisions[(size_t)(sequence&15)];
+   const float in=e.in.load(std::memory_order_relaxed);
+   const float tg=e.target.load(std::memory_order_relaxed);
+   const int rs=e.reason.load(std::memory_order_relaxed);
+   if(historyLock.load(std::memory_order_acquire)==l1){out={in,tg,rs};return true;}
+  }
+  return false;
+ }
  std::atomic<float> pitch{0},outputPitch{0},level{0},outputLevel{0};
  void analyse(){
   constexpr int n=768; std::array<float,n> x{};float energy=0;
@@ -289,10 +311,10 @@ public:
  void refresh(const MegaTune& proc,int selectedSeq){
   const int seq=proc.historySeq.load();actionPc=-1;actionEnabled=false;
   for(int i=0;i<6;++i){auto& row=*rows[(size_t)i];const int s=seq-1-i;
-   if(s>=0&&s<seq){const auto& d=proc.decisions[(size_t)(s&15)];row.input=d.in;row.target=d.target;row.reason=d.reason;row.selected=s==selectedSeq;row.setVisible(true);}
+   megatune::DecisionView dv;if(s>=0&&s<seq&&proc.readDecision(s,dv)){row.input=dv.in;row.target=dv.target;row.reason=dv.reason;row.selected=s==selectedSeq;row.setVisible(true);}
    else{row.selected=false;row.setVisible(false);}
    row.repaint();}
-  if(selectedSeq>=0&&selectedSeq<seq){const auto& d=proc.decisions[(size_t)(selectedSeq&15)];if(d.target>0){actionPc=(((int)std::lround(d.target))%12+12)%12;const int root=(int)proc.value("key");const int degree=((actionPc-root)%12+12)%12;actionEnabled=proc.noteValue(degree)>.5f;}}
+  megatune::DecisionView sd;if(selectedSeq>=0&&selectedSeq<seq&&proc.readDecision(selectedSeq,sd)){if(sd.target>0){actionPc=(((int)std::lround(sd.target))%12+12)%12;const int root=(int)proc.value("key");const int degree=((actionPc-root)%12+12)%12;actionEnabled=proc.noteValue(degree)>.5f;}}
   actionName=actionPc>=0?megaTunePitchName(actionPc):juce::String();
   const int nearest=proc.currentTargetNote.load();nearestName=nearest>0?megaTuneNoteName((float)nearest):juce::String();
   enable.setButtonText(actionPc>=0?"Enable "+actionName:juce::String("Enable"));
@@ -598,7 +620,7 @@ public:
  } };
 namespace megatune {
 int historySequence(const juce::AudioProcessor& processor){if(auto* tune=dynamic_cast<const MegaTune*>(&processor))return tune->historySeq.load();return 0;}
-DecisionView historyDecision(const juce::AudioProcessor& processor,int sequence){if(auto* tune=dynamic_cast<const MegaTune*>(&processor)){const auto& d=tune->decisions[(size_t)(sequence&15)];return {d.in,d.target,d.reason};}return {};}
+DecisionView historyDecision(const juce::AudioProcessor& processor,int sequence){DecisionView v{};if(auto* tune=dynamic_cast<const MegaTune*>(&processor))tune->readDecision(sequence,v);return v;}
 void appendDecision(juce::AudioProcessor& processor,float in,float target,int reason){if(auto* tune=dynamic_cast<MegaTune*>(&processor))tune->recordDecision(in,target,reason);}
 int currentTargetNote(const juce::AudioProcessor& processor){if(auto* tune=dynamic_cast<const MegaTune*>(&processor))return tune->currentTargetNote.load();return 0;}
 int smithBufferCapacity(const juce::AudioProcessor& processor){if(auto* tune=dynamic_cast<const MegaTune*>(&processor))return tune->smithBufferCapacity();return 0;}

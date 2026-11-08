@@ -120,3 +120,27 @@ validates the measurement rig. **TD-PSOLA preserves formants at +3 st** (−3 %/
 while shifting pitch correctly (262.3 Hz measured) — a genuine positive result, and the
 first evidence-based formant claim in this project. The earlier +6 st NaN was an estimator limitation (wide poles); with a pole fallback
 PSOLA measures −6.2 %/−1.6 %, i.e. formants preserved across 0…+6 st.
+
+## Confirmed defect 6 (this pass): unsynchronised diagnostic ring (torn reads)
+
+The editor read `MegaTune::decisions[s & 15]` — a plain `struct {float in; float target;
+int reason;}` — directly while the audio thread wrote the same struct in
+`recordDecision()`. There was no seqlock, no atomic field, and no memory ordering, so a
+UI repaint could observe a half-written row (`in` from one decision, `target` from
+another).
+
+This was the "cross-thread access" item left open in the first audit; it is now
+confirmed as a real data race rather than a theoretical one.
+
+Fix:
+
+* decision fields are `std::atomic<float>` / `std::atomic<int>`;
+* writes are bracketed by an odd/even seqlock (`historyLock`), with `historySeq`
+  published by a release store after the data;
+* readers (`readDecision`) acquire the lock, copy the fields, re-check the lock, and
+  retry up to 16 times;
+* both the editor refresh path and the `historyDecision()` test API use the reader.
+
+Regression `SEQREADS`: a reader thread hammers `historySequence`/`historyDecision`
+while 600 audio blocks are processed concurrently — **7 127 235 reads, 0 inconsistent
+rows** (reason outside 0…4 or non-finite values would fail the test).
