@@ -517,6 +517,21 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   std::cout<<"SEQREADS reads="<<reads.load()<<" bad="<<bad.load()<<"\n";
   if(bad.load()!=0){std::cerr<<"decision ring produced inconsistent rows\n";return 68;}
  }
+
+ // isolated PSOLA null test: ratio 1 must reconstruct the delayed input
+ {megatune::Psola ps;ps.prepare(2048);
+  const int N=48000;std::vector<float> in(N),out(N);
+  for(int i=0;i<N;++i){in[i]=.3f*std::sin(2.0*3.14159265358979*220.0*i/48000.0);ps.setTarget(48000.0/220.0,1.0f,true);out[i]=ps.process(in[i]);}
+  int bestLag=0;double best=-1;for(int lag=0;lag<6000;++lag){double c=0;for(int i=0;i+lag<N;i+=4)c+=out[i+lag]*in[i];if(c>best){best=c;bestLag=lag;}}
+  double num=0,den=0;for(int i=0;i+bestLag<N;++i){num+=out[i+bestLag]*in[i];den+=in[i]*in[i];}
+  const double g=den>0?num/den:1.0;double res=0,sig=0;
+  for(int i=0;i+bestLag<N;++i){const double e=out[i+bestLag]-g*in[i];res+=e*e;sig+=in[i]*in[i];}
+  const double snr=10*std::log10(sig/(res+1e-20));
+  // high-frequency emphasis via first difference (crude, but sampling-rate independent)
+  double hf=0,dry=0;for(int i=1;i+bestLag<N;++i){const double d=out[i+bestLag]-out[i+bestLag-1];const double r=in[i]-in[i-1];hf+=d*d;dry+=r*r;}
+  const double hfdb=10*std::log10(hf/(dry+1e-20));
+  std::cout<<"PSOLA_NULL lag="<<bestLag<<" gain="<<g<<" null="<<snr<<" dB hf_ratio="<<hfdb<<" dB\n";
+ }
 if(p->getName()!="MegaTune")return 1;for(auto* parameter:p->getParameters()){auto name=parameter->getName(64);if(name=="Speed")parameter->setValueNotifyingHost(rangedSpeed->convertTo0to1(0.f));if(name.length()<=2)parameter->setValueNotifyingHost(1);}
 p->prepareToPlay(48000,256);std::vector<float> steady;juce::MidiBuffer midi;juce::AudioBuffer<float> buffer(2,256);double peak=0;for(int block=0;block<200;++block){for(int i=0;i<256;++i)for(int c=0;c<2;++c)buffer.setSample(c,i,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(block*256+i)/48000));p->processBlock(buffer,midi);for(int i=0;i<256;++i){float sample=buffer.getSample(0,i);if(!std::isfinite(sample)||std::abs(sample)>1)return 2;peak=juce::jmax(peak,(double)std::abs(sample));if(block>100)steady.push_back(sample);}}if(peak<.1)return 3;int bestLag=0;double bestScore=-1;for(int lag=100;lag<120;++lag){double cross=0;for(int i=0;i<16000;++i)cross+=steady[i]*steady[i+lag];if(cross>bestScore){bestScore=cross;bestLag=lag;}}double frequency=48000.0/bestLag;std::cout<<"Corrected frequency: "<<frequency<<" Hz\n";if(std::abs(frequency-440)>3)return 7;std::unique_ptr<juce::AudioProcessor> visual(createPluginFilter());std::unique_ptr<juce::AudioProcessorEditor> editor(visual->createEditorAndMakeActive());if(!editor||editor->getWidth()!=1120)return 6;
  auto pumpEditor=[&]{megatune::tickEditor(*editor);};

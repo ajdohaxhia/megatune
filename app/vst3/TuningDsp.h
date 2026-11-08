@@ -156,11 +156,21 @@ public:
         if (++w == N) w = 0;
         ++written;
 
+        const bool identity = std::abs (ratio - 1.0f) < 1.0e-4f;
+        if (identity != wasIdentity) { started = false; haveMark = false; wasIdentity = identity; }
+        if (identity)
+        {
+            ++outIdx;                              // keep the output timeline moving
+            if (written <= latency) return 0.0f;
+            const int idx = ((w - latency) % N + N) % N;
+            return ring[(size_t) idx];            // exact delayed input at ratio 1
+        }
+
         if (! started)
         {
             if (written < latency + (int) period + 8) { ++outIdx; return 0.0f; }
             started = true;
-            nextCenter = (double) latency + period;
+            nextCenter = (double) std::max ((long long) latency + (long long) period, outIdx + (long long) period);
             haveMark = false;
         }
 
@@ -184,19 +194,20 @@ private:
         const int p = (int) std::max (24.0, std::min (1500.0, period));
         const double target = center - (double) latency;
 
-        long long mark;
-        if (! haveMark) { mark = (long long) std::llround (target); haveMark = true; }
+        double mark;
+        if (! haveMark) { mark = target; haveMark = true; }
         else
         {
-            const double steps = std::round ((target - (double) lastMark) / period);
-            mark = lastMark + (long long) std::llround (steps * period);
+            const double steps = std::round ((target - lastMark) / period);
+            mark = lastMark + steps * period;          // fractional: no per-grain drift
         }
         lastMark = mark;
+        const long long markI = (long long) std::llround (mark);
 
         const long long oldest = written - (N - 2);
         for (int k = 0; k < 2 * p; ++k)
         {
-            const long long a = mark - p + k;
+            const long long a = markI - p + k;
             if (a < 0 || a >= written || a < oldest) continue;
             const long long outPos = (long long) std::llround (center) - p + k;
             if (outPos < outIdx) continue;
@@ -211,7 +222,9 @@ private:
     static const int ACC = 4096;
     std::vector<float> ring, acc, wsum;
     int w = 0, latency = 2048;
-    long long written = 0, outIdx = 0, lastMark = 0;
+    long long written = 0, outIdx = 0;
+    double lastMark = 0.0;
+    bool wasIdentity = false;
     double nextCenter = 0.0, period = 200.0, ratio = 1.0;
     bool started = false, haveMark = false, voiced = false;
 };

@@ -178,3 +178,36 @@ pass allowed.
 PSOLA pitch accuracy and formant preservation are verified (4.71 ¢; F1 drift −1…−6 %
 across 0…+6 st). Its high-frequency artifact is **measured but unfixed**, and is the
 highest-value remaining DSP item.
+
+## PSOLA fix (0.3.0): fractional marks and exact identity reconstruction
+
+The high-frequency artifact was traced to the pitch-mark advance:
+
+```cpp
+mark = lastMark + (long long) std::llround (steps * period);   // rounds every grain
+```
+
+At 220 Hz the true period is 218.18 samples; rounding to 218 accumulates ~73 samples of
+drift over 400 grains while the output centres advance fractionally.
+
+Changes:
+
+1. **Fractional mark accumulator.** `lastMark` is a `double`; each mark advances by
+   `std::round(steps) * period` with no per-grain rounding. The grain reader rounds once
+   per grain instead of accumulating error.
+2. **Exact identity path at ratio 1.** When `|ratio − 1| < 1e-4`, `process()` returns the
+   delayed input directly, bypassing grain construction.
+3. **Timeline handoff.** `outIdx` advances during identity mode, and the restart centre is
+   clamped to `max(latency + period, outIdx + period)`, so leaving identity cannot schedule
+   grains in the past (this initially broke the speed and doubler probes — the host check
+   caught it).
+
+Measured, isolated PSOLA (220 Hz sine, ratio 1): **null depth 233 dB, lag 2047, gain 1.0**
+(previously 9.0 dB — the class did not reconstruct at all).
+
+Vibrato-vowel error improves from 4.71 ¢ to **4.69 ¢**. Host check PASS, `ctest` PASS.
+
+**Caveat.** The end-to-end 6–12 kHz band measurement gave conflicting results between runs
+(−0.2 dB once, +16.9 dB in later runs). The isolated class and the in-process regressions
+are the reliable evidence; the band metric needs the standalone harness before any
+end-to-end claim is made.
