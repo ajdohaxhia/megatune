@@ -4,12 +4,12 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four
 selectable pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.2.0.** Pitch correction, latency reporting,
+> **Status: 0.2.1.** Pitch correction, latency reporting,
 > presets, automation and the exclude/undo workflow are verified. **Formant preservation is
 > unvalidated** and the build is **ad-hoc signed, not notarized**. See [Status](#status)
 > before shipping anything.
 >
-> 0.2.0 makes the editor scale into a **resizable 1120×802 default window**
+> 0.2.1 makes the editor scale into a **resizable 1120×802 default window**
 > (fixed aspect, minimum 740×530), so it fits Logic and smaller displays. The vendor/bundle
 > identity is now **ademusic** (`AdMs`, `com.ademusic.megatune`).
 

@@ -35,7 +35,7 @@ public:
   p.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"range",1},"Range",juce::NormalisableRange<float>(1,12,1.f),12.f));
   p.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{"engine",1},"TD-PSOLA",true));
   p.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{"smith",1},"Signalsmith",false));
-  p.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{"smithcomp",1},"Smith Comp",true));
+  p.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{"smithcomp",1},"Smith Comp",false));
   return p;
  }
  MegaTune():AudioProcessor(BusesProperties().withInput("Input",juce::AudioChannelSet::stereo(),true).withOutput("Output",juce::AudioChannelSet::stereo(),true)),state(*this,nullptr,"MegaTune",parameters()){const char* ids[]={"speed","sustain","amount","bypass","stabilize","key","doubler","width","reference","lowlatency","shift","range","engine","smith","smithcomp"};for(int i=0;i<15;++i)raw[i]=state.getRawParameterValue(ids[i]);for(int i=0;i<12;++i)noteRaw[i]=state.getRawParameterValue("note"+juce::String(i));}
@@ -115,7 +115,7 @@ void changeProgramName(int,const juce::String&)override{}
     history[hist]=mono;hist=(hist+1)%16384;if(++analysisCount>=512){analysisCount=0;analyse();}write=(write+1)%ringSize;
     const float in0=b.getSample(0,i),in1=b.getSample(second,i);sIn[0][i]=std::isfinite(in0)?in0:0.f;sIn[1][i]=std::isfinite(in1)?in1:0.f;}
    smith.setTransposeSemitones((float)target,0.f);
-   smith.setFormantSemitones(0.f,value("smithcomp")>.5f);
+   smith.setFormantSemitones(0.f,false); // formant compensation disabled: measured to cancel pitch shift (see audit)
    const float* ip[2]={sIn[0].data(),sIn[1].data()};float* op[2]={sOut[0].data(),sOut[1].data()};
    smith.process(ip,n,op,n);
    const int outputStart=(write-(n%ringSize)+ringSize)%ringSize;float outPeak=0;
