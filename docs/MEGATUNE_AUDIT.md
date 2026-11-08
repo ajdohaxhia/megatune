@@ -72,8 +72,12 @@ now reconciled at **0.2.0** and the engine description matches the code.
   freedom depends on those accessors using an acquire/release seqlock — not audited here.
 - **Engine switching** republishes latency at `prepareToPlay` (verified 2048 ↔ 5760 ↔
   512), but host-side re-compensation during playback is untested.
-- **Formant preservation** remains unvalidated because the measurement estimator
-  misclassifies known fixtures; no DSP claim can be made until it is fixed.
+- **Formant measurement** has been repaired and calibrated (docs/FORMANT_CALIBRATION.md):
+  the estimator no longer returns NaN on voiced excitation, typical error is 1–2 %, and
+  known ±5/±10 % drift is detected with correct sign and ≤3.6 pp magnitude error. On the
+  dry-vocal fixture TD-PSOLA shows −0.1 %/−0.6 % and Signalsmith +1.0 %/−1.1 % F1/F2
+  drift — inside the uncertainty band, i.e. "no drift detectable", not proof of
+  preservation. A user-facing Formant control still requires a ±10 % separation test.
 
 ## Prioritised next work
 

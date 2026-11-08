@@ -31,33 +31,38 @@ def response_peaks(formants, sr=SR, n=8192):
           if mag[i] > mag[i-1] and mag[i] > mag[i+1] and 200 < fr[i] < 4000]
     return [round(p) for p in pk[:3]]
 
-def lpc_poles(x, sr=SR, order=12):
-    x = x - x.mean()
-    r = np.correlate(x, x, "full")[len(x)-1:len(x)+order]
-    a = np.zeros(order + 1); a[0] = 1.0; e = r[0] + 1e-12
-    for i in range(1, order + 1):
+def _levinson(r, order, ridge=1e-9):
+    r = np.array(r, float); r[0] = r[0]*(1.0+ridge) + 1e-15
+    a = np.zeros(order+1); a[0] = 1.0; e = r[0]
+    for i in range(1, order+1):
         acc = r[i] + (np.dot(a[1:i], r[i-1:0:-1]) if i > 1 else 0.0)
-        k = -acc / e
-        if i > 1: a[1:i] = a[1:i] + k * a[i-1:0:-1]
-        a[i] = k
-        e *= (1 - k * k)
+        if e <= 1e-20 or not np.isfinite(e): return None
+        k = -acc/e
+        if not np.isfinite(k) or abs(k) >= 0.9999: return None
+        if i > 1: a[1:i] = a[1:i] + k*a[i-1:0:-1]
+        a[i] = k; e *= (1-k*k)
+    return a if np.all(np.isfinite(a)) else None
+
+def lpc_poles(x, sr=SR, order=12):
+    x = np.asarray(x, float); x = x - x.mean()
+    x = x * np.hanning(len(x))
+    if np.sqrt(np.mean(x**2)) < 1e-7: return []
+    r = np.correlate(x, x, "full")[len(x)-1:len(x)+order]
+    a = _levinson(r, order)
+    if a is None: return []
     out = []
     for z in np.roots(a):
         if np.imag(z) <= 0: continue
-        f = np.angle(z) * sr / (2 * np.pi)
-        bw = -np.log(abs(z)) * sr / np.pi
-        if 150 < f < 4000 and bw < 600: out.append(f)
+        f = np.angle(z)*sr/(2*np.pi); bw = -np.log(abs(z))*sr/np.pi
+        if 150 < f < 4000 and bw < 700: out.append(f)
     return sorted(out)
 
 def formants_of(x, sr=SR, order=12):
     W = 2048; res = []
     for s in range(0, len(x) - W, W // 2):
-        fr = x[s:s+W]
-        if np.sqrt(np.mean(fr**2)) < 1e-5: continue
-        fr = fr * np.hanning(W)
-        p = lpc_poles(fr, sr, order)
-        if len(p) >= 3: res.append(p[:3])
-    return np.median(np.array(res), axis=0) if res else np.array([np.nan]*3)
+        p = lpc_poles(x[s:s+W], sr, order)
+        if len(p) >= 2: res.append(p[:2])
+    return np.median(np.array(res), axis=0) if res else np.array([np.nan, np.nan])
 
 def run():
     rng = np.random.default_rng(3)
