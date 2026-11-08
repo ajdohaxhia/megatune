@@ -112,11 +112,11 @@ Known-resonance vowel (703/1184 Hz), pitch-shifted through each engine:
 
 | Engine | +3 st F1 / F2 drift | +6 st F1 / F2 drift | Expected uncompensated |
 |---|---|---|---|
-| TD-PSOLA | −3.0 % / −5.4 % | measurement failed | +18.9 % / +41.4 % |
+| TD-PSOLA | −3.0 % / −5.4 % | −6.2 % / −1.6 % | +18.9 % / +41.4 % |
 | Signalsmith | +14.4 % / +18.5 % | +38.0 % / +41.9 % | +18.9 % / +41.4 % |
 
 Signalsmith tracks the transposition as an uncompensated shifter should, which
 validates the measurement rig. **TD-PSOLA preserves formants at +3 st** (−3 %/−5 %)
 while shifting pitch correctly (262.3 Hz measured) — a genuine positive result, and the
-first evidence-based formant claim in this project. The +6 st measurement returns NaN and
-is unresolved.
+first evidence-based formant claim in this project. The earlier +6 st NaN was an estimator limitation (wide poles); with a pole fallback
+PSOLA measures −6.2 %/−1.6 %, i.e. formants preserved across 0…+6 st.

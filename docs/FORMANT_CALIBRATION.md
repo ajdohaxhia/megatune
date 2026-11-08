@@ -77,3 +77,27 @@ A defensible formant claim now requires: a fixture with a known ±10 % shift, th
 engine's measured drift must separate from zero by more than the 3.6 pp error
 band. That test is the next step before any user-facing Formant control is
 exposed.
+
+## Engine separation (final, hybrid estimator)
+
+Known-resonance vowel (703/1184 Hz) pitch-shifted through the real engines. The
+hybrid estimator uses LPC-envelope peaks and falls back to pole angles when the
+envelope peak-picker fails (wide/merged poles), which was the cause of the earlier
+NaN at +6 st.
+
+| Engine | 0 st | +3 st | +6 st | Uncompensated expectation |
+|---|---|---|---|---|
+| **TD-PSOLA** | −1.0 % / −5.3 % | −3.0 % / −5.4 % | −6.2 % / −1.6 % | +18.9 % / +41.4 % |
+| **Signalsmith** | −3.0 % / −1.3 % | +14.4 % / +18.5 % | +38.0 % / +41.9 % | +18.9 % / +41.4 % |
+
+(F1 / F2 drift vs the unshifted vowel.)
+
+**Conclusion.** TD-PSOLA preserves formant structure across the tested range
+(0…+6 st): drift stays within a few percent while pitch transposes correctly
+(220.2 / 262.3 / 311.7 Hz measured). Signalsmith behaves as an uncompensated
+shifter and moves the formants with the pitch. The earlier +6 st "failure" was a
+measurement artefact, not an audio defect — the pole frequencies at +6 st
+(659/1165/2532 Hz) are essentially unchanged from 0 st (654/1159/2537 Hz).
+
+Smith Comp, which is meant to compensate formants, does not work: it cancels the
+pitch shift (see MEGATUNE_AUDIT.md, defect 5) and is disabled.

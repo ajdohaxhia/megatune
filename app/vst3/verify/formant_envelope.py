@@ -19,7 +19,16 @@ def frame_formants(x, sr=SR, order=14, W=2048, fmin=200, fmax=4000):
         if merged and f[i]-f[merged[-1]] < 150:
             if logH[i] > logH[merged[-1]]: merged[-1] = i
         else: merged.append(i)
-    return [f[i] for i in merged[:2]]
+    peaks = [f[i] for i in merged[:2]]
+    if len(peaks) < 2:
+        # envelope peak-picking fails when poles are wide/merged: fall back to pole angles
+        pol = []
+        for z in np.roots(a):
+            if np.imag(z) <= 0: continue
+            pf = np.angle(z)*sr/(2*np.pi); bw = -np.log(abs(z))*sr/np.pi
+            if 150 < pf < 4000 and bw < 700: pol.append(pf)
+        if len(pol) >= 2: peaks = sorted(pol)[:2]
+    return peaks
 
 def formants(x, sr=SR, order=14, W=2048):
     res = []
