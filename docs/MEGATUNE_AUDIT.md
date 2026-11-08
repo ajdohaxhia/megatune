@@ -144,3 +144,37 @@ Fix:
 Regression `SEQREADS`: a reader thread hammers `historySequence`/`historyDecision`
 while 600 audio blocks are processed concurrently — **7 127 235 reads, 0 inconsistent
 rows** (reason outside 0…4 or non-finite values would fail the test).
+
+## PSOLA transparency and pitch-mark alignment (investigated)
+
+### Measured artifact
+
+Zero-shift render of a known-resonance vowel, per-band energy vs the dry source:
+
+| Path | 100–3 k | 3–6 k | **6–12 k** |
+|---|---|---|---|
+| TD-PSOLA (0 st) | −0.1 dB | +1.0 dB | **+16.9 dB** |
+| Signalsmith (0 st) | −0.2…−0.4 dB | −0.4 dB | −2.5 dB |
+| TD-PSOLA (+3 st) | −4.4…+1.6 dB | −0.1 dB | **+13.8 dB** |
+
+Output level is correct (−0.0 dB overall), so this is not a gain error: PSOLA injects
+broadband energy above 6 kHz. That is audible as added harshness and is consistent with
+grain phase discontinuities, not with resampling (grains are integer-indexed).
+
+### Failed fix, reverted
+
+Replacing the period-rounded mark with "snap to the strongest local peak" within
+±period/4 **degraded tuning**: the vibrato-vowel mean error went from 4.71 ¢ to
+**27.58 ¢** and the regression failed. The search locks onto formant ringing rather than
+the glottal pulse, so successive grains land at inconsistent phases.
+
+Reverted; the working 4.71 ¢ behaviour is preserved. A correct fix needs
+correlation-based marks constrained by period continuity (compare each candidate against
+the previous grain and reject jumps > period/2), which is a larger DSP change than this
+pass allowed.
+
+### Status
+
+PSOLA pitch accuracy and formant preservation are verified (4.71 ¢; F1 drift −1…−6 %
+across 0…+6 st). Its high-frequency artifact is **measured but unfixed**, and is the
+highest-value remaining DSP item.
