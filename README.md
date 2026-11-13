@@ -9,6 +9,21 @@ selectable pitch engines, factory presets and a fully themed editor.
 > unvalidated** and the build is **ad-hoc signed, not notarized**. See [Status](#status)
 > before shipping anything.
 >
+> 0.3.1 reworks the audio path (sources only; rebuild with `app/vst3/build.sh` on macOS):
+>
+> - **Tuning**: Speed and Sustain now actually drive the default TD-PSOLA engine (the
+>   ratio used to jump straight to the target, so the knob did nothing). The PSOLA engine
+>   is stereo-linked with correlation-aligned pitch marks, the period is refined at full
+>   sample rate on the audio leaving the shifter, and unvoiced audio passes through dry.
+> - **Doubler**: two independently detuned and delayed voices instead of one static 18 ms
+>   echo (which only comb-filtered the vocal).
+> - **Stereo Width**: works on its own. It pans the doubled voices apart and adds a pure
+>   side signal that widens a mono vocal and cancels completely in mono.
+>
+> Measured with `app/vst3/verify/bench.py` (synthetic vowel, ±35 cent vibrato): mean pitch
+> error 24 cents in, about 1 cent out at Speed 0; Width 100 alone gives L/R correlation
+> 0.49 with a mono-sum residual below −150 dB. Not yet auditioned on real vocals in a DAW.
+>
 > 0.3.0 makes the editor scale into a **resizable 1120×802 default window**
 > (fixed aspect, minimum 740×530), so it fits Logic and smaller displays. The vendor/bundle
 > identity is now **ademusic** (`AdMs`, `com.ademusic.megatune`).
@@ -55,7 +70,7 @@ their owners.
 
 | Engine | Latency @ 48 kHz | Notes |
 |---|---|---|
-| Quality | **2048 samples / 42.7 ms** | default; 4-grain overlap-add with cubic interpolation |
+| Quality | **2048 samples / 42.7 ms** | default; stereo TD-PSOLA with correlation-aligned marks |
 | Low Latency | **512 samples / 10.7 ms** | same TD-PSOLA engine, shorter analysis window |
 | TD-PSOLA | 2048 samples | pitch-synchronous overlap-add (also Low Latency) |
 | Signalsmith | **5760 samples / 120 ms** | with optional formant compensation |
@@ -182,7 +197,9 @@ auval -v aufx Mgtn AdMs          # after installing the AU component
 ```
 
 Measurement harnesses used during development live in `app/vst3/verify/`
-(`formant_harness.py`, `paired2.py`, `score.py`, `measure.py`).
+(`formant_harness.py`, `paired2.py`, `score.py`, `measure.py`), plus `bench.py`, which
+drives the in-process `MegaTuneBench` target to measure tuning error, doubler level and
+stereo width / mono compatibility.
 
 ---
 

@@ -115,118 +115,359 @@ inline float median3 (float a, float b, float c)
 
 namespace megatune {
 
-// Streaming monophonic TD-PSOLA.
-// Output marks live on the output timeline and advance by sourcePeriod/ratio
-// (fractional, kept in a double). Each grain uses the nearest source pitch mark
-// to (outputMark - latency), so source marks repeat or skip as the ratio
-// requires, instead of the read head being clamped. Overlap-add is normalised
-// by the accumulated window weight.
-class Psola
+inline float hermite4 (float y0, float y1, float y2, float y3, float t)
+{
+    return y1 + 0.5f * t * (y2 - y0 + t * (2.0f * y0 - 5.0f * y1 + 4.0f * y2 - y3
+                                           + t * (3.0f * (y1 - y2) + y3 - y0)));
+}
+
+inline int nextPow2 (int v) { int n = 1; while (n < v) n <<= 1; return n; }
+
+// Refine a coarse period estimate on the full-rate signal. x[0] is the newest
+// sample and at least n + coarse + radius + 2 samples must be readable.
+// Returns the period (in samples) minimising the normalised squared difference,
+// with parabolic interpolation, or the coarse value when the fit is degenerate.
+inline float refinePeriod (const float* x, int n, float coarse, int radius)
+{
+    const int centre = (int) std::lround (coarse);
+    const int lo = std::max (2, centre - radius), hi = centre + radius;
+    const int count = hi - lo + 1;
+    if (count < 3 || count > 64) return coarse;
+    float d[64];
+    int best = 0;
+    for (int q = 0; q < count; ++q)
+    {
+        const int tau = lo + q;
+        float diff = 0.0f, energy = 1.0e-12f;
+        for (int j = 0; j < n; ++j)
+        {
+            const float a = x[j], b = x[j + tau], e = a - b;
+            diff += e * e; energy += a * a + b * b;
+        }
+        d[q] = diff / energy;
+        if (d[q] < d[best]) best = q;
+    }
+    if (best == 0 || best == count - 1) return coarse;
+    const float denom = d[best - 1] - 2.0f * d[best] + d[best + 1];
+    float offset = std::abs (denom) > 1.0e-12f ? 0.5f * (d[best - 1] - d[best + 1]) / denom : 0.0f;
+    offset = std::min (0.5f, std::max (-0.5f, offset));
+    return (float) (lo + best) + offset;
+}
+
+// Streaming stereo TD-PSOLA.
+//
+// Output grains live on the output timeline and advance by period/ratio. Each
+// grain is a two-period Hann window cut from the source around a pitch mark.
+// Marks advance by whole periods from the previous mark and are then aligned to
+// it by normalised cross-correlation on the mono sum (sub-sample, parabolic),
+// so consecutive grains stay phase coherent even when the detected period is
+// slightly off or drifting. Both channels share the same marks, which keeps the
+// stereo image intact. Overlap-add is normalised by the summed window weight.
+//
+// The output is cross-faded against the latency-aligned dry signal: unvoiced
+// material and ratio == 1 pass through bit-exactly, and there are no gaps when
+// the shifter engages.
+class StereoPsola
 {
 public:
-    void prepare (int latencySamples)
+    void prepare (int latencySamples, double sampleRate)
     {
-        ring.assign ((size_t) N, 0.0f);
-        acc.assign ((size_t) ACC, 0.0f);
-        wsum.assign ((size_t) ACC, 0.0f);
-        latency = latencySamples;
+        latency = capacity = std::max (1, latencySamples);
+        maxPeriod = std::max (64.0, sampleRate / 55.0);
+        minPeriod = std::max (8.0, sampleRate / 1400.0);
+        accSize = nextPow2 ((int) (4.0 * maxPeriod) + 64);
+        ringSize = nextPow2 (latency + (int) (8.0 * maxPeriod) + 64);
+        for (int c = 0; c < 2; ++c)
+        {
+            ring[c].assign ((size_t) ringSize, 0.0f);
+            acc[c].assign ((size_t) accSize, 0.0f);
+        }
+        wsum.assign ((size_t) accSize, 0.0f);
+        fadeIn = (float) (1.0 / (0.004 * sampleRate));
+        fadeOut = (float) (1.0 / (0.012 * sampleRate));
         reset();
     }
 
     void reset()
     {
-        std::fill (ring.begin(), ring.end(), 0.0f);
-        std::fill (acc.begin(), acc.end(), 0.0f);
+        for (int c = 0; c < 2; ++c)
+        {
+            std::fill (ring[c].begin(), ring[c].end(), 0.0f);
+            std::fill (acc[c].begin(), acc[c].end(), 0.0f);
+        }
         std::fill (wsum.begin(), wsum.end(), 0.0f);
-        w = 0; written = 0; outIdx = 0; nextCenter = 0.0;
-        period = 200.0; ratio = 1.0; lastMark = 0; haveMark = false;
-        started = false; voiced = false;
+        written = 0; nextCenter = 0.0; lastMark = 0.0;
+        period = std::min (maxPeriod, std::max (minPeriod, 200.0));
+        ratio = 1.0; mix = 0.0f; active = false; haveMark = false;
     }
 
-    void setTarget (float sourcePeriod, float r, bool isVoiced)
+    // Change the dry/wet delay without reallocating (never above the prepared one).
+    void setLatency (int latencySamples)
     {
-        if (sourcePeriod > 24.0f && sourcePeriod < 1500.0f) period = sourcePeriod;
-        ratio = std::max (0.25f, std::min (4.0f, r));
-        voiced = isVoiced;
+        const int l = std::max (1, std::min (capacity, latencySamples));
+        if (l == latency) return;
+        latency = l; active = false; haveMark = false; mix = 0.0f;
+        for (int c = 0; c < 2; ++c) std::fill (acc[c].begin(), acc[c].end(), 0.0f);
+        std::fill (wsum.begin(), wsum.end(), 0.0f);
     }
 
-    float process (float in)
+    void setPeriod (float sourcePeriod)
     {
-        ring[(size_t) w] = in;
-        if (++w == N) w = 0;
+        if (sourcePeriod >= minPeriod && sourcePeriod <= maxPeriod) period = sourcePeriod;
+    }
+    void setRatio (float r) { ratio = std::max (0.25f, std::min (4.0f, r)); }
+
+    // in/out: two samples (L, R). `voiced` selects the shifted path.
+    void process (const float* in, float* out, bool voiced)
+    {
+        const long long t = written;                       // index of this sample
+        const int rm = ringSize - 1, am = accSize - 1;
+        ring[0][(size_t) (t & rm)] = in[0];
+        ring[1][(size_t) (t & rm)] = in[1];
         ++written;
 
-        const bool identity = std::abs (ratio - 1.0f) < 1.0e-4f;
-        if (identity != wasIdentity) { started = false; haveMark = false; wasIdentity = identity; }
-        if (identity)
+        float dry[2] = { 0.0f, 0.0f };
+        if (t >= latency)
         {
-            ++outIdx;                              // keep the output timeline moving
-            if (written <= latency) return 0.0f;
-            const int idx = ((w - latency) % N + N) % N;
-            return ring[(size_t) idx];            // exact delayed input at ratio 1
+            dry[0] = ring[0][(size_t) ((t - latency) & rm)];
+            dry[1] = ring[1][(size_t) ((t - latency) & rm)];
         }
 
-        if (! started)
+        const bool want = voiced && std::abs (ratio - 1.0) >= 1.0e-4;
+        if (want && ! active)
         {
-            if (written < latency + (int) period + 8) { ++outIdx; return 0.0f; }
-            started = true;
-            nextCenter = (double) std::max ((long long) latency + (long long) period, outIdx + (long long) period);
-            haveMark = false;
+            active = true; haveMark = false;
+            nextCenter = (double) t + period;
+        }
+        else if (! want && active && mix <= 0.0f)
+        {
+            active = false;
+            for (int c = 0; c < 2; ++c) std::fill (acc[c].begin(), acc[c].end(), 0.0f);
+            std::fill (wsum.begin(), wsum.end(), 0.0f);
         }
 
-        int guard = 0;
-        while (nextCenter - period <= (double) outIdx && guard++ < 8)
+        float wet[2] = { dry[0], dry[1] };
+        if (active)
         {
-            addGrain (nextCenter);   // grains always scheduled; voicing only drives the mix
-            nextCenter += period / ratio;
+            int guard = 0;
+            while (nextCenter - period <= (double) (t + 1) && guard++ < 16)
+            {
+                addGrain (nextCenter, t);
+                nextCenter += period / ratio;
+            }
+            const size_t pos = (size_t) (t & am);
+            const float w = wsum[pos];
+            for (int c = 0; c < 2; ++c)
+            {
+                const float a = acc[c][pos];
+                wet[c] = w >= fillBelow ? a / w : (a + (fillBelow - w) * dry[c]) / fillBelow;
+                acc[c][pos] = 0.0f;
+            }
+            wsum[pos] = 0.0f;
         }
 
-        const int pos = (int) (outIdx % ACC);
-        const float v = wsum[(size_t) pos] > 1.0e-6f ? acc[(size_t) pos] / wsum[(size_t) pos] : 0.0f;
-        acc[(size_t) pos] = 0.0f; wsum[(size_t) pos] = 0.0f;
-        ++outIdx;
-        return v;
+        mix = want ? std::min (1.0f, mix + fadeIn) : std::max (0.0f, mix - fadeOut);
+        out[0] = dry[0] + mix * (wet[0] - dry[0]);
+        out[1] = dry[1] + mix * (wet[1] - dry[1]);
     }
 
 private:
-    void addGrain (double center)
+    float mono (long long a) const
     {
-        const int p = (int) std::max (24.0, std::min (1500.0, period));
+        const size_t i = (size_t) (a & (ringSize - 1));
+        return ring[0][i] + ring[1][i];
+    }
+
+    // Align a candidate mark to the previous one by normalised cross-correlation.
+    double refine (double candidate, double reference, int p, long long newest) const
+    {
+        const long long cand = (long long) std::llround (candidate);
+        const long long ref = (long long) std::llround (reference);
+        const long long oldest = written - ringSize + 2;
+        int radius = std::max (2, std::min (p / 4, 240));
+        radius = (int) std::min<long long> (radius, newest - cand);
+        if (radius < 1 || ref - p < oldest || cand - radius - p < oldest) return candidate;
+        const int step = p > 256 ? 2 : 1;
+        float bestScore = 0.0f, scores[3] = { 0.0f, 0.0f, 0.0f };
+        int bestDelta = 0; bool found = false;
+        float prev = 0.0f; bool havePrev = false, needNext = false;
+        for (int delta = -radius; delta <= radius; ++delta)
+        {
+            float cross = 0.0f, energy = 1.0e-9f;
+            for (int j = -p; j < p; j += step)
+            {
+                const float a = mono (cand + delta + j);
+                cross += a * mono (ref + j);
+                energy += a * a;
+            }
+            // mild preference for the predicted position keeps noise from wandering
+            const float bias = 1.0f - 0.08f * (float) std::abs (delta) / (float) radius;
+            const float score = cross / std::sqrt (energy) * bias;
+            if (needNext) { scores[2] = score; needNext = false; }
+            if (score > bestScore)
+            {
+                bestScore = score; bestDelta = delta; found = true;
+                scores[0] = havePrev ? prev : score; scores[1] = score; scores[2] = score;
+                needNext = true;
+            }
+            prev = score; havePrev = true;
+        }
+        if (! found) return candidate;
+        const float denom = scores[0] - 2.0f * scores[1] + scores[2];
+        float frac = std::abs (denom) > 1.0e-12f ? 0.5f * (scores[0] - scores[2]) / denom : 0.0f;
+        frac = std::min (0.5f, std::max (-0.5f, frac));
+        return (double) (cand + bestDelta) + (double) frac;
+    }
+
+    void addGrain (double center, long long t)
+    {
+        const double pd = std::max (minPeriod, std::min (maxPeriod, period));
+        const int p = (int) std::ceil (pd);
+        const long long newest = written - 3 - p;         // mark + p + 2 must be written
         const double target = center - (double) latency;
 
         double mark;
-        if (! haveMark) { mark = target; haveMark = true; }
+        if (! haveMark)
+        {
+            mark = std::min (target, (double) newest);
+            haveMark = true;
+        }
         else
         {
-            const double steps = std::round ((target - lastMark) / period);
-            mark = lastMark + steps * period;          // fractional: no per-grain drift
+            const double steps = std::round ((target - lastMark) / pd);
+            mark = lastMark + steps * pd;
+            while (mark > (double) newest) mark -= pd;
+            if (std::abs (mark - lastMark) > 0.5 && std::abs (mark - lastMark) < 8.0 * pd)
+                mark = std::min ((double) newest, refine (mark, lastMark, p, newest));
         }
         lastMark = mark;
-        const long long markI = (long long) std::llround (mark);
 
-        const long long oldest = written - (N - 2);
-        for (int k = 0; k < 2 * p; ++k)
+        const long long k0 = std::max ((long long) std::ceil (center - pd), t);
+        const long long k1 = (long long) std::floor (center + pd);
+        const double s0 = mark - center + (double) k0;
+        const long long a0 = (long long) std::floor (s0);
+        const float frac = (float) (s0 - (double) a0);
+        const long long oldest = written - ringSize + 2;
+        const int rm = ringSize - 1, am = accSize - 1;
+        const double winScale = 3.14159265358979323846 / pd;
+        for (long long k = k0; k <= k1; ++k)
         {
-            const long long a = markI - p + k;
-            if (a < 0 || a >= written || a < oldest) continue;
-            const long long outPos = (long long) std::llround (center) - p + k;
-            if (outPos < outIdx) continue;
-            const float win = 0.5f - 0.5f * std::cos (6.2831853f * (k + 0.5f) / (float) (2 * p));
-            const int pos = (int) (((outPos % ACC) + ACC) % ACC);
-            acc[(size_t) pos] += ring[(size_t) (a % N)] * win;
-            wsum[(size_t) pos] += win;
+            const long long a = a0 + (k - k0);
+            if (a - 1 < 0 || a - 1 < oldest || a + 2 >= written) continue;
+            const float win = 0.5f + 0.5f * (float) std::cos (winScale * ((double) k - center));
+            const size_t pos = (size_t) (k & am);
+            for (int c = 0; c < 2; ++c)
+            {
+                const auto& r = ring[c];
+                acc[c][pos] += win * hermite4 (r[(size_t) ((a - 1) & rm)], r[(size_t) (a & rm)],
+                                               r[(size_t) ((a + 1) & rm)], r[(size_t) ((a + 2) & rm)], frac);
+            }
+            wsum[pos] += win;
         }
     }
 
-    static const int N = 16384;
-    static const int ACC = 4096;
-    std::vector<float> ring, acc, wsum;
-    int w = 0, latency = 2048;
-    long long written = 0, outIdx = 0;
-    double lastMark = 0.0;
-    bool wasIdentity = false;
-    double nextCenter = 0.0, period = 200.0, ratio = 1.0;
-    bool started = false, haveMark = false, voiced = false;
+    static constexpr float fillBelow = 0.08f;
+    std::vector<float> ring[2], acc[2], wsum;
+    int ringSize = 16384, accSize = 4096, latency = 2048, capacity = 2048;
+    long long written = 0;
+    double nextCenter = 0.0, period = 200.0, ratio = 1.0, lastMark = 0.0;
+    double maxPeriod = 872.0, minPeriod = 34.0;
+    float mix = 0.0f, fadeIn = 0.005f, fadeOut = 0.002f;
+    bool active = false, haveMark = false;
+};
+
+// Vocal doubler and stereo widener.
+//
+// Two extra voices are read from a short delay line fed with the (tuned) mono
+// sum. Each voice has its own base delay and a slow two-sine delay modulation,
+// which gives it an independent, drifting detune of a few cents and a timing
+// offset of 12-30 ms, the two cues of a real double take.
+//
+//   Doubler  blends the two voices in (dry/wet, up to an equal-power double).
+//   Width    pans the doubled voices apart (centre -> hard L/R) and, on its own,
+//            adds the voice difference as a pure side signal. That widens a
+//            mono vocal and cancels completely when the output is summed to
+//            mono. Any stereo content already present is widened as well.
+class StereoDoubler
+{
+public:
+    void prepare (double sampleRate)
+    {
+        rate = sampleRate;
+        size = nextPow2 ((int) (0.060 * sampleRate) + 16);
+        line.assign ((size_t) size, 0.0f);
+        smooth = (float) (1.0 - std::exp (-1.0 / (0.02 * sampleRate)));
+        // one-pole high-pass (~120 Hz) on the voices keeps low-end mono and tight
+        hpCoef = (float) std::exp (-2.0 * 3.14159265358979323846 * 120.0 / sampleRate);
+        reset();
+    }
+
+    void reset()
+    {
+        std::fill (line.begin(), line.end(), 0.0f);
+        write = 0; amount = 0.0f; width = 0.0f;
+        for (auto& v : voices) { v.phaseA = v.startA; v.phaseB = v.startB; v.lp = 0.0f; }
+    }
+
+    // l/r in-out. amount and width are 0..1. With stereo == false only l is used.
+    void process (float& l, float& r, float amountTarget, float widthTarget, bool stereo)
+    {
+        const int mask = size - 1;
+        const float mid = stereo ? 0.5f * (l + r) : l;
+        line[(size_t) write] = mid;
+
+        amount += (amountTarget - amount) * smooth;
+        width += (widthTarget - width) * smooth;
+
+        float v[2];
+        for (int i = 0; i < 2; ++i)
+        {
+            auto& vc = voices[i];
+            const double ms = vc.baseMs + vc.depthA * std::sin (vc.phaseA) + vc.depthB * std::sin (vc.phaseB);
+            vc.phaseA += twoPi * vc.rateA / rate; if (vc.phaseA > twoPi) vc.phaseA -= twoPi;
+            vc.phaseB += twoPi * vc.rateB / rate; if (vc.phaseB > twoPi) vc.phaseB -= twoPi;
+            const double pos = (double) write - ms * 0.001 * rate;
+            const double fl = std::floor (pos);
+            const int a = (int) fl; const float t = (float) (pos - fl);
+            const float y = hermite4 (line[(size_t) ((a - 1) & mask)], line[(size_t) (a & mask)],
+                                      line[(size_t) ((a + 1) & mask)], line[(size_t) ((a + 2) & mask)], t);
+            vc.lp = y + hpCoef * (vc.lp - y);              // low-pass state
+            v[i] = y - vc.lp;                              // high-passed voice
+        }
+        write = (write + 1) & mask;
+
+        if (amount < 1.0e-5f && width < 1.0e-5f) return;   // exact pass-through when off
+
+        const float dryGain = 1.0f - 0.30f * amount;
+        const float wet = 0.66f * amount;
+        if (! stereo)
+        {
+            l = dryGain * l + wet * 0.7071f * (v[0] + v[1]);
+            return;
+        }
+        const float angle = 0.78539816f * width;            // 0 = centre, pi/4 = hard pan
+        const float near = std::cos (0.78539816f - angle), far = std::sin (0.78539816f - angle);
+        const float side = 0.42f * width * (1.0f - 0.8f * amount) * (v[0] - v[1]);
+        const float s = 0.5f * (l - r) * (1.0f + 0.6f * width);
+        l = dryGain * (mid + s) + wet * (near * v[0] + far * v[1]) + side;
+        r = dryGain * (mid - s) + wet * (far * v[0] + near * v[1]) - side;
+    }
+
+private:
+    struct Voice
+    {
+        double baseMs, depthA, rateA, depthB, rateB, startA, startB;
+        double phaseA = 0.0, phaseB = 0.0; float lp = 0.0f;
+    };
+    static constexpr double twoPi = 6.283185307179586;
+    // depth (ms) x rate (Hz): peak detune = 1731 * 2*pi * rate * depth/1000 cents,
+    // i.e. roughly +-7 and +-5 cents per component, never in step between voices.
+    Voice voices[2] = { { 15.0, 2.1, 0.31, 0.55, 0.83, 0.0, 1.3 },
+                        { 24.0, 2.6, 0.23, 0.65, 0.67, 2.1, 4.0 } };
+    std::vector<float> line;
+    double rate = 48000.0;
+    int size = 4096, write = 0;
+    float amount = 0.0f, width = 0.0f, smooth = 0.001f, hpCoef = 0.98f;
 };
 
 } // namespace megatune

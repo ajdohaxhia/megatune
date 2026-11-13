@@ -518,10 +518,36 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   if(bad.load()!=0){std::cerr<<"decision ring produced inconsistent rows\n";return 68;}
  }
 
+ // Width on its own must widen a mono source and cancel in the mono sum.
+ {auto run=[&](float width,std::vector<float>& mid,double& side){std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+   for(auto* v:r->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v)){
+    if(w->paramID=="amount")v->setValueNotifyingHost(0.f);if(w->paramID=="width")v->setValueNotifyingHost(width);}
+   r->prepareToPlay(48000,256);juce::AudioBuffer<float> b(2,256);juce::MidiBuffer mb;side=0;
+   for(int blk=0;blk<200;++blk){for(int i=0;i<256;++i){const double t=(blk*256+i)/48000.0;const float v=.2f*(float)(std::sin(juce::MathConstants<double>::twoPi*220*t)+.5*std::sin(juce::MathConstants<double>::twoPi*1870*t));b.setSample(0,i,v);b.setSample(1,i,v);}
+    r->processBlock(b,mb);if(blk>60)for(int i=0;i<256;++i){mid.push_back(.5f*(b.getSample(0,i)+b.getSample(1,i)));side+=std::abs(b.getSample(0,i)-b.getSample(1,i));}}};
+  std::vector<float> dryMid,wideMid;double drySide=0,wideSide=0;run(0.f,dryMid,drySide);run(1.f,wideMid,wideSide);
+  double worst=0;for(size_t i=0;i<dryMid.size();++i)worst=std::max(worst,(double)std::abs(dryMid[i]-wideMid[i]));
+  std::cout<<"WIDTH side dry="<<drySide<<" wide="<<wideSide<<" mono-sum deviation="<<worst<<"\n";
+  if(drySide>1.0e-3)return 110;if(wideSide<100)return 111;if(worst>1.0e-4)return 112;}
+ // Speed must reach the default engine: a slow setting leaves more vibrato than a hard one.
+ {auto run=[&](float speed)->double{std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+   for(auto* v:r->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v)){
+    if(w->paramID.startsWith("note"))v->setValueNotifyingHost(1.f);if(w->paramID=="speed")v->setValueNotifyingHost(w->convertTo0to1(speed));}
+   r->prepareToPlay(48000,256);juce::AudioBuffer<float> b(2,256);juce::MidiBuffer mb;std::vector<float> out;double phase=0;
+   for(int blk=0;blk<400;++blk){for(int i=0;i<256;++i){const double t=(blk*256+i)/48000.0;phase+=juce::MathConstants<double>::twoPi*222.0*std::pow(2.0,30.0*std::sin(juce::MathConstants<double>::twoPi*5.0*t)/1200.0)/48000.0;const float v=.25f*(float)(std::sin(phase)+.4*std::sin(2*phase)+.2*std::sin(3*phase));b.setSample(0,i,v);b.setSample(1,i,v);}
+    r->processBlock(b,mb);if(blk>80)for(int i=0;i<256;++i)out.push_back(b.getSample(0,i));}
+   double lo=1e9,hi=0;for(size_t w=0;w+2048<out.size();w+=1024){int bestLag=0;double best=-1,c[60];for(int lag=190;lag<250;++lag){double s=0;for(int i=0;i<1536;++i)s+=out[w+i]*out[w+i+lag];c[lag-190]=s;if(s>best){best=s;bestLag=lag;}}
+    double frac=0;if(bestLag>190&&bestLag<249){const double l=c[bestLag-191],m=c[bestLag-190],h=c[bestLag-189];frac=.5*(l-h)/(l-2*m+h);}
+    const double f=48000.0/(bestLag+frac);lo=std::min(lo,f);hi=std::max(hi,f);}
+   return 1200.0*std::log2(hi/lo);};
+  const double hard=run(0.f),slow=run(150.f);
+  std::cout<<"SPEED residual vibrato: hard="<<hard<<" cents, slow="<<slow<<" cents (input 60)\n";
+  if(!(hard<25))return 113;if(!(slow>hard+15))return 114;}
+
  // isolated PSOLA null test: ratio 1 must reconstruct the delayed input
- {megatune::Psola ps;ps.prepare(2048);
+ {megatune::StereoPsola ps;ps.prepare(2048,48000.0);
   const int N=48000;std::vector<float> in(N),out(N);
-  for(int i=0;i<N;++i){in[i]=.3f*std::sin(2.0*3.14159265358979*220.0*i/48000.0);ps.setTarget(48000.0/220.0,1.0f,true);out[i]=ps.process(in[i]);}
+  for(int i=0;i<N;++i){in[i]=.3f*std::sin(2.0*3.14159265358979*220.0*i/48000.0);ps.setPeriod(48000.0f/220.0f);ps.setRatio(1.0f);const float xi[2]={in[i],in[i]};float xo[2];ps.process(xi,xo,true);out[i]=xo[0];}
   int bestLag=0;double best=-1;for(int lag=0;lag<6000;++lag){double c=0;for(int i=0;i+lag<N;i+=4)c+=out[i+lag]*in[i];if(c>best){best=c;bestLag=lag;}}
   double num=0,den=0;for(int i=0;i+bestLag<N;++i){num+=out[i+bestLag]*in[i];den+=in[i]*in[i];}
   const double g=den>0?num/den:1.0;double res=0,sig=0;
