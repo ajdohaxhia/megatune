@@ -4,11 +4,12 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four
 selectable pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.3.1 (source release).** The tuner, Doubler and Stereo Width audio paths were
-> rewritten; see [What changed in 0.3.1](#what-changed-in-031). The numbers below come from
-> a synthetic bench and the regression suite. **0.3.1 has not been auditioned in a DAW or
-> on real vocals yet**, there are **no prebuilt 0.3.1 binaries** (build it with
-> `app/vst3/build.sh`; the 0.3.0 downloads do not contain these fixes), **formant
+> **Status: 0.4.0.** A reworked editor (live pitch trace, level meters, scale menu, tooltips)
+> and a new preset system (32 factory sounds in categories, user presets, audition before
+> you commit, key lock); see [What changed in 0.4.0](#what-changed-in-040). The audio engine
+> is the one from 0.3.1. Prebuilt macOS binaries pass `ctest`, `auval` and the VST3 host
+> check, but **MegaTune has still not been auditioned in a DAW or on real vocals**, the
+> factory presets are **designed from the control ranges, not tuned by ear**, **formant
 > preservation is unvalidated**, and builds are **ad-hoc signed, not notarized**. See
 > [Status](#status) before shipping anything.
 
@@ -44,9 +45,10 @@ their owners.
 | Doubler | Two extra voices, each with its own 15/24 ms offset and slowly drifting detune of a few cents |
 | Stereo Width | Pans the doubled voices apart and, on its own, widens a mono vocal with a side signal that cancels in mono |
 | Keyboard | One octave, scale membership dots, live input outline, target fill |
-| Pitch monitor | Input → Target with signed cents and a ±100¢ meter |
+| Pitch monitor | Target note, signed cents and a ±100¢ meter, plus a scrolling trace of input and corrected pitch over the scale's note lanes; input and output level meters |
 | Diagnostics | "Why this note?" history of recent decisions with a one-click Exclude/Enable action |
-| Presets | 16 factory programs with per-preset key and scale |
+| Scales | Major, Minor, Harmonic/Melodic Minor, Dorian, Phrygian, Lydian, Mixolydian, both pentatonics, Blues, Whole Tone, Chromatic, or any custom set of notes |
+| Presets | 32 factory sounds in 7 categories; user presets saved to disk; click to audition, Done to keep, Cancel to restore; "Keep my key and scale" (on by default) stops presets from changing the song's key |
 | Host integration | VST3 + AUv2; preset recall, parameter automation, Undo/Redo, A/B comparison, bypass |
 
 
@@ -64,6 +66,45 @@ their owners.
 Declared latency matches measured impulse onset and cross-correlation lag at 44.1 and
 48 kHz. A live engine switch republishes the correct latency on the next
 `prepareToPlay`; whether a specific DAW re-reads compensation mid-session is **unverified**.
+
+---
+
+## What changed in 0.4.0
+
+Editor and presets only; the audio engine is unchanged from 0.3.1.
+
+**Editor**
+
+- **Pitch trace.** The decorative orb is gone. In its place is a scrolling trace of the last
+  few seconds: input pitch (cyan) and corrected pitch (violet) drawn over lanes for the notes
+  enabled in the current key and scale, with the current target lane highlighted.
+- **Readout.** One large "correcting to" note with the input note and signed cents under it,
+  and a flat / in tune / sharp meter.
+- **Level meters** for input and output.
+- **Scale menu** with 13 scales next to the Major / Minor / Chromatic shortcuts. It shows
+  "Custom" when the enabled notes match no named scale.
+- **Tooltips** on every control, a one-line hint under each knob, and Cmd+Z / Shift+Cmd+Z
+  for Undo / Redo when the editor has keyboard focus.
+
+**Presets**
+
+- **32 factory sounds** (was 16) in Natural, Pop, Hip-Hop, R&B, Rock, Doubles and Effect,
+  each with a one-line description. The first 16 keep their positions, so host program
+  numbers saved by older versions still point at the same sound.
+- **Audition before you commit.** Clicking a preset in the browser applies it immediately.
+  Done keeps it (as one Undo step); Cancel or Esc puts back the sound you had. Arrow keys
+  step through the list.
+- **Keep my key and scale**, on by default. Presets used to overwrite the key and enabled
+  notes, which is almost never what you want mid-song. Turn it off to let a preset set them.
+  **This changes behaviour:** a host program change no longer changes the key unless you
+  turn the option off. The setting is saved with the session.
+- **User presets.** Name the current sound and press Save. Presets are stored as
+  `~/Library/Application Support/ademusic/MegaTune/Presets/<name>.megatune`, appear under
+  User in every project, and can be deleted from the browser.
+- Search matches category names as well as preset names.
+
+The factory presets were written from what the controls do (Speed is a retune time,
+negative Speed is hard tune, and so on). They have not been tuned by ear on real vocals.
 
 ---
 
@@ -138,7 +179,7 @@ no measured before/after, only the code-level causes above.
 |---|---|---|
 | ![](docs/screenshots/idle.png) | ![](docs/screenshots/active.png) | ![](docs/screenshots/history.png) |
 
-| Factory presets |
+| Preset browser |
 |---|
 | ![](docs/screenshots/presets.png) |
 
@@ -146,13 +187,13 @@ no measured before/after, only the code-level causes above.
 
 ## Install
 
-**0.3.1 is a source release.** Build it as described under
-[Build from source](#build-from-source); `build.sh` leaves the VST3 and AU in `app/dist`.
+Prebuilt macOS download (universal arm64 + x86_64, VST3 + AUv2):
 
-The newest prebuilt download (universal arm64 + x86_64, VST3 + AUv2) is 0.3.0, which does
-**not** include the 0.3.1 tuner, Doubler and Width fixes:
+https://github.com/ajdohaxhia/megatune/releases/latest
 
-https://github.com/ajdohaxhia/megatune/releases/tag/v0.3.0
+`MegaTune-<version>-macOS.zip` contains both plug-ins and an installer script. The builds are
+not notarized, so macOS may refuse to open the script on first try: right-click it and
+choose Open, or copy the two bundles by hand.
 
 ```bash
 # from the release archive or app/dist
@@ -223,7 +264,7 @@ The suite covers, among others:
 
 - parameter landmarks from the recovered maps (Speed curve, Amount curve, defaults)
 - state round-trip, bypass, latency-aligned dry path, preset navigation, A/B, Undo/Redo
-- 16 presets render finite audio; per-preset key/scale application
+- 32 presets render finite audio; key lock on and off; user preset save, load and delete
 - Range limiting, breath/uviolation gate, stereo-linked detection
 - engine switching republishes latency (2048 ↔ 5760 ↔ 128)
 - Signalsmith latency rescales after a 48 → 96 kHz sample-rate change
@@ -314,14 +355,16 @@ app/
 | Negative Speed / zero-Amount Shift | ✅ verified |
 | Non-finite input / reset / channel safety | ✅ verified |
 | Long-session engine/parameter churn | ✅ 4000 blocks verified |
-| AUv2 | ⚠️ `auval` passed on 0.3.0; not re-run on 0.3.1 |
-| pluginval 1.0.4, strictness 8 | ⚠️ passed on 0.3.0 with two known JUCE state-cache tests disabled; not re-run on 0.3.1 |
-| 0.3.1 build and test suite | ⚠️ run on Linux only (JUCE 8.0.15, VST3 target + ctest binary); macOS build not yet done |
+| AUv2 | ✅ `auval -v aufx Mgtn AdMs` passes on 0.3.1 and 0.4.0 |
+| pluginval 1.0.4, strictness 8 | ⚠️ passed on 0.3.0 with two known JUCE state-cache tests disabled; not re-run since |
+| macOS build and test suite | ✅ 0.3.1 and 0.4.0 built universal on macOS (JUCE 8.0.15); `ctest` and the VST3 host check pass |
+| Key lock and user presets | ✅ regression test (0.4.0) |
+| Factory preset values | ⚠️ designed from the control ranges; not tuned by ear |
 | Full parameter state round-trip | ✅ in-process regression |
 | Why this note? → Exclude → Undo | ✅ verified on synthetic tone and on a real take |
 | Presets, automation, recall, A/B | ✅ verified |
 | **Formant preservation** | ❌ **unvalidated** — the estimator misclassifies known test cases |
-| **DAW compatibility / listening test** | ❌ not tested in a real host; 0.3.1 not auditioned on real vocals |
+| **DAW compatibility / listening test** | ❌ not tested in a real host; not auditioned on real vocals |
 | **Distribution signing** | ❌ ad-hoc only; no Developer ID in this environment |
 | **Parity with the original DSP** | ❌ not attempted; documented as unknown |
 

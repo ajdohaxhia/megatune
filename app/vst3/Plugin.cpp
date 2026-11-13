@@ -42,33 +42,69 @@ public:
  const juce::String getName()const override{return "MegaTune";}
  bool acceptsMidi()const override{return false;} bool producesMidi()const override{return false;} double getTailLengthSeconds()const override{return 0;}
  std::atomic<int> currentProgram{0};
- struct FactoryPreset{const char* name;float speed,sustain,amount,doubler,width;bool stabilize;int key;int mask;};
+ struct FactoryPreset{const char* name;const char* category;const char* about;float speed,sustain,amount,doubler,width;bool stabilize;int key;int mask;};
+ static constexpr int numFactoryPresets=32;
+ // Order matters to hosts and saved sessions: only append. Key/mask are applied
+ // only when "Keep my key and scale" is off.
  static const FactoryPreset* factoryPresets(){static const FactoryPreset p[]={
-  {"Default",25,0,100,0,0,true,4,1453},
-  {"Natural Tune",90,-20,70,0,0,true,0,2741},
-  {"Modern Pop",45,-10,95,8,12,true,0,2741},
-  {"Polished Pop",70,-25,85,10,20,true,0,2741},
-  {"R&B Smooth",120,-40,75,15,25,true,9,1453},
-  {"Hip-Hop Lead",25,10,100,5,10,true,0,1453},
-  {"Doubler Wide",25,0,100,65,100,true,0,2741},
-  {"Trap Robotic",-3,40,100,0,0,false,0,4095},
-  {"EDM Vocal",15,20,100,20,45,true,0,2741},
-  {"Rock Anthem",60,-15,90,12,30,true,4,1453},
-  {"Indie Folk",150,-45,60,0,0,true,0,2741},
-  {"Lo-Fi Bed",200,-60,55,35,60,true,0,2741},
-  {"Doubler Tight",30,0,100,35,15,true,0,2741},
-  {"Subtle Assist",180,-30,40,0,0,true,0,2741},
-  {"Extreme Tune",-3,60,100,0,0,false,0,4095},
-  {"Spoken Word",100,-10,50,0,0,true,0,4095}
+  {"Default","Start","Fast, full correction. A neutral place to start.",25,0,100,0,0,true,4,1453},
+  {"Natural Tune","Natural","Gentle correction that keeps slides and vibrato.",90,-20,70,0,0,true,0,2741},
+  {"Modern Pop","Pop","Tight and polished with a touch of width.",45,-10,95,8,12,true,0,2741},
+  {"Polished Pop","Pop","Slightly slower than Modern Pop, a little wider.",70,-25,85,10,20,true,0,2741},
+  {"R&B Smooth","R&B","Slow retune that lets runs and bends breathe.",120,-40,75,15,25,true,9,1453},
+  {"Hip-Hop Lead","Hip-Hop","Fast, obvious tuning for a rap or sung lead.",25,10,100,5,10,true,0,1453},
+  {"Doubler Wide","Doubles","Tuned lead with a wide double on both sides.",25,0,100,65,100,true,0,2741},
+  {"Trap Robotic","Hip-Hop","Hard tune: notes snap with no glide.",-3,40,100,0,0,false,0,4095},
+  {"EDM Vocal","Pop","Very fast and bright, with a wide double.",15,20,100,20,45,true,0,2741},
+  {"Rock Anthem","Rock","Firm correction that still sounds sung.",60,-15,90,12,30,true,4,1453},
+  {"Indie Folk","Natural","Slow and partial. Leaves the performance alone.",150,-45,60,0,0,true,0,2741},
+  {"Lo-Fi Bed","Effect","Loose tuning under a wide, blurry double.",200,-60,55,35,60,true,0,2741},
+  {"Doubler Tight","Doubles","A close double that thickens without spreading.",30,0,100,35,15,true,0,2741},
+  {"Subtle Assist","Natural","Barely there. Nudges only the worst notes.",180,-30,40,0,0,true,0,2741},
+  {"Extreme Tune","Effect","Hard tune that locks even harder on held notes.",-3,60,100,0,0,false,0,4095},
+  {"Spoken Word","Natural","Light chromatic correction for half-sung lines.",100,-10,50,0,0,true,0,4095},
+  {"Transparent Lead","Natural","Full-strength but unhurried. Hard to hear working.",60,-30,80,0,0,true,0,2741},
+  {"Ballad","Natural","Long notes settle slowly; vibrato stays intact.",130,-50,65,6,10,true,0,2741},
+  {"Live Safety Net","Natural","Half correction for takes that are nearly there.",110,-20,55,0,0,true,0,2741},
+  {"Radio Ready","Pop","Fast full correction with a narrow double.",30,0,100,6,15,true,0,2741},
+  {"Stacked Chorus","Doubles","Sounds like a chorus stack from one take.",40,-10,95,50,70,true,0,2741},
+  {"Background Vox","Doubles","Very tight and very wide, for parts behind a lead.",20,10,100,45,85,true,0,2741},
+  {"Melodic Rap","Hip-Hop","Quick glide between notes, firm on held ones.",8,20,100,8,18,true,0,1453},
+  {"Hard Tune Classic","Effect","Instant retune with the stabilizer on.",0,30,100,0,0,true,0,1453},
+  {"Drill Hook","Hip-Hop","Near-instant tuning with a wide double.",3,25,100,12,30,true,0,1453},
+  {"Neo Soul","R&B","Very slow and partial. Keeps scoops and falls.",140,-55,65,10,20,true,0,1453},
+  {"Silky Falsetto","R&B","Medium retune with an airy, wide double.",85,-35,80,18,35,true,0,1453},
+  {"Pentatonic Lock","Effect","Hard tune. Turn key lock off to snap to a pentatonic.",-3,50,100,0,0,false,0,661},
+  {"Punk Shout","Rock","Fast enough to fix it, rough enough to stay human.",35,0,90,20,40,true,4,1453},
+  {"Arena Gang","Rock","Firm tuning with a big wide double.",50,-10,90,40,80,true,4,1453},
+  {"Wide Whisper","Effect","Light tuning; mostly stereo width.",160,-40,50,30,100,true,0,2741},
+  {"Mono Double","Doubles","A thick double that stays in the centre.",35,0,100,55,0,true,0,2741}
  };return p;}
- int getNumPrograms()override{return 16;} int getCurrentProgram()override{return currentProgram.load();}
- const juce::String getProgramName(int i)override{return factoryPresets()[juce::jlimit(0,15,i)].name;}
- void setCurrentProgram(int i)override{if(i<0||i>=getNumPrograms())return;currentProgram=i;const auto&p=factoryPresets()[i];
-  auto set=[&](const char* id,float v){auto* param=state.getParameter(id);param->beginChangeGesture();param->setValueNotifyingHost(param->convertTo0to1(v));param->endChangeGesture();};
-  set("speed",p.speed);set("sustain",p.sustain);set("amount",p.amount);set("doubler",p.doubler);set("width",p.width);
-  {auto* param=state.getParameter("stabilize");param->beginChangeGesture();param->setValueNotifyingHost(p.stabilize?1.f:0.f);param->endChangeGesture();}
-  {auto* param=state.getParameter("key");param->beginChangeGesture();param->setValueNotifyingHost((float)p.key/11.f);param->endChangeGesture();}
-  for(int n=0;n<12;++n){auto* param=state.getParameter("note"+juce::String(n));param->beginChangeGesture();param->setValueNotifyingHost((p.mask&(1<<n))?1.f:0.f);param->endChangeGesture();}}
+ // When true (the default) presets change the sound but leave the song's key and scale alone.
+ std::atomic<bool> keepKey{true};
+ juce::String getUserPresetName()const{const juce::SpinLock::ScopedLockType l(nameLock);return userPresetName;}
+ void setUserPresetName(const juce::String& n){const juce::SpinLock::ScopedLockType l(nameLock);userPresetName=n;}
+ void setParam(const juce::String& id,float plain){if(auto* param=state.getParameter(id)){param->beginChangeGesture();param->setValueNotifyingHost(param->convertTo0to1(plain));param->endChangeGesture();}}
+ int getNumPrograms()override{return numFactoryPresets;} int getCurrentProgram()override{return currentProgram.load();}
+ const juce::String getProgramName(int i)override{return factoryPresets()[juce::jlimit(0,numFactoryPresets-1,i)].name;}
+ void setCurrentProgram(int i)override{if(i<0||i>=getNumPrograms())return;currentProgram=i;setUserPresetName({});const auto&p=factoryPresets()[i];
+  setParam("speed",p.speed);setParam("sustain",p.sustain);setParam("amount",p.amount);setParam("doubler",p.doubler);setParam("width",p.width);
+  setParam("stabilize",p.stabilize?1.f:0.f);
+  if(!keepKey.load()){setParam("key",(float)p.key);for(int n=0;n<12;++n)setParam("note"+juce::String(n),(p.mask&(1<<n))?1.f:0.f);}}
+ // User presets: one XML file per sound, shared by every instance and host.
+ static juce::File userPresetDir(){return juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory).getChildFile("Application Support").getChildFile("ademusic").getChildFile("MegaTune").getChildFile("Presets");}
+ static juce::StringArray userPresetNames(){juce::StringArray names;for(auto& f:userPresetDir().findChildFiles(juce::File::findFiles,false,"*.megatune"))names.add(f.getFileNameWithoutExtension());names.sort(true);return names;}
+ bool saveUserPreset(const juce::String& rawName){const auto name=juce::File::createLegalFileName(rawName.trim());if(name.isEmpty())return false;
+  const auto dir=userPresetDir();if(!dir.createDirectory().wasOk())return false;
+  auto xml=state.copyState().createXml();if(xml==nullptr||!xml->writeTo(dir.getChildFile(name+".megatune")))return false;
+  setUserPresetName(name);return true;}
+ bool loadUserPreset(const juce::String& name){auto xml=juce::XmlDocument::parse(userPresetDir().getChildFile(name+".megatune"));
+  if(xml==nullptr||!xml->hasTagName(state.state.getType()))return false;const auto tree=juce::ValueTree::fromXml(*xml);const bool keep=keepKey.load();
+  for(const auto& child:tree){const auto id=child.getProperty("id").toString();if(id.isEmpty()||id=="bypass"||!child.hasProperty("value"))continue;
+   if(keep&&(id=="key"||id.startsWith("note")))continue;setParam(id,(float)child.getProperty("value"));}
+  setUserPresetName(name);return true;}
+ bool deleteUserPreset(const juce::String& name){const auto file=userPresetDir().getChildFile(name+".megatune");if(!file.existsAsFile()||!file.deleteFile())return false;
+  if(getUserPresetName()==name)setUserPresetName({});return true;}
 void changeProgramName(int,const juce::String&)override{}
  bool isBusesLayoutSupported(const BusesLayout& l)const override{return l.getMainInputChannelSet()==l.getMainOutputChannelSet()&&(l.getMainOutputChannelSet()==juce::AudioChannelSet::mono()||l.getMainOutputChannelSet()==juce::AudioChannelSet::stereo());}
  void prepareToPlay(double r,int samplesPerBlock)override {rate=r;write=0;analysisCount=0;phase=0;ratio=1;target=0;lastNote=0;heldSeconds=0;currentTargetNote=0;psolaVoiced=false;voicedHold=0;pitchCount=0;for(auto& c:ring)c.fill(0); history.fill(0);hist=0;lowLatencyActive=value("lowlatency")>.5f;window=lowLatencyActive?512:2048;setLatencySamples(window);yinWorkspace.ensure(512);psola.prepare(2048,r);psola.setLatency(window);doubler.prepare(r);if(!smithReady||smithRate!=r){smith.presetDefault(2,(float)rate);smithReady=true;smithRate=r;}smith.reset();smithLatency=smith.inputLatency()+smith.outputLatency();if(value("smith")>.5f&&!lowLatencyActive)setLatencySamples(smithLatency);const int staging=juce::jmax(8192,samplesPerBlock);sIn[0].assign((size_t)staging,0.f);sIn[1].assign((size_t)staging,0.f);sOut[0].assign((size_t)staging,0.f);sOut[1].assign((size_t)staging,0.f);}
@@ -190,9 +226,10 @@ void changeProgramName(int,const juce::String&)override{}
   }level=peak;outputLevel=outPeak;float detected=pitch.load();outputPitch=detected>0?detected+((bypass||value("amount")==0)?0.f:12.f*std::log2(juce::jmax(.001f,ratio))):0.f;
  }
  bool hasEditor()const override{return true;}juce::AudioProcessorEditor* createEditor()override;
- void getStateInformation(juce::MemoryBlock& m)override{auto saved=state.copyState();saved.setProperty("factoryProgram",currentProgram.load(),nullptr);auto xml=saved.createXml();copyXmlToBinary(*xml,m);}
- void setStateInformation(const void* d,int n)override{auto xml=getXmlFromBinary(d,n);if(xml&&xml->hasTagName(state.state.getType())){auto saved=juce::ValueTree::fromXml(*xml);currentProgram=juce::jlimit(0,getNumPrograms()-1,(int)saved.getProperty("factoryProgram",0));state.replaceState(saved);}}
+ void getStateInformation(juce::MemoryBlock& m)override{auto saved=state.copyState();saved.setProperty("factoryProgram",currentProgram.load(),nullptr);saved.setProperty("keepKey",keepKey.load(),nullptr);saved.setProperty("userPreset",getUserPresetName(),nullptr);auto xml=saved.createXml();copyXmlToBinary(*xml,m);}
+ void setStateInformation(const void* d,int n)override{auto xml=getXmlFromBinary(d,n);if(xml&&xml->hasTagName(state.state.getType())){auto saved=juce::ValueTree::fromXml(*xml);currentProgram=juce::jlimit(0,getNumPrograms()-1,(int)saved.getProperty("factoryProgram",0));keepKey=(bool)saved.getProperty("keepKey",true);setUserPresetName(saved.getProperty("userPreset",juce::String()).toString());state.replaceState(saved);}}
 private:
+ mutable juce::SpinLock nameLock;juce::String userPresetName;
  std::array<std::atomic<float>*,15> raw{};std::array<std::atomic<float>*,12> noteRaw{};
  double rate=44100;int write=0,hist=0,analysisCount=0,lastNote=0,window=2048,pitchCount=0;float pitchHist[3]{};megatune::StereoPsola psola;megatune::StereoDoubler doubler;std::array<float,4096> refineScratch{};float psolaPeriod=200.f;bool psolaVoiced=false;int voicedHold=0;signalsmith::stretch::SignalsmithStretch<float> smith;bool smithReady=false;double smithRate=0;std::vector<float> sIn[2],sOut[2];int smithLatency=0;megatune::YinWorkspace yinWorkspace;bool lowLatencyActive=false;float phase=0,ratio=1,target=0,heldSeconds=0;
  static constexpr int ringSize=131072;std::array<std::array<float,ringSize>,2> ring{};std::array<float,16384> history{};
@@ -290,6 +327,11 @@ static juce::String megaTunePitchName(int pc){
  static const char* names[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
  return names[((pc%12)+12)%12];
 }
+struct MegaTuneScale{const char* name;int mask;};
+// Masks are relative to the key: bit 0 is the root.
+static const MegaTuneScale megaTuneScales[]={{"Major",2741},{"Minor",1453},{"Harmonic Minor",2477},{"Melodic Minor",2733},{"Dorian",1709},{"Phrygian",1451},{"Lydian",2773},{"Mixolydian",1717},{"Major Pentatonic",661},{"Minor Pentatonic",1193},{"Blues",1257},{"Whole Tone",1365},{"Chromatic",4095}};
+static juce::String megaTuneScaleName(int mask){for(auto& s:megaTuneScales)if(s.mask==mask)return s.name;return "Custom";}
+static int megaTuneScaleIndex(int mask){int i=0;for(auto& s:megaTuneScales){if(s.mask==mask)return i;++i;}return -1;}
 class HistoryRow final:public juce::Button {
 public:
  explicit HistoryRow(int number):Button("History row"){index=number;setComponentID("history-row-"+juce::String(number));setWantsKeyboardFocus(true);}
@@ -373,81 +415,132 @@ private:
  juce::TextButton close{"X"},enable{"Enable"},exclude{"Exclude"},undo{"Undo"};juce::Label status;
 };
 
+struct PresetEntry{juce::String name,category,about;int factory=-1;};
 class PresetRow final:public juce::Button {
 public:
- explicit PresetRow(int i):Button("Preset row"){index=i;setWantsKeyboardFocus(true);}
- int index=0;bool selected=false;
+ PresetRow():Button("Preset row"){}
+ PresetEntry entry;bool selected=false;std::function<void()> onDouble;
+ void mouseDoubleClick(const juce::MouseEvent&)override{if(onDouble)onDouble();}
  void paintButton(juce::Graphics& g,bool over,bool)override{
   auto r=getLocalBounds().toFloat();
   if(selected||over){g.setColour(selected?juce::Colour(0xff8b5cf6):juce::Colour(0xff221f2d));g.fillRoundedRectangle(r.reduced(0,1),7);}
   g.setColour(selected?juce::Colour(0xff17121f):juce::Colour(0xfff4f1ff));g.setFont(juce::Font(16.f,selected?juce::Font::bold:juce::Font::plain));
-  g.drawText(getButtonText(),r.withTrimmedLeft(14),juce::Justification::centredLeft);
+  g.drawText(entry.name,r.withTrimmedLeft(14).withTrimmedRight(96),juce::Justification::centredLeft);
+  g.setColour(selected?juce::Colour(0xff2b1d4d):juce::Colour(0xff8d879d));g.setFont(juce::Font(12.f));
+  g.drawText(entry.category,r.withTrimmedRight(14),juce::Justification::centredRight);
   if(!selected){g.setColour(juce::Colour(0xff2d2939));g.fillRect(juce::Rectangle<float>(r.getX()+8,r.getBottom()-1,r.getWidth()-16,1));}
  }
 };
+// Clicking a row applies it straight away so it can be heard; Done keeps it, Cancel
+// (or Esc) puts the previous sound back.
 class PresetBrowser final:public juce::Component {
 public:
+ static constexpr int pw=960,ph=620,numCategories=9;
+ static const char* categoryName(int i){static const char* names[]={"All","Natural","Pop","Hip-Hop","R&B","Rock","Doubles","Effect","User"};return names[juce::jlimit(0,numCategories-1,i)];}
  PresetBrowser(MegaTune& p):proc(p){
   setComponentID("preset-browser");setOpaque(false);setInterceptsMouseClicks(true,true);setWantsKeyboardFocus(true);
-  addAndMakeVisible(search);search.setTextToShowWhenEmpty("Search presets",juce::Colour(0xff8d879d));
-  search.setColour(juce::TextEditor::backgroundColourId,juce::Colour(0xff17151f));search.setColour(juce::TextEditor::textColourId,juce::Colour(0xfff4f1ff));
-  search.setColour(juce::TextEditor::outlineColourId,juce::Colour(0xff383047));search.setColour(juce::TextEditor::focusedOutlineColourId,juce::Colour(0xffa78bfa));
-  search.setFont(juce::Font(16.f));search.onTextChange=[this]{filter();};
-  addAndMakeVisible(list);list.setScrollBarThickness(8);list.setColour(juce::ScrollBar::thumbColourId,juce::Colour(0xff5a4b7a));list.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId,juce::Colour(0xff5a4b7a));
-  addAndMakeVisible(close);close.setButtonText("X");close.onClick=[this]{hide();};
-  addAndMakeVisible(cancel);cancel.setButtonText("Cancel");cancel.onClick=[this]{hide();};
-  addAndMakeVisible(load);load.setButtonText("Load preset");load.setComponentID("preset-load");load.onClick=[this]{if(selectedIndex>=0&&onLoad)onLoad(selectedIndex);hide();};
-  const auto* presets=MegaTune::factoryPresets();
-  for(int i=0;i<proc.getNumPrograms();++i){auto* row=new PresetRow(i);row->setButtonText(presets[i].name);row->onClick=[this,i]{selectedIndex=i;refreshRows();repaint();};listContent.addAndMakeVisible(row);rows.add(row);}
+  auto styleEditor=[](juce::TextEditor& e,const char* hint){e.setTextToShowWhenEmpty(hint,juce::Colour(0xff8d879d));
+   e.setColour(juce::TextEditor::backgroundColourId,juce::Colour(0xff17151f));e.setColour(juce::TextEditor::textColourId,juce::Colour(0xfff4f1ff));
+   e.setColour(juce::TextEditor::outlineColourId,juce::Colour(0xff383047));e.setColour(juce::TextEditor::focusedOutlineColourId,juce::Colour(0xffa78bfa));e.setFont(juce::Font(15.f));e.setJustification(juce::Justification::centredLeft);e.setIndents(12,0);};
+  addAndMakeVisible(search);styleEditor(search,"Search presets");search.onTextChange=[this]{refreshRows();};
+  addAndMakeVisible(saveName);styleEditor(saveName,"Name your sound");saveName.onReturnKey=[this]{saveCurrent();};
+  addAndMakeVisible(list);list.setScrollBarThickness(8);list.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId,juce::Colour(0xff5a4b7a));
+  for(int i=0;i<numCategories;++i){auto* chip=chips.add(new juce::TextButton(categoryName(i)));addAndMakeVisible(chip);chip->onClick=[this,i]{category=i;refreshRows();repaint();};}
+  addAndMakeVisible(close);close.onClick=[this]{cancelAndHide();};
+  addAndMakeVisible(cancel);cancel.onClick=[this]{cancelAndHide();};
+  addAndMakeVisible(load);load.setComponentID("preset-load");load.onClick=[this]{setVisible(false);if(onDone)onDone();};
+  addAndMakeVisible(save);save.setTooltip("Save the current sound as a user preset");save.onClick=[this]{saveCurrent();};
+  addChildComponent(remove);remove.onClick=[this]{if(selFactory>=0||selUser.isEmpty())return;proc.deleteUserPreset(selUser);selUser.clear();selFactory=proc.getCurrentProgram();rebuild();repaint();};
+  addAndMakeVisible(keep);keep.setTooltip("On: presets change the sound only. Off: presets also set their own key and scale.");
+  keep.setToggleState(proc.keepKey.load(),juce::dontSendNotification);keep.onClick=[this]{proc.keepKey=keep.getToggleState();repaint();};
   list.setViewedComponent(&listContent,false);
-  selectedIndex=proc.getCurrentProgram();refreshRows();
  }
- void show(){selectedIndex=proc.getCurrentProgram();search.clear();refreshRows();setVisible(true);toFront(true);grabKeyboardFocus();}
- void hide(){setVisible(false);if(onClose)onClose();}
- void filter(){refreshRows();}
+ ~PresetBrowser()override{list.setViewedComponent(nullptr,false);}
+ void show(){const auto user=proc.getUserPresetName();selUser=user;selFactory=user.isEmpty()?proc.getCurrentProgram():-1;category=0;search.clear();saveName.clear();
+  keep.setToggleState(proc.keepKey.load(),juce::dontSendNotification);rebuild();setVisible(true);toFront(true);grabKeyboardFocus();}
+ void cancelAndHide(){setVisible(false);if(onCancel)onCancel();}
+ void saveCurrent(){const auto name=saveName.getText().trim();if(name.isEmpty()){saveName.grabKeyboardFocus();return;}
+  if(!proc.saveUserPreset(name))return;selUser=proc.getUserPresetName();selFactory=-1;category=numCategories-1;saveName.clear();rebuild();repaint();}
+ void rebuild(){entries.clear();const auto* factory=MegaTune::factoryPresets();
+  for(int i=0;i<MegaTune::numFactoryPresets;++i)entries.push_back({factory[i].name,factory[i].category,factory[i].about,i});
+  for(auto& name:MegaTune::userPresetNames())entries.push_back({name,"User","Your saved sound.",-1});
+  refreshRows();}
+ bool isSelected(const PresetEntry& e)const{return e.factory>=0?e.factory==selFactory:(selFactory<0&&e.name==selUser);}
+ const PresetEntry* selected()const{for(auto& e:entries)if(isSelected(e))return &e;return nullptr;}
+ // Rows call this from their own click handler, so it must not rebuild the rows.
+ void pick(const PresetEntry& e){selFactory=e.factory;selUser=e.factory<0?e.name:juce::String();if(onPick)onPick(e);refreshSelection();repaint();}
+ void refreshSelection(){for(auto* row:rows){row->selected=isSelected(row->entry);row->repaint();}remove.setVisible(selFactory<0&&selUser.isNotEmpty());}
  void refreshRows(){
-  const auto text=search.getText().trim().toLowerCase();int y=0;
-  for(int i=0;i<rows.size();++i){auto* row=rows[i];const bool match=text.isEmpty()||row->getButtonText().toLowerCase().contains(text);row->setVisible(match);if(match){row->setBounds(0,y,list.getWidth()-10,42);row->selected=i==selectedIndex;row->repaint();y+=44;}}
-  listContent.setSize(juce::jmax(1,list.getWidth()-10),juce::jmax(1,y));list.setViewedComponent(&listContent,false);
+  const auto text=search.getText().trim().toLowerCase();const int w=juce::jmax(1,list.getWidth()-10);int y=0;
+  list.setViewedComponent(nullptr,false);rows.clear();
+  for(auto& e:entries){
+   const bool inCategory=category==0||(category==numCategories-1?e.factory<0:(e.factory>=0&&e.category==categoryName(category)));
+   if(!inCategory||(text.isNotEmpty()&&!e.name.toLowerCase().contains(text)&&!e.category.toLowerCase().contains(text)))continue;
+   auto* row=rows.add(new PresetRow());row->entry=e;row->setBounds(0,y,w,42);const PresetEntry copy=e;
+   row->onClick=[this,copy]{pick(copy);};row->onDouble=[this]{load.onClick();};listContent.addAndMakeVisible(row);y+=44;}
+  listContent.setSize(w,juce::jmax(1,y));list.setViewedComponent(&listContent,false);
+  for(int i=0;i<chips.size();++i)chips[i]->setToggleState(i==category,juce::dontSendNotification);
+  refreshSelection();
  }
+ bool keyPressed(const juce::KeyPress& press)override{
+  if(press==juce::KeyPress::escapeKey){cancelAndHide();return true;}
+  if(press==juce::KeyPress::returnKey){load.onClick();return true;}
+  if(press==juce::KeyPress::upKey||press==juce::KeyPress::downKey){int at=-1;for(int i=0;i<rows.size();++i)if(rows[i]->selected)at=i;
+   const int next=juce::jlimit(0,juce::jmax(0,rows.size()-1),at+(press==juce::KeyPress::downKey?1:-1));
+   if(rows.size()>0&&next!=at){const PresetEntry e=rows[next]->entry;pick(e);list.setViewPosition(0,juce::jmax(0,next*44-132));}return true;}
+  return false;}
  void resized()override{
-  const int pw=960,ph=620;const int px=(getWidth()-pw)/2,py=(getHeight()-ph)/2;
+  const int px=(getWidth()-pw)/2,py=(getHeight()-ph)/2;
   close.setBounds(px+pw-58,py+18,40,40);
-  search.setBounds(px+32,py+104,440,44);
-  list.setBounds(px+32,py+164,440,356);
-  cancel.setBounds(px+604,py+ph-66,140,44);load.setBounds(px+762,py+ph-66,166,44);
-  listContent.setSize(430,juce::jmax(1,rows.size()*44));refreshRows();
+  for(int i=0;i<chips.size();++i)chips[i]->setBounds(px+32+i*100,py+96,94,34);
+  search.setBounds(px+32,py+146,440,40);list.setBounds(px+32,py+198,440,326);
+  keep.setBounds(px+32,py+ph-62,216,40);saveName.setBounds(px+262,py+ph-62,190,40);save.setBounds(px+458,py+ph-62,104,40);remove.setBounds(px+568,py+ph-62,84,40);
+  cancel.setBounds(px+694,py+ph-62,106,40);load.setBounds(px+808,py+ph-62,120,40);
+  refreshRows();
  }
  void paint(juce::Graphics& g)override{
-  g.fillAll(juce::Colours::black.withAlpha(.58f));
-  const int pw=960,ph=620;const int px=(getWidth()-pw)/2,py=(getHeight()-ph)/2;
+  const auto ink=juce::Colour(0xfff4f1ff),muted=juce::Colour(0xff9a94a8),line=juce::Colour(0xff2d2939),accent=juce::Colour(0xffa78bfa);
+  g.fillAll(juce::Colours::black.withAlpha(.62f));
+  const int px=(getWidth()-pw)/2,py=(getHeight()-ph)/2;
   juce::Rectangle<float> panel((float)px,(float)py,(float)pw,(float)ph);
-  juce::ColourGradient bg(juce::Colour(0xff1b1825),panel.getTopLeft(),juce::Colour(0xff0f0d15),panel.getBottomLeft(),false);g.setGradientFill(bg);g.fillRoundedRectangle(panel,16);
+  g.setGradientFill(juce::ColourGradient(juce::Colour(0xff1b1825),panel.getTopLeft(),juce::Colour(0xff0f0d15),panel.getBottomLeft(),false));g.fillRoundedRectangle(panel,16);
   g.setColour(juce::Colour(0xff3a324c));g.drawRoundedRectangle(panel,16,1);
-  g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(28.f,juce::Font::bold));g.drawText("Factory presets",px+32,py+24,300,38,juce::Justification::left);
-  g.setColour(juce::Colour(0xff2d2939));g.fillRect(px+250,py+30,1,28);
-  g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(15.f));g.drawText(juce::String(proc.getNumPrograms())+" presets",px+270,py+30,160,26,juce::Justification::left);
-  g.setColour(juce::Colour(0xff2d2939));g.fillRect(px+32,py+82,pw-64,1);g.fillRect(px+496,py+100,1,ph-190);
-  if(selectedIndex>=0&&selectedIndex<proc.getNumPrograms()){
-   const auto& p=MegaTune::factoryPresets()[selectedIndex];
-   g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(27.f,juce::Font::bold));g.drawText(p.name,px+528,py+104,380,38,juce::Justification::left);
-   g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(15.f));g.drawText("Factory preset",px+528,py+144,300,22,juce::Justification::left);
-   static const char* keys[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
-   const juce::String scale=p.mask==4095?"Chromatic":(p.mask==2741?"Major":(p.mask==1453?"Minor":"Custom"));
-   const std::pair<juce::String,juce::String> fields[]={
-    {"Speed",juce::String(p.speed,1)+" ms"},{"Sustain",juce::String(p.sustain,1)+"%"},{"Amount",juce::String(p.amount,1)+"%"},
-    {"Doubler",juce::String(p.doubler,1)+"%"},{"Stereo Width",juce::String(p.width,1)+"%"},{"Note Stabilizer",p.stabilize?"On":"Off"},
-    {"Key",keys[juce::jlimit(0,11,p.key)]},{"Scale",scale}};
-   int y=py+180;for(auto& f:fields){g.setColour(juce::Colour(0xffd7d0e4));g.setFont(juce::Font(15.f));g.drawText(f.first,px+528,y,180,22,juce::Justification::left);
-    g.setColour(juce::Colour(0xfff4f1ff));g.setFont(juce::Font(15.f,juce::Font::bold));g.drawText(f.second,px+700,y,200,22,juce::Justification::right);
-    g.setColour(juce::Colour(0xff2d2939));g.fillRect(px+528,y+28,372,1);y+=34;}
-   g.setColour(juce::Colour(0xff9a94a8));g.setFont(juce::Font(13.f));g.drawText("Loading a preset also recalls its key and enabled notes.",px+528,py+ph-122,390,20,juce::Justification::left);
+  g.setColour(ink);g.setFont(juce::Font(28.f,juce::Font::bold));g.drawText("Presets",px+32,py+24,130,38,juce::Justification::left);
+  int users=0;for(auto& e:entries)if(e.factory<0)++users;
+  g.setColour(muted);g.setFont(juce::Font(15.f));g.drawText(juce::String(MegaTune::numFactoryPresets)+" factory, "+juce::String(users)+" yours",px+150,py+32,300,24,juce::Justification::left);
+  g.setColour(line);g.fillRect(px+32,py+80,pw-64,1);g.fillRect(px+496,py+146,1,378);g.fillRect(px+32,py+ph-76,pw-64,1);
+  if(rows.isEmpty()){g.setColour(muted);g.setFont(juce::Font(15.f));
+   g.drawFittedText(category==numCategories-1&&search.isEmpty()?"No saved sounds yet. Name one below and press Save.":"Nothing matches.",px+32,py+214,440,44,juce::Justification::centredTop,2);}
+  const int rx=px+528,rw=400;
+  if(const auto* e=selected()){
+   g.setColour(ink);g.setFont(juce::Font(27.f,juce::Font::bold));g.drawText(e->name,rx,py+146,rw,36,juce::Justification::left);
+   g.setColour(accent);g.setFont(juce::Font(13.f,juce::Font::bold));g.drawText(e->factory>=0?(e->category.toUpperCase()+"  /  FACTORY"):juce::String("USER PRESET"),rx,py+184,rw,18,juce::Justification::left);
+   g.setColour(juce::Colour(0xffd7d0e4));g.setFont(juce::Font(15.f));g.drawFittedText(e->about,rx,py+210,rw,42,juce::Justification::topLeft,2);
+   if(e->factory>=0){const auto& p=MegaTune::factoryPresets()[e->factory];int y=py+270;
+    auto bar=[&](const char* label,float fraction,const juce::String& value,bool bipolar){
+     g.setColour(juce::Colour(0xffd7d0e4));g.setFont(juce::Font(14.f));g.drawText(label,rx,y,120,20,juce::Justification::left);
+     const float tx=(float)rx+124,tw=190,ty=(float)y+7;g.setColour(juce::Colour(0xff2a2636));g.fillRoundedRectangle(tx,ty,tw,6,3);
+     g.setColour(accent);const float f=juce::jlimit(0.f,1.f,fraction);
+     if(bipolar){const float a=juce::jmin(.5f,f),b=juce::jmax(.5f,f);g.fillRoundedRectangle(tx+tw*a,ty,juce::jmax(2.f,tw*(b-a)),6,3);}
+     else g.fillRoundedRectangle(tx,ty,juce::jmax(2.f,tw*f),6,3);
+     g.setColour(ink);g.setFont(juce::Font(14.f,juce::Font::bold));g.drawText(value,rx+rw-84,y,84,20,juce::Justification::right);y+=30;};
+    bar("Speed",megaTuneSpeedToNormalized(p.speed),p.speed<0?juce::String("Hard"):juce::String((int)p.speed)+" ms",false);
+    bar("Sustain",(p.sustain+100.f)/200.f,(p.sustain>0?"+":"")+juce::String((int)p.sustain)+"%",true);
+    bar("Amount",p.amount/100.f,juce::String((int)p.amount)+"%",false);
+    bar("Doubler",p.doubler/100.f,juce::String((int)p.doubler)+"%",false);
+    bar("Width",p.width/100.f,juce::String((int)p.width)+"%",false);
+    static const char* keys[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
+    g.setColour(muted);g.setFont(juce::Font(13.f));
+    g.drawText(juce::String("Note Stabilizer ")+(p.stabilize?"on":"off")+".  "+(keep.getToggleState()?juce::String("Keeps your key and scale."):"Sets "+juce::String(keys[juce::jlimit(0,11,p.key)])+" "+megaTuneScaleName(p.mask)+"."),rx,y+4,rw,20,juce::Justification::left);}
+   else{g.setColour(muted);g.setFont(juce::Font(13.f));g.drawFittedText("Saved in ~/Library/Application Support/ademusic/MegaTune/Presets and available in every project.",rx,py+270,rw,40,juce::Justification::topLeft,2);}
   }
+  g.setColour(muted);g.setFont(juce::Font(12.f));g.drawText("Click to audition.  Done keeps it, Cancel restores your sound.",rx,py+ph-106,rw,18,juce::Justification::left);
  }
- int selectedIndex=-1;std::function<void(int)> onLoad;std::function<void()> onClose;
- ~PresetBrowser()override{list.setViewedComponent(nullptr,false);}
+ std::function<void(const PresetEntry&)> onPick;std::function<void()> onDone,onCancel;
 private:
- MegaTune& proc;juce::TextButton close{"X"},cancel{"Cancel"},load{"Load preset"};juce::TextEditor search;
+ MegaTune& proc;std::vector<PresetEntry> entries;int category=0,selFactory=0;juce::String selUser;
+ juce::TextButton close{"X"},cancel{"Cancel"},load{"Done"},save{"Save"},remove{"Delete"};juce::ToggleButton keep{"Keep my key and scale"};
+ juce::TextEditor search,saveName;juce::OwnedArray<juce::TextButton> chips;
  juce::Component listContent;juce::Viewport list;juce::OwnedArray<PresetRow> rows;
 };
 class Canvas final:public juce::Component {
@@ -458,13 +551,14 @@ public:
 };
 class Editor final:public juce::AudioProcessorEditor,private juce::Timer {
  TunerLook tunerLook;Canvas canvas;MegaTune& proc;juce::Slider speed,sustain,amount,doubler,width,reference,shift,range;juce::ComboBox presets;juce::ToggleButton bypass{"Global Bypass"},stabilize{"Note Stabilizer"},lowLatency{"Low Latency"};juce::ComboBox key;int displayedKey=-1;std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> keyAttachment;juce::TextButton major{"Major"},minor{"Minor"},chromatic{"Chromatic"};
- struct Sound {std::vector<float> values;int program=0;};
- juce::TextButton previous{"<"},next{">"},undo{"Undo"},redo{"Redo"},slotA{"A"},slotB{"B"},copyAB{"A > B"};juce::TextButton why{"Why this note?"},browse{"Browse"};bool showWhy=false;int selSeq=-1,selectedPc=-1,shownProgram=-1;HistoryPanel historyPanel;PresetBrowser presetBrowser;juce::Label experimental;juce::ComboBox enginePick;int shownEngine=-1;
+ struct Sound {std::vector<float> values;int program=0;juce::String user;};
+ juce::TextButton previous{"<"},next{">"},undo{"Undo"},redo{"Redo"},slotA{"A"},slotB{"B"},copyAB{"A > B"};juce::TextButton why{"Why this note?"},browse{"Browse"};bool showWhy=false;int selSeq=-1,selectedPc=-1,shownProgram=-1;HistoryPanel historyPanel;PresetBrowser presetBrowser;juce::Label experimental;juce::ComboBox enginePick,scalePick;int shownEngine=-1,shownMask=-1;juce::String shownUser;juce::TooltipWindow tips{this,600};Sound beforeBrowse;bool browsing=false;
+ static constexpr int graphN=200;std::array<float,graphN> inTrace{},outTrace{};int graphHead=0;float graphCentre=60.f,inMeter=0,outMeter=0;bool graphEver=false;
  Sound comparison[2],observed;std::vector<Sound> past,future;int activeSlot=0;
  float animationTime=0,smoothedLevel=0;
- Sound capture()const{Sound sound;sound.program=proc.getCurrentProgram();for(auto* p:proc.getParameters())sound.values.push_back(p->getValue());return sound;}
- bool same(const Sound& a,const Sound& b)const{return a.program==b.program&&a.values==b.values;}
- void restore(const Sound& sound){proc.currentProgram=sound.program;auto& parameters=proc.getParameters();for(size_t i=0;i<sound.values.size()&&i<(size_t)parameters.size();++i){parameters[(int)i]->beginChangeGesture();parameters[(int)i]->setValueNotifyingHost(sound.values[i]);parameters[(int)i]->endChangeGesture();}observed=capture();canvas.repaint();}
+ Sound capture()const{Sound sound;sound.program=proc.getCurrentProgram();sound.user=proc.getUserPresetName();for(auto* p:proc.getParameters())sound.values.push_back(p->getValue());return sound;}
+ bool same(const Sound& a,const Sound& b)const{return a.program==b.program&&a.user==b.user&&a.values==b.values;}
+ void restore(const Sound& sound){proc.currentProgram=sound.program;proc.setUserPresetName(sound.user);auto& parameters=proc.getParameters();for(size_t i=0;i<sound.values.size()&&i<(size_t)parameters.size();++i){parameters[(int)i]->beginChangeGesture();parameters[(int)i]->setValueNotifyingHost(sound.values[i]);parameters[(int)i]->endChangeGesture();}observed=capture();canvas.repaint();}
  void remember(){auto now=capture();if(!same(now,observed)){past.push_back(observed);if(past.size()>100)past.erase(past.begin());future.clear();observed=now;}}
  void edit(const std::function<void()>& action){remember();auto before=capture();action();auto after=capture();if(!same(before,after)){past.push_back(before);future.clear();}observed=after;}
  void compare(int slot){comparison[activeSlot]=capture();activeSlot=slot;restore(comparison[slot]);past.clear();future.clear();}
@@ -484,24 +578,32 @@ class Editor final:public juce::AudioProcessorEditor,private juce::Timer {
   refreshHistory();canvas.repaint();}
  void timerCallback()override{animationTime+=1.f/30.f;smoothedLevel+=(juce::jlimit(0.f,1.f,proc.level.load()*2)-smoothedLevel)*.18f;
  const float detected=proc.pitch.load();const int target=megatune::currentTargetNote(proc);
+ {const bool bypassed=proc.value("bypass")>.5f;inTrace[(size_t)graphHead]=detected;outTrace[(size_t)graphHead]=bypassed?detected:proc.outputPitch.load();graphHead=(graphHead+1)%graphN;
+  if(detected>0){if(!graphEver||std::abs(detected-graphCentre)>18.f)graphCentre=detected;else graphCentre+=(detected-graphCentre)*.05f;graphEver=true;}
+  auto meterValue=[](float peak){return juce::jlimit(0.f,1.f,(juce::Decibels::gainToDecibels(peak,-60.f)+60.f)/60.f);};
+  const float li=meterValue(proc.level.load()),lo=meterValue(proc.outputLevel.load());inMeter=li>inMeter?li:inMeter+(li-inMeter)*.2f;outMeter=lo>outMeter?lo:outMeter+(lo-outMeter)*.2f;}
  const int ip=detected>0?(((int)std::lround(detected))%12+12)%12:-1;
  const int op=target>0?((target%12)+12)%12:-1;const int root=(int)proc.value("key");
  for(int i=0;i<12;++i){notes[i].scaleDot=proc.noteValue(((i-root)+24)%12)>.5f;notes[i].targetFill=i==op;notes[i].inputOutline=i==ip;notes[i].selectedKey=i==selectedPc;notes[i].repaint();}
- if(!juce::ModifierKeys::getCurrentModifiersRealtime().isAnyMouseButtonDown())remember();
+ if(!browsing&&!juce::ModifierKeys::getCurrentModifiersRealtime().isAnyMouseButtonDown())remember();
  if(showWhy)refreshHistory();
  const int wantEngine=proc.value("smith")>.5f?3:proc.value("lowlatency")>.5f?2:1;
  if(wantEngine!=shownEngine){shownEngine=wantEngine;enginePick.setSelectedId(wantEngine,juce::dontSendNotification);}
  experimental.setVisible(false);
  undo.setEnabled(!past.empty());redo.setEnabled(!future.empty());slotA.setToggleState(activeSlot==0,juce::dontSendNotification);slotB.setToggleState(activeSlot==1,juce::dontSendNotification);
- const int program=proc.getCurrentProgram();if(program!=shownProgram){shownProgram=program;presets.setSelectedId(program+1,juce::dontSendNotification);}
+ const int program=proc.getCurrentProgram();const auto user=proc.getUserPresetName();
+ if(program!=shownProgram||user!=shownUser){shownProgram=program;shownUser=user;if(user.isEmpty())presets.setSelectedId(program+1,juce::dontSendNotification);else presets.setText(user,juce::dontSendNotification);}
+ {int mask=0;for(int n=0;n<12;++n)if(proc.noteValue(n)>.5f)mask|=1<<n;if(mask!=shownMask){shownMask=mask;const int index=megaTuneScaleIndex(mask);if(index>=0)scalePick.setSelectedId(index+1,juce::dontSendNotification);else scalePick.setText("Custom",juce::dontSendNotification);}}
  syncKey();canvas.repaint(31,135,(showWhy?844:1419),220);canvas.repaint(0,1028,1480,32);}
  void setScale(bool isMinor,bool all){const int scaleMajor[]={0,2,4,5,7,9,11};const int scaleMinor[]={0,2,3,5,7,8,10};for(int i=0;i<12;++i){bool selected=all;for(int j=0;j<7;++j)if(i==(isMinor?scaleMinor[j]:scaleMajor[j]))selected=true;auto* p=proc.state.getParameter("note"+juce::String(i));p->beginChangeGesture();p->setValueNotifyingHost(selected?1.f:0.f);p->endChangeGesture();}}
 public:
  void tick(){timerCallback();}
  Editor(MegaTune& p):AudioProcessorEditor(p),proc(p),presetBrowser(p){setLookAndFeel(&tunerLook);addAndMakeVisible(canvas);canvas.onPaint=[this](juce::Graphics& g){paintCanvas(g);};canvas.onResized=[this]{layoutCanvas();};setSize(1120,802);auto setup=[&](juce::Slider& s,const char* id){addAndMakeVisible(s);s.setLookAndFeel(&tunerLook);s.textFromValueFunction=[](double value){return juce::String(value,1);};s.setNumDecimalPlacesToDisplay(1);s.setDoubleClickReturnValue(true,proc.state.getParameter(id)->convertFrom0to1(proc.state.getParameter(id)->getDefaultValue()));s.setColour(juce::Slider::thumbColourId,juce::Colour(0xffbb8de9));s.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);s.setTextBoxStyle(juce::Slider::TextBoxBelow,false,75,22);s.setColour(juce::Slider::rotarySliderFillColourId,juce::Colour(0xffc48cea));s.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colour(0xff343137));s.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::transparentBlack);s.setColour(juce::Slider::textBoxTextColourId,juce::Colour(0xfff4f1ff));s.setColour(juce::Slider::textBoxBackgroundColourId,juce::Colours::transparentBlack);auto attachment=std::make_unique<SA>(proc.state,id,s);s.textFromValueFunction=[](double value){return juce::String(value,1);};s.updateText();return attachment;};a=setup(speed,"speed");b=setup(sustain,"sustain");c=setup(amount,"amount");da=setup(doubler,"doubler");wa=setup(width,"width");ra=setup(reference,"reference");sa=setup(shift,"shift");rga=setup(range,"range");for(auto* slider:{&doubler,&width}){slider->setSliderStyle(juce::Slider::LinearHorizontal);slider->setTextBoxStyle(juce::Slider::TextBoxRight,false,38,20);slider->setTextValueSuffix("%");}reference.setSliderStyle(juce::Slider::LinearHorizontal);reference.setTextBoxStyle(juce::Slider::TextBoxRight,false,62,20);reference.setTextValueSuffix(" Hz");reference.textFromValueFunction=[](double v){return juce::String(v,0);};reference.updateText();doubler.setName("Doubler");width.setName("Width");reference.setName("Reference");shift.setSliderStyle(juce::Slider::LinearHorizontal);shift.setTextBoxStyle(juce::Slider::TextBoxRight,false,46,20);shift.setTextValueSuffix(" st");shift.textFromValueFunction=[](double v){return juce::String((int)std::lround(v));};shift.updateText();shift.setName("Shift");range.setSliderStyle(juce::Slider::LinearHorizontal);range.setTextBoxStyle(juce::Slider::TextBoxRight,false,40,20);range.setTextValueSuffix(" st");range.textFromValueFunction=[](double v){return juce::String((int)std::lround(v));};range.updateText();range.setName("Range");
- addAndMakeVisible(presets);presets.setComponentID("preset-combo");for(int i=0;i<proc.getNumPrograms();++i)presets.addItem(proc.getProgramName(i),i+1);presets.setSelectedId(proc.getCurrentProgram()+1,juce::dontSendNotification);presets.onChange=[this]{edit([&]{proc.setCurrentProgram(presets.getSelectedId()-1);});};
- addAndMakeVisible(browse);browse.setComponentID("preset-browse");browse.onClick=[this]{presetBrowser.show();};
- addChildComponent(presetBrowser);presetBrowser.setVisible(false);presetBrowser.onLoad=[this](int index){edit([&]{proc.setCurrentProgram(index);});};presetBrowser.onClose=[this]{canvas.repaint();};
+ addAndMakeVisible(presets);presets.setComponentID("preset-combo");for(int i=0;i<proc.getNumPrograms();++i)presets.addItem(proc.getProgramName(i),i+1);presets.setSelectedId(proc.getCurrentProgram()+1,juce::dontSendNotification);presets.onChange=[this]{if(presets.getSelectedId()>0)edit([&]{proc.setCurrentProgram(presets.getSelectedId()-1);});};
+ addAndMakeVisible(browse);browse.setComponentID("preset-browse");browse.setButtonText("Presets");browse.onClick=[this]{remember();beforeBrowse=capture();browsing=true;presetBrowser.show();};
+ addChildComponent(presetBrowser);presetBrowser.setVisible(false);presetBrowser.onPick=[this](const PresetEntry& entry){if(entry.factory>=0)proc.setCurrentProgram(entry.factory);else proc.loadUserPreset(entry.name);};
+ presetBrowser.onDone=[this]{browsing=false;const auto now=capture();if(!same(beforeBrowse,now)){past.push_back(beforeBrowse);future.clear();}observed=now;canvas.repaint();};
+ presetBrowser.onCancel=[this]{browsing=false;restore(beforeBrowse);canvas.repaint();};
  for(auto* button:{&previous,&next,&undo,&redo,&slotA,&slotB,&copyAB})addAndMakeVisible(button);
  previous.setTooltip("Previous factory preset");next.setTooltip("Next factory preset");copyAB.setTooltip("Copy the current sound to the other comparison slot");
  previous.onClick=[this]{edit([&]{proc.setCurrentProgram((proc.getCurrentProgram()+proc.getNumPrograms()-1)%proc.getNumPrograms());});};next.onClick=[this]{edit([&]{proc.setCurrentProgram((proc.getCurrentProgram()+1)%proc.getNumPrograms());});};
@@ -512,14 +614,31 @@ public:
  const char* names[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};for(int i=0;i<12;++i){addAndMakeVisible(notes[i]);notes[i].setButtonText(names[i]);notes[i].setClickingTogglesState(true);bool black=i==1||i==3||i==6||i==8||i==10;notes[i].blackKey=black;na[i]=std::make_unique<BA>(proc.state,"note"+juce::String(i),notes[i]);}
  addAndMakeVisible(key);const char* roots[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};for(int i=0;i<12;++i)key.addItem(roots[i],i+1);keyAttachment=std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(proc.state,"key",key);key.onChange=[this]{syncKey();canvas.repaint();};
  for(auto* v:{&major,&minor,&chromatic})addAndMakeVisible(v);major.onClick=[this]{setScale(false,false);};minor.onClick=[this]{setScale(true,false);};chromatic.onClick=[this]{setScale(false,true);};
- addAndMakeVisible(enginePick);addAndMakeVisible(why);why.setTooltip("Recent pitch decisions");addAndMakeVisible(historyPanel);historyPanel.setVisible(false);historyPanel.setWantsKeyboardFocus(true);
+ addAndMakeVisible(scalePick);scalePick.setComponentID("scale-pick");{int id=1;for(auto& s:megaTuneScales)scalePick.addItem(s.name,id++);}
+ scalePick.onChange=[this]{const int id=scalePick.getSelectedId();if(id<1)return;const int mask=megaTuneScales[id-1].mask;edit([&]{for(int i=0;i<12;++i)proc.setParam("note"+juce::String(i),(mask&(1<<i))?1.f:0.f);});};
+ speed.setTooltip("Retune time. Turn right for tighter tuning; fully right is hard tune. Double-click to reset.");
+ sustain.setTooltip("How correction changes while a note is held. Left relaxes it and keeps vibrato; right tightens it.");
+ amount.setTooltip("How much of the correction is applied. 100% lands exactly on the note.");
+ doubler.setTooltip("Blends in two detuned, delayed copies, like a second take.");
+ width.setTooltip("Spreads the doubled voices left and right. Sums back to mono cleanly.");
+ reference.setTooltip("Tuning reference for A4. Leave at 440 Hz unless the song is tuned differently.");
+ shift.setTooltip("Transposes the corrected voice in semitones.");
+ range.setTooltip("Notes further than this from a scale note are left uncorrected.");
+ stabilize.setTooltip("Holds the current note through small wobbles so the tuner does not flip between neighbours.");
+ bypass.setTooltip("Passes the input through, delayed to stay in time.");
+ enginePick.setTooltip("Quality has the cleanest sound. Low Latency is for tracking while recording.");
+ key.setTooltip("The key of the song.");scalePick.setTooltip("Scale for the chosen key. Click keys below to add or remove single notes.");
+ browse.setTooltip("Browse, audition and save presets");why.setTooltip("Shows the tuner's recent decisions and lets you exclude a note");
+ undo.setTooltip("Undo (Cmd+Z)");redo.setTooltip("Redo (Shift+Cmd+Z)");slotA.setTooltip("Sound A");slotB.setTooltip("Sound B");
+ setWantsKeyboardFocus(true);
+ addAndMakeVisible(enginePick);addAndMakeVisible(why);addAndMakeVisible(historyPanel);historyPanel.setVisible(false);historyPanel.setWantsKeyboardFocus(true);
  historyPanel.onClose=[this]{closeHistory();};historyPanel.onSelect=[this](int row){selSeq=proc.historySeq.load()-1-row;refreshHistory();};
  historyPanel.onEnable=[this](int pc){setTargetEnabled(pc,true);};historyPanel.onExclude=[this](int pc){setTargetEnabled(pc,false);};historyPanel.onUndo=[this]{undo.onClick();};
  addAndMakeVisible(experimental);experimental.setComponentID("experimental-label");experimental.setText("EXPERIMENTAL",juce::dontSendNotification);experimental.setFont(10.f);experimental.setColour(juce::Label::textColourId,juce::Colour(0xff9a6bff));experimental.setVisible(false);experimental.setInterceptsMouseClicks(false,false);
  why.setComponentID("why-button");why.onClick=[this]{if(showWhy)closeHistory();else openHistory();};
  enginePick.addItem("Quality",1);enginePick.addItem("Low Latency",2);enginePick.addItem("Signalsmith",3);enginePick.setSelectedId(1,juce::dontSendNotification);enginePick.onChange=[this]{const int id=enginePick.getSelectedId();auto setP=[&](const char* pid,float v){auto* pr=proc.state.getParameter(pid);pr->beginChangeGesture();pr->setValueNotifyingHost(v);pr->endChangeGesture();};setP("lowlatency",id==2?1.f:0.f);setP("engine",1.f);setP("smith",id==3?1.f:0.f);};
  auto styleCombo=[&](juce::ComboBox& c){c.setColour(juce::ComboBox::backgroundColourId,juce::Colour(0xff1b1826));c.setColour(juce::ComboBox::textColourId,juce::Colour(0xfff4f1ff));c.setColour(juce::ComboBox::arrowColourId,juce::Colour(0xff8d879d));c.setColour(juce::ComboBox::outlineColourId,juce::Colour(0xff2d2939));};
- styleCombo(presets);styleCombo(key);styleCombo(enginePick);
+ styleCombo(presets);styleCombo(key);styleCombo(enginePick);styleCombo(scalePick);
  // Move the complete UI tree onto the scalable canvas.
  for(int i=getNumChildComponents();--i>=0;){auto* child=getChildComponent(i);if(child!=&canvas)canvas.addChildComponent(child);}
  setResizeLimits(740,530,1480,1060);setResizable(true,true);if(auto* c=getConstrainer())c->setFixedAspectRatio(1480.0/1060.0);
@@ -531,6 +650,10 @@ public:
   canvas.setBounds(0,0,1480,1060);canvas.setTransform(juce::AffineTransform::scale(scale).translated(x,y));layoutCanvas();
  }
  void paint(juce::Graphics& g)override{g.fillAll(juce::Colour(0xff0b0c10));}
+ bool keyPressed(const juce::KeyPress& press)override{
+  if(press==juce::KeyPress('z',juce::ModifierKeys::commandModifier|juce::ModifierKeys::shiftModifier,0)){redo.onClick();return true;}
+  if(press==juce::KeyPress('z',juce::ModifierKeys::commandModifier,0)){undo.onClick();return true;}
+  return false;}
  void layoutCanvas(){
   presets.setBounds(266,20,330,44);browse.setBounds(602,20,70,44);previous.setBounds(680,20,44,44);next.setBounds(730,20,44,44);
   undo.setBounds(830,20,94,44);redo.setBounds(932,20,94,44);
@@ -539,14 +662,14 @@ public:
   presetBrowser.setBounds(0,0,1480,1060);
   enginePick.setBounds(135,88,280,42);
   experimental.setBounds(426,100,140,18);
-  const int cr=showWhy?875:1450;const int cw=cr-31;const int col=cw/3;const int knobY=400,knob=210;
+  const int cr=showWhy?875:1450;const int cw=cr-31;const int col=cw/3;const int knobY=410,knob=200;
   speed.setBounds(31+col/2-knob/2,knobY,knob,knob);
   sustain.setBounds(31+col+col/2-knob/2,knobY,knob,knob);
   amount.setBounds(31+2*col+col/2-knob/2,knobY,knob,knob);
   const int slot=(cr-92)/4;
   doubler.setBounds(62,640,slot-24,26);width.setBounds(62+slot,640,slot-24,26);
   stabilize.setBounds(62+2*slot+6,636,150,28);reference.setBounds(62+3*slot+10,640,slot-30,26);
-  key.setBounds(110,720,95,40);major.setBounds(250,720,58,40);minor.setBounds(314,720,58,40);chromatic.setBounds(378,720,82,40);
+  key.setBounds(62,720,95,40);major.setBounds(170,720,58,40);minor.setBounds(234,720,58,40);chromatic.setBounds(298,720,82,40);scalePick.setBounds(388,720,122,40);
   shift.setBounds((int)(cr*.66f-60),720,120,40);range.setBounds((int)(cr*.80f-60),720,120,40);
   why.setBounds(cr-220,720,190,40);why.setVisible(!showWhy);
   historyPanel.setBounds(889,135,561,890);
@@ -573,41 +696,60 @@ public:
   const int cr=showWhy?875:1450,cw=cr-31;
   auto card=[&](float x,float y,float w,float h,float radius){juce::ColourGradient c(juce::Colour(0xff1a1824),x,y,juce::Colour(0xff111018),x,y+h,false);g.setGradientFill(c);g.fillRoundedRectangle(x,y,w,h,radius);g.setColour(juce::Colour(0xff332d42));g.drawRoundedRectangle(x,y,w,h,radius,1.f);};
   card(31,135,(float)cw,220.f,14.f);
-  juce::Point<float> orb(135,245);const float pulse=1.f+smoothedLevel*.10f,orbR=72.f*pulse;
-  juce::ColourGradient halo(accent.withAlpha(.20f),orb.x,orb.y,accent.withAlpha(0.f),orb.x+130,orb.y,true);
-  g.setGradientFill(halo);g.fillEllipse(orb.x-130,orb.y-130,260,260);
-  for(int i=0;i<4;++i){const float r=orbR+i*13.f;g.setColour(accent.withAlpha(.18f-.035f*i));g.drawEllipse(orb.x-r,orb.y-r,r*2,r*2,1.2f);}
-  juce::Path core;const int facets=15;
-  for(int i=0;i<facets;++i){const float a=juce::MathConstants<float>::twoPi*i/facets+animationTime*.12f;const float r=38.f+10.f*std::sin(animationTime*1.4f+i*1.7f);const auto pt=juce::Point<float>(orb.x+std::cos(a)*r,orb.y+std::sin(a)*r);if(i==0)core.startNewSubPath(pt.x,pt.y);else core.lineTo(pt.x,pt.y);}
-  core.closeSubPath();juce::ColourGradient coreFill(accent,orb.x-36,orb.y-36,accentDeep,orb.x+36,orb.y+36,false);g.setGradientFill(coreFill);g.fillPath(core);
-  g.setColour(juce::Colour(0xffe6dcff).withAlpha(.8f));g.drawEllipse(orb.x-52,orb.y-52,104,104,1.f);
-  g.setColour(line);g.fillRect(juce::Rectangle<int>(280,165,1,160));
-  const float p=proc.pitch.load();const int targetNote=megatune::currentTargetNote(proc);
-  const int inputC=(int)(31+cw*.45f),targetC=(int)(31+cw*.76f);
-  g.setColour(muted);g.setFont(juce::Font(14.f));g.drawText("INPUT",inputC-110,155,220,20,juce::Justification::centred);g.drawText("TARGET",targetC-110,155,220,20,juce::Justification::centred);
-  g.setColour(ink);g.setFont(juce::Font(86.f,juce::Font::bold));g.drawText(megaTuneNoteName(p),inputC-160,175,320,100,juce::Justification::centred);
-  g.drawText(targetNote>0?megaTuneNoteName((float)targetNote):juce::String("--"),targetC-160,175,320,100,juce::Justification::centred);
-  const int arrowY=222;g.setColour(muted);juce::Path arrow;arrow.startNewSubPath(inputC+115,arrowY);arrow.lineTo(targetC-115,arrowY);arrow.startNewSubPath(targetC-127,arrowY-7);arrow.lineTo(targetC-115,arrowY);arrow.lineTo(targetC-127,arrowY+7);
-  g.strokePath(arrow,juce::PathStrokeType(2.f,juce::PathStrokeType::curved,juce::PathStrokeType::rounded));
-  juce::String dev;if(p>0&&targetNote>0){const float cents=megaTuneCentsBetween(p,(float)targetNote);dev=(cents>=0?"+":"")+juce::String(cents,1)+" cents";}else dev="waiting for pitch";
-  g.setColour(accent);g.setFont(juce::Font(20.f,juce::Font::bold));g.drawText(dev,31+280,268,cw-350,28,juce::Justification::centred);
-  g.setColour(muted);g.setFont(juce::Font(12.f));g.drawText("INPUT vs TARGET",31+280,294,cw-350,16,juce::Justification::centred);
-  const float mx=(float)(31+300),mw=(float)(cw-390),my=320;
+  const float p=proc.pitch.load();const int targetNote=megatune::currentTargetNote(proc);const bool bypassed=proc.value("bypass")>.5f;
+  // Readout: the note being corrected to, and how far the input is from it.
+  g.setColour(muted);g.setFont(juce::Font(12.f));g.drawText("CORRECTING TO",51,150,260,16,juce::Justification::centred);
+  g.setColour(targetNote>0&&!bypassed?ink:muted);g.setFont(juce::Font(78.f,juce::Font::bold));
+  g.drawText(targetNote>0?megaTuneNoteName((float)targetNote):juce::String("--"),51,166,260,86,juce::Justification::centred);
+  if(p>0&&targetNote>0){const float cents=megaTuneCentsBetween(p,(float)targetNote);
+   g.setColour(muted);g.setFont(juce::Font(16.f));g.drawText("input "+megaTuneNoteName(p),51,256,126,22,juce::Justification::right);
+   g.setColour(accent);g.setFont(juce::Font(16.f,juce::Font::bold));g.drawText((cents>=0?"+":"")+juce::String(cents,1)+" cents",187,256,124,22,juce::Justification::left);}
+  else{g.setColour(muted);g.setFont(juce::Font(16.f));g.drawText("waiting for pitch",51,256,260,22,juce::Justification::centred);}
+  const float mx=61,mw=240,my=300;
   g.setColour(juce::Colour(0xff2a2637));g.fillRoundedRectangle(mx,my-4,mw,8,4);
   g.setColour(line);g.fillRect(juce::Rectangle<float>(mx+mw*.5f-1,my-10,2,20));
   for(int k=-2;k<=2;++k){const float x=mx+mw*(k+2)/4.f;g.setColour(muted.withAlpha(.55f));g.fillRect(juce::Rectangle<float>(x,my-3,1.f,6.f));}
   if(p>0&&targetNote>0){const float x=mx+mw*megaTuneMeterFraction(megaTuneCentsBetween(p,(float)targetNote));g.setColour(accent.withAlpha(.22f));g.fillRoundedRectangle(x-8,my-12,16,24,8);g.setColour(accent);g.fillRoundedRectangle(x-2,my-9,4,18,2);}
-  g.setColour(muted);g.setFont(juce::Font(11.f));g.drawText("-100c",mx-20,my+13,50,14,juce::Justification::centred);g.drawText("0c",mx+mw/2-16,my+13,32,14,juce::Justification::centred);g.drawText("+100c",mx+mw-30,my+13,50,14,juce::Justification::centred);
+  g.setColour(muted);g.setFont(juce::Font(10.f));g.drawText("flat",mx-10,my+13,40,14,juce::Justification::left);g.drawText("in tune",mx+mw/2-30,my+13,60,14,juce::Justification::centred);g.drawText("sharp",mx+mw-30,my+13,40,14,juce::Justification::right);
+  g.setColour(line);g.fillRect(331,155,1,180);
+  // Pitch trace: the last few seconds of input pitch and corrected pitch over the scale's note lanes.
+  const float gx=351,gy=151,gw=(float)(cr-351-70),gh=188;const juce::Rectangle<float> graph(gx,gy,gw,gh);
+  const auto inputColour=juce::Colour(0xff8ee7ff);
+  g.setColour(juce::Colour(0xff0d0c13));g.fillRoundedRectangle(graph,10);
+  {juce::Graphics::ScopedSaveState saved(g);g.reduceClipRegion(graph.toNearestInt());
+   const float lane=gh/14.f;const int root=(int)proc.value("key");
+   auto yOf=[&](float midi){return gy+gh*.5f-(midi-graphCentre)*lane;};
+   for(int n=(int)std::floor(graphCentre-8);n<=(int)std::ceil(graphCentre+8);++n){
+    const bool enabled=proc.noteValue(((n-root)%12+12)%12)>.5f;const bool isTarget=n==targetNote&&!bypassed;const float y=yOf((float)n);
+    if(enabled){g.setColour(isTarget?accent.withAlpha(.22f):juce::Colours::white.withAlpha(.045f));g.fillRect(juce::Rectangle<float>(gx,y-lane*.5f+1,gw,lane-2));
+     g.setColour(isTarget?ink:muted);g.setFont(juce::Font(10.f));g.drawText(megaTuneNoteName((float)n),juce::Rectangle<float>(gx+8,y-7,34,14),juce::Justification::left);}
+    else{g.setColour(juce::Colours::white.withAlpha(.03f));g.fillRect(juce::Rectangle<float>(gx,y,gw,1));}}
+   auto trace=[&](const std::array<float,graphN>& data,juce::Colour colour,float thickness){juce::Path path;bool open=false;float last=0;
+    for(int i=0;i<graphN;++i){const float v=data[(size_t)((graphHead+i)%graphN)];
+     if(v<=0){open=false;continue;}if(open&&std::abs(v-last)>7.f)open=false;
+     const float x=gx+46+(gw-54)*(float)i/(float)(graphN-1),y=yOf(v);if(open)path.lineTo(x,y);else path.startNewSubPath(x,y);open=true;last=v;}
+    g.setColour(colour);g.strokePath(path,juce::PathStrokeType(thickness,juce::PathStrokeType::curved,juce::PathStrokeType::rounded));};
+   trace(inTrace,inputColour.withAlpha(.85f),1.5f);if(!bypassed)trace(outTrace,accent,2.6f);}
+  g.setColour(juce::Colour(0xff332d42));g.drawRoundedRectangle(graph,10,1);
+  g.setFont(juce::Font(11.f));g.setColour(inputColour);g.fillEllipse(gx+gw-166,gy+12,7,7);g.setColour(muted);g.drawText("Input",(int)(gx+gw-154),(int)gy+8,40,15,juce::Justification::left);
+  g.setColour(accent);g.fillEllipse(gx+gw-106,gy+12,7,7);g.setColour(muted);g.drawText("Corrected",(int)(gx+gw-94),(int)gy+8,70,15,juce::Justification::left);
+  if(bypassed){g.setColour(accent);g.setFont(juce::Font(15.f,juce::Font::bold));g.drawText("BYPASSED",graph.withTrimmedLeft(46),juce::Justification::centred);}
+  else if(!graphEver){g.setColour(muted);g.setFont(juce::Font(14.f));g.drawText("Play audio to see the pitch trace",graph.withTrimmedLeft(46),juce::Justification::centred);}
+  auto meter=[&](float x,float v,const char* label){const juce::Rectangle<float> track(x,gy,10,gh-18);g.setColour(juce::Colour(0xff0d0c13));g.fillRoundedRectangle(track,4);
+   const float h=track.getHeight()*v;if(h>1){g.setGradientFill(juce::ColourGradient(accentDeep,x,track.getBottom(),inputColour,x,track.getY(),false));g.fillRoundedRectangle(x,track.getBottom()-h,10,h,4);}
+   g.setColour(muted);g.setFont(juce::Font(10.f));g.drawText(label,juce::Rectangle<float>(x-10,gy+gh-14,30,14),juce::Justification::centred);};
+  meter((float)cr-54,inMeter,"IN");meter((float)cr-32,outMeter,"OUT");
   card(31,370,(float)cw,300.f,14.f);
   const int col=cw/3;const int slot=(cr-92)/4;
-  for(int i=0;i<3;++i)if(i>0)g.fillRect(31+col*i,390,1,250);
+  g.setColour(line);for(int i=1;i<3;++i)g.fillRect(31+col*i,390,1,216);
   g.setColour(muted);g.setFont(juce::Font(13.f));
   const char* names[]={"SPEED","SUSTAIN","AMOUNT"};for(int i=0;i<3;++i)g.drawText(names[i],31+col*i,378,col,18,juce::Justification::centred);
+  {const char* hints[]={"slower  /  tighter","relax held notes  /  tighten","how much correction"};g.setFont(juce::Font(11.f));g.setColour(muted.withAlpha(.7f));for(int i=0;i<3;++i)g.drawText(hints[i],31+col*i,395,col,14,juce::Justification::centred);g.setColour(muted);}
   g.setFont(juce::Font(12.f));
   g.drawText("DOUBLER",62,620,110,16,juce::Justification::left);g.drawText("STEREO WIDTH",62+slot,620,140,16,juce::Justification::left);
   g.drawText("NOTE STABILIZER",62+2*slot+6,620,170,16,juce::Justification::left);g.drawText("PITCH REFERENCE",62+3*slot+10,620,150,16,juce::Justification::left);
   g.setColour(muted);g.setFont(juce::Font(12.f));
-  g.drawText("KEY",110,700,95,16,juce::Justification::left);g.drawText("SCALE",250,700,210,16,juce::Justification::left);
+  g.drawText("KEY",62,700,95,16,juce::Justification::left);g.drawText("SCALE",170,700,210,16,juce::Justification::left);
   const int shiftX=(int)(cr*.66f-60),rangeX=(int)(cr*.80f-60);
   g.drawText("SHIFT",shiftX,700,120,16,juce::Justification::left);g.drawText("RANGE",rangeX,700,120,16,juce::Justification::left);
   card(31,790,(float)cw,210.f,14.f);
@@ -625,7 +767,7 @@ public:
   g.setColour(juce::Colour(0xff8ee7ff));g.drawRoundedRectangle(782,1040,16,14,4,2.f);g.setColour(ink);g.drawText("Input",806,1038,60,18,juce::Justification::left);
   g.setColour(accent);g.fillRoundedRectangle(884,1039,18,16,5);g.setColour(ink);g.drawText("Target",910,1038,70,18,juce::Justification::left);
   int scaleMask=0;for(int n=0;n<12;++n)if(proc.noteValue(n)>.5f)scaleMask|=1<<n;
-  const juce::String scaleName=scaleMask==4095?"Chromatic":(scaleMask==2741?"Major":(scaleMask==1453?"Minor":"Custom"));
+  const juce::String scaleName=megaTuneScaleName(scaleMask);
   g.setColour(accent);g.fillEllipse(995,1042,9,9);g.setColour(ink);g.drawText("Scale note ("+juce::String(rootNames[root])+" "+scaleName+")",1012,1038,240,18,juce::Justification::left);
   g.setColour(line);g.fillRect(1250,1038,1,18);
   g.setColour(accent);for(int i=0;i<4;++i){const float h=5.f+i*4.f;g.fillRoundedRectangle(1272+i*5,1049-h,3,h,1);}
@@ -637,6 +779,10 @@ DecisionView historyDecision(const juce::AudioProcessor& processor,int sequence)
 void appendDecision(juce::AudioProcessor& processor,float in,float target,int reason){if(auto* tune=dynamic_cast<MegaTune*>(&processor))tune->recordDecision(in,target,reason);}
 int currentTargetNote(const juce::AudioProcessor& processor){if(auto* tune=dynamic_cast<const MegaTune*>(&processor))return tune->currentTargetNote.load();return 0;}
 int smithBufferCapacity(const juce::AudioProcessor& processor){if(auto* tune=dynamic_cast<const MegaTune*>(&processor))return tune->smithBufferCapacity();return 0;}
+void setKeepKey(juce::AudioProcessor& processor,bool keep){if(auto* tune=dynamic_cast<MegaTune*>(&processor))tune->keepKey=keep;}
+bool saveUserPreset(juce::AudioProcessor& processor,const juce::String& name){if(auto* tune=dynamic_cast<MegaTune*>(&processor))return tune->saveUserPreset(name);return false;}
+bool loadUserPreset(juce::AudioProcessor& processor,const juce::String& name){if(auto* tune=dynamic_cast<MegaTune*>(&processor))return tune->loadUserPreset(name);return false;}
+bool deleteUserPreset(juce::AudioProcessor& processor,const juce::String& name){if(auto* tune=dynamic_cast<MegaTune*>(&processor))return tune->deleteUserPreset(name);return false;}
 void tickEditor(juce::AudioProcessorEditor& editor){if(auto* view=dynamic_cast<Editor*>(&editor))view->tick();}
 }
 juce::AudioProcessorEditor* MegaTune::createEditor(){return new Editor(*this);}juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter(){return new MegaTune();}

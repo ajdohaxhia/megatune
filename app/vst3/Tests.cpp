@@ -210,6 +210,27 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   p->setCurrentProgram(6);float doubler=-1;for(auto* v:p->getParameters())if(v->getName(64)=="Doubler")doubler=v->getValue();
   if(doubler<.6f){std::cerr<<"Doubler Wide preset is not wet\n";return 50;}
   p->setCurrentProgram(0);}
+ // Presets change the sound; the song's key and scale stay put unless key lock is off.
+ {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());
+  auto ranged=[&](const char* id)->juce::RangedAudioParameter*{for(auto* v:q->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v))if(w->paramID==id)return w;return nullptr;};
+  auto* keyParam=ranged("key");auto* speedParam=ranged("speed");if(!keyParam||!speedParam)return 119;
+  auto keyNow=[&]{return (int)std::lround(keyParam->convertFrom0to1(keyParam->getValue()));};
+  auto setPlain=[](juce::RangedAudioParameter* v,float plain){v->setValueNotifyingHost(v->convertTo0to1(plain));};
+  setPlain(keyParam,7.f);q->setCurrentProgram(4); // R&B Smooth is stored in A minor
+  if(keyNow()!=7){std::cerr<<"Preset changed the key while key lock is on\n";return 120;}
+  megatune::setKeepKey(*q,false);q->setCurrentProgram(4);
+  if(keyNow()!=9){std::cerr<<"Preset did not recall its key with key lock off\n";return 121;}
+  megatune::setKeepKey(*q,true);
+  const juce::String probe("megatune selftest preset");
+  setPlain(speedParam,137.f);setPlain(keyParam,2.f);
+  if(!megatune::saveUserPreset(*q,probe)){std::cerr<<"User preset did not save\n";return 122;}
+  q->setCurrentProgram(7);setPlain(keyParam,5.f);
+  if(!megatune::loadUserPreset(*q,probe)){std::cerr<<"User preset did not load\n";megatune::deleteUserPreset(*q,probe);return 123;}
+  const float speedBack=speedParam->convertFrom0to1(speedParam->getValue());const int keyBack=keyNow();
+  const bool removed=megatune::deleteUserPreset(*q,probe);
+  if(std::abs(speedBack-137.f)>.5f){std::cerr<<"User preset lost Speed: "<<speedBack<<"\n";return 124;}
+  if(keyBack!=5){std::cerr<<"User preset changed the key while key lock is on\n";return 125;}
+  if(!removed||megatune::loadUserPreset(*q,probe)){std::cerr<<"User preset was not deleted\n";return 126;}}
  if(!(megaTuneSmoothingSeconds(-3,0,0)<megaTuneSmoothingSeconds(25,0,0))){std::cerr<<"Negative Speed must tighten faster than the default\n";return 51;}
  {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());juce::MidiBuffer ev;juce::AudioBuffer<float> b(2,256);
   for(int program=0;program<q->getNumPrograms();++program){q->setCurrentProgram(program);q->prepareToPlay(48000,256);
@@ -570,6 +591,13 @@ p->prepareToPlay(48000,256);std::vector<float> steady;juce::MidiBuffer midi;juce
  auto writeShot=[&](const juce::String& name){auto shot=editor->createComponentSnapshot(editor->getLocalBounds());juce::File f=juce::File::getCurrentWorkingDirectory().getChildFile(name);f.deleteFile();juce::FileOutputStream stream(f);juce::PNGImageFormat png2;png2.writeImageToStream(shot,stream);};
  writeShot("MegaTune-vst3-idle.png");
  {visual->setRateAndBufferSizeDetails(48000,256);visual->prepareToPlay(48000,256);juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);for(int blk=0;blk<140;++blk){for(int i2=0;i2<256;++i2)for(int c2=0;c2<2;++c2)b.setSample(c2,i2,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(blk*256+i2)/48000));visual->processBlock(b,mb);}}
+ // A few seconds of a wobbling note, ticking the editor as a host would, so the pitch trace has something to show.
+ {juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);double ph=0;long long n=0;
+  for(int frame=0;frame<170;++frame){for(int blk=0;blk<6;++blk){for(int i2=0;i2<256;++i2,++n){const double t=(double)n/48000.0;
+     const double hz=432.0*std::pow(2.0,(.35*std::sin(juce::MathConstants<double>::twoPi*5.2*t)+.25*std::sin(juce::MathConstants<double>::twoPi*.7*t))/12.0);
+     ph+=juce::MathConstants<double>::twoPi*hz/48000.0;const float v=.3f*(float)std::sin(ph);b.setSample(0,i2,v);b.setSample(1,i2,v);}visual->processBlock(b,mb);}
+   pumpEditor();}
+  for(int blk=0;blk<60;++blk){for(int i2=0;i2<256;++i2)for(int c2=0;c2<2;++c2)b.setSample(c2,i2,.3f*std::sin(juce::MathConstants<double>::twoPi*432*(blk*256+i2)/48000));visual->processBlock(b,mb);}}
  pumpEditor();writeShot("MegaTune-vst3-active.png");writeShot("MegaTune-vst3.png");
  const float speedBefore=paramById("speed")->getValue();
  if(!clickButton("Why this note?")){std::cerr<<"Why this note action missing\n";return 66;}

@@ -11,4 +11,9 @@ void appendDecision(juce::AudioProcessor&, float in, float target, int reason);
 int currentTargetNote(const juce::AudioProcessor&);
 int smithBufferCapacity(const juce::AudioProcessor&);
 void tickEditor(juce::AudioProcessorEditor&);
+// Presets: key lock and user presets, as the preset browser drives them.
+void setKeepKey(juce::AudioProcessor&, bool keep);
+bool saveUserPreset(juce::AudioProcessor&, const juce::String& name);
+bool loadUserPreset(juce::AudioProcessor&, const juce::String& name);
+bool deleteUserPreset(juce::AudioProcessor&, const juce::String& name);
 }
