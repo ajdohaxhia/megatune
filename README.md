@@ -4,29 +4,13 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four
 selectable pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.3.0.** Pitch correction, latency reporting,
-> presets, automation and the exclude/undo workflow are verified. **Formant preservation is
-> unvalidated** and the build is **ad-hoc signed, not notarized**. See [Status](#status)
-> before shipping anything.
->
-> 0.3.1 reworks the audio path (sources only; rebuild with `app/vst3/build.sh` on macOS):
->
-> - **Tuning**: Speed and Sustain now actually drive the default TD-PSOLA engine (the
->   ratio used to jump straight to the target, so the knob did nothing). The PSOLA engine
->   is stereo-linked with correlation-aligned pitch marks, the period is refined at full
->   sample rate on the audio leaving the shifter, and unvoiced audio passes through dry.
-> - **Doubler**: two independently detuned and delayed voices instead of one static 18 ms
->   echo (which only comb-filtered the vocal).
-> - **Stereo Width**: works on its own. It pans the doubled voices apart and adds a pure
->   side signal that widens a mono vocal and cancels completely in mono.
->
-> Measured with `app/vst3/verify/bench.py` (synthetic vowel, ±35 cent vibrato): mean pitch
-> error 24 cents in, about 1 cent out at Speed 0; Width 100 alone gives L/R correlation
-> 0.49 with a mono-sum residual below −150 dB. Not yet auditioned on real vocals in a DAW.
->
-> 0.3.0 makes the editor scale into a **resizable 1120×802 default window**
-> (fixed aspect, minimum 740×530), so it fits Logic and smaller displays. The vendor/bundle
-> identity is now **ademusic** (`AdMs`, `com.ademusic.megatune`).
+> **Status: 0.3.1 (source release).** The tuner, Doubler and Stereo Width audio paths were
+> rewritten; see [What changed in 0.3.1](#what-changed-in-031). The numbers below come from
+> a synthetic bench and the regression suite. **0.3.1 has not been auditioned in a DAW or
+> on real vocals yet**, there are **no prebuilt 0.3.1 binaries** (build it with
+> `app/vst3/build.sh`; the 0.3.0 downloads do not contain these fixes), **formant
+> preservation is unvalidated**, and builds are **ad-hoc signed, not notarized**. See
+> [Status](#status) before shipping anything.
 
 ---
 
@@ -57,6 +41,8 @@ their owners.
 |---|---|
 | Pitch engines | Quality (TD-PSOLA), Low Latency (TD-PSOLA, 512), Signalsmith Stretch |
 | Controls | Speed, Sustain, Amount, Doubler, Stereo Width, Key, Scale, Shift, Range, Pitch Reference (A4) |
+| Doubler | Two extra voices, each with its own 15/24 ms offset and slowly drifting detune of a few cents |
+| Stereo Width | Pans the doubled voices apart and, on its own, widens a mono vocal with a side signal that cancels in mono |
 | Keyboard | One octave, scale membership dots, live input outline, target fill |
 | Pitch monitor | Input → Target with signed cents and a ±100¢ meter |
 | Diagnostics | "Why this note?" history of recent decisions with a one-click Exclude/Enable action |
@@ -71,13 +57,78 @@ their owners.
 | Engine | Latency @ 48 kHz | Notes |
 |---|---|---|
 | Quality | **2048 samples / 42.7 ms** | default; stereo TD-PSOLA with correlation-aligned marks |
-| Low Latency | **512 samples / 10.7 ms** | same TD-PSOLA engine, shorter analysis window |
+| Low Latency | **512 samples / 10.7 ms** | same engine, shorter delay; the correction lags the audio by ~30 ms |
 | TD-PSOLA | 2048 samples | pitch-synchronous overlap-add (also Low Latency) |
 | Signalsmith | **5760 samples / 120 ms** | with optional formant compensation |
 
 Declared latency matches measured impulse onset and cross-correlation lag at 44.1 and
 48 kHz. A live engine switch republishes the correct latency on the next
 `prepareToPlay`; whether a specific DAW re-reads compensation mid-session is **unverified**.
+
+---
+
+## What changed in 0.3.1
+
+Three controls were reported as not working. Each had a concrete cause in the code.
+
+### Tuning (Speed, Sustain, accuracy)
+
+| Problem in 0.3.0 | Fix |
+|---|---|
+| Speed and Sustain never reached the default TD-PSOLA engine. The shifter was handed `2^(target/12)` once per 512-sample analysis block, so every setting behaved like a stepped hard tune. | The Speed/Sustain-smoothed ratio is passed to the shifter every sample. The Signalsmith path uses the same smoothed ratio. |
+| Each channel ran its own PSOLA with its own pitch marks, so the two channels drifted out of phase. | One `StereoPsola` with shared marks for both channels. |
+| Marks advanced by the detected period only. A slightly wrong or drifting period made consecutive grains incoherent (roughness). | Each mark is aligned to the previous one by normalised cross-correlation on the mono sum, with sub-sample interpolation. |
+| Grain centres were rounded to whole samples, which jitters the output period. | Grains are placed fractionally and read with cubic interpolation. |
+| The period came from a 12 kHz decimated YIN without anti-alias filtering (about ±7 cents at 500 Hz). | Box-filtered decimation, then the period is refined on the full-rate signal, on the span that is leaving the shifter, so the correction lines up with the audio it is applied to. |
+| A 3-frame median delayed every pitch frame by about 10 ms. | The median is only used to reject octave slips. |
+| Engaging the shifter left a gap of zeros until the first grain; grains for low notes read samples that were not written yet. | Dry fill under the first grains, and marks are clamped to written audio. |
+| Toggling Low Latency while running changed the reported latency but not the shifter delay. | The shifter delay follows the switch. |
+| Unvoiced audio kept being re-synthesised for 120 ms after a note. | Voicing hold is 60 ms, with a 4 ms / 12 ms crossfade to the bit-exact dry signal. |
+
+### Doubler
+
+0.3.0 mixed in **one** copy of the signal on the **same** channel, delayed 18 ms with a
+±1.2 ms wobble (about 3.5 cents). That is a comb filter, not a second take. 0.3.1 uses two
+voices fed from the tuned mono sum: base delays of 15 ms and 24 ms, each modulated by two
+slow sines at unrelated rates (roughly ±7 and ±5 cents of drifting detune per voice),
+high-passed at 120 Hz so the low end stays tight. Doubler is a dry/wet blend; output level
+stays within about 1 dB of the dry signal.
+
+### Stereo Width
+
+In 0.3.0 Width only nudged the doubler delay by ±6 ms per channel, so with Doubler at 0 it
+did nothing at all. In 0.3.1 Width:
+
+- pans the two doubled voices from centre to hard left/right;
+- on its own adds the *difference* of the two voices as a side signal, which widens a mono
+  vocal and cancels exactly when the output is summed to mono;
+- widens stereo content that is already present (side gain up to +4 dB).
+
+### Measured
+
+`app/vst3/verify/bench.py`, synthetic vowel at 210 Hz with ±35 cent vibrato plus random
+drift, chromatic scale, 48 kHz. "Error" is the mean distance from the nearest semitone.
+
+| Case | Input error | Output error |
+|---|---|---|
+| Speed 0, Quality | 23.8 ¢ | 0.6 ¢ |
+| Speed 0, Low Latency | 23.8 ¢ | 1.1 ¢ |
+| Speed 25 | 23.8 ¢ | 12.4 ¢ |
+| Speed 100 | 23.8 ¢ | 18.6 ¢ |
+| Off-pitch note steps with gaps, Speed 0 | 27.3 ¢ | 0.8 ¢ |
+| 4-semitone glide, Speed 0 | 23.3 ¢ | 1.0 ¢ |
+| 108 Hz vowel, Speed 0 | 26.6 ¢ | 2.9 ¢ |
+
+| Doubler / Width | L/R correlation | Side vs mid | Level vs dry | Mono sum vs dry |
+|---|---|---|---|---|
+| 0 / 0 | 1.00 | none | 0.0 dB | identical |
+| 100 / 0 | 1.00 | none | −0.5 dB | doubled |
+| 0 / 100 | 0.49 | −4.6 dB | +1.3 dB | identical (residual −155 dB) |
+| 65 / 100 | 0.37 | −3.3 dB | +0.3 dB | doubled |
+| 100 / 100 | 0.35 | −3.1 dB | +0.1 dB | doubled |
+
+The 0.3.0 column is missing on purpose: 0.3.0 was not run through this bench, so there is
+no measured before/after, only the code-level causes above.
 
 ---
 
@@ -95,9 +146,13 @@ Declared latency matches measured impulse onset and cross-correlation lag at 44.
 
 ## Install
 
-Version 0.1.6 (universal arm64 + x86_64, VST3 + AUv2):
+**0.3.1 is a source release.** Build it as described under
+[Build from source](#build-from-source); `build.sh` leaves the VST3 and AU in `app/dist`.
 
-https://github.com/ajdohaxhia/megatune/releases/tag/v0.1.6
+The newest prebuilt download (universal arm64 + x86_64, VST3 + AUv2) is 0.3.0, which does
+**not** include the 0.3.1 tuner, Doubler and Width fixes:
+
+https://github.com/ajdohaxhia/megatune/releases/tag/v0.3.0
 
 ```bash
 # from the release archive or app/dist
@@ -116,7 +171,13 @@ Uninstall: delete `~/Library/Audio/Plug-Ins/VST3/MegaTune.vst3` and
 
 ## Build from source
 
-Requirements: macOS, CMake ≥ 3.22, a C++17 toolchain, JUCE 8.0.x sources.
+Requirements: macOS, CMake ≥ 3.22, a C++17 toolchain, JUCE sources **8.0.13 or newer**
+(the test suite calls `createEditorAndMakeActive`, which older 8.0.x does not have;
+8.0.15 is the version used for 0.3.1).
+
+```bash
+git clone --depth 1 -b 8.0.15 https://github.com/juce-framework/JUCE.git ~/juce
+```
 
 ```bash
 cd app/vst3
@@ -177,6 +238,8 @@ The suite covers, among others:
 - the engine × sample-rate × block-size matrix produces finite audio
 - 4000-block engine/parameter churn remains finite
 - **Why this note?** end-to-end: 432 Hz tone A4 → exclude A → G♯4 → Undo → A4
+- Width alone widens a mono source and leaves the mono sum unchanged (0.3.1)
+- Speed reaches the default engine: a slow setting leaves more vibrato than a hard one (0.3.1)
 - 490 Hz disabled-target control (with and without Note Stabilizer)
 - real-take target change: at 17.71 s of the dry fixture, excluding G retargets
   110/110 analysed blocks and Undo restores it bit-identically
@@ -211,12 +274,12 @@ app/
   vst3/
     Plugin.cpp         processor + editor (single translation unit)
     TuningRules.h      recovered parameter curves (Speed, Amount, smoothing)
-    TuningDsp.h        YIN detector, TD-PSOLA, helpers, diagnostic trace
+    TuningDsp.h        YIN detector, StereoPsola, StereoDoubler, helpers, diagnostic trace
     Tests.cpp          in-process regression suite
     CMakeLists.txt     JUCE plug-in target + tests
     build.sh           build + test + package + ad-hoc sign
     host/              VST3 host check, WAV renderer, latency probe
-    verify/            measurement scripts and exported renders
+    verify/            measurement scripts, MegaTuneBench render bench (Bench.cpp + bench.py)
     third_party/       vendored Signalsmith Stretch + Linear (MIT)
   dist/                installer, universal VST3 + AUv2, README
   MECHANICS.md         recovered semantics, evidence and open questions
@@ -228,8 +291,11 @@ app/
 2. YIN detects F0 with aperiodicity; aperiodic frames pass through untouched (breath gate).
 3. The nearest **enabled** scale degree becomes the target; the decision and its reason are
    recorded in a lock-free 16-entry ring.
-4. Speed/Sustain shape a one-pole smoothing of the correction ratio.
-5. The selected engine renders the shifted signal; Doubler and Width are applied after.
+3a. The period is refined at full sample rate on the audio that is leaving the shifter.
+4. Speed/Sustain shape a one-pole smoothing of the correction ratio, which is fed to the
+   engine every sample.
+5. The selected engine renders the shifted signal (unvoiced audio stays dry); the Doubler
+   voices and the Width side signal are added after it.
 
 ---
 
@@ -237,8 +303,10 @@ app/
 
 | Item | State |
 |---|---|
-| Pitch accuracy (synthetic vibrato) | ✅ 1.4¢ median / 1.4¢ p95 |
-| Pitch accuracy (dry vocal) | ✅ 5.63¢ median, jumps 4.17 % |
+| Pitch accuracy (synthetic vibrato, 0.3.1 bench) | ✅ 0.6¢ mean / 1.5¢ p95 at Speed 0 |
+| Speed / Sustain reach the default engine | ✅ regression test (0.3.1) |
+| Doubler / Width | ✅ measured on the synthetic bench; Width-only mono compatibility in the regression suite |
+| Pitch accuracy (dry vocal) | ⚠️ 5.63¢ median, jumps 4.17 % measured on 0.3.0; **not re-measured on 0.3.1** (fixture not in the repo) |
 | Low latency | ✅ 512 samples (10.7 ms); tunes 200 Hz correctly |
 | Large host blocks / sample-rate changes | ✅ 16384-sample block and 48 → 96 kHz verified |
 | Audio-thread allocations in analysis | ✅ none after prepare |
@@ -246,17 +314,19 @@ app/
 | Negative Speed / zero-Amount Shift | ✅ verified |
 | Non-finite input / reset / channel safety | ✅ verified |
 | Long-session engine/parameter churn | ✅ 4000 blocks verified |
-| AUv2 | ✅ `auval` passes |
-| pluginval 1.0.4, strictness 8 | ✅ passes with two known JUCE state-cache tests disabled |
+| AUv2 | ⚠️ `auval` passed on 0.3.0; not re-run on 0.3.1 |
+| pluginval 1.0.4, strictness 8 | ⚠️ passed on 0.3.0 with two known JUCE state-cache tests disabled; not re-run on 0.3.1 |
+| 0.3.1 build and test suite | ⚠️ run on Linux only (JUCE 8.0.15, VST3 target + ctest binary); macOS build not yet done |
 | Full parameter state round-trip | ✅ in-process regression |
 | Why this note? → Exclude → Undo | ✅ verified on synthetic tone and on a real take |
 | Presets, automation, recall, A/B | ✅ verified |
 | **Formant preservation** | ❌ **unvalidated** — the estimator misclassifies known test cases |
-| **DAW compatibility** | ❌ not tested in a real host |
+| **DAW compatibility / listening test** | ❌ not tested in a real host; 0.3.1 not auditioned on real vocals |
 | **Distribution signing** | ❌ ad-hoc only; no Developer ID in this environment |
 | **Parity with the original DSP** | ❌ not attempted; documented as unknown |
 
-Known engine limits: low notes below roughly 90 Hz exceed the analysis window; polyphonic
+Known engine limits: the detector range is 70 Hz to 1 kHz; in Low Latency the correction
+lags the audio by about 30 ms, so fast vibrato is tracked less tightly than in Quality; polyphonic
 material is out of scope; formant behaviour is still unvalidated (measurement tooling).
 
 ---
