@@ -413,9 +413,10 @@ Prebuilt macOS download (universal arm64 + x86_64, VST3 + AUv2):
 
 https://github.com/ajdohaxhia/megatune/releases/latest
 
-`MegaTune-<version>-macOS.zip` contains both plug-ins and an installer script. The builds are
-not notarized, so macOS may refuse to open the script on first try: right-click it and
-choose Open, or copy the two bundles by hand.
+Releases up to 0.7.0 ship `MegaTune-<version>-macOS.zip` with both plug-ins and an installer
+script; 0.7.1 ships the two plug-ins as separate zips (`MegaTune-0.7.1-macos-universal-VST3.zip`
+and `-AU.zip`), so copy the bundles by hand. The builds are not notarized, so macOS may refuse to
+open the installer script on first try: right-click it and choose Open.
 
 ```bash
 # from the release archive or app/dist
@@ -556,9 +557,9 @@ The CI job pins JUCE to the tag in `app/vst3/CMakeLists.txt` (fetched via
 | Stage | CI step | Run it yourself |
 |---|---|---|
 | Configure | `cmake -S app/vst3 -B app/vst3/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64` | same command |
-| Build | targets `MegaTune` and `MegaTuneTests` | `cmake --build app/vst3/build --target MegaTune MegaTuneTests` |
+| Build | targets `MegaTune_VST3`, `MegaTune_AU` and `MegaTuneTests` (the plain `MegaTune` target only builds the shared library, not the plug-in bundles) | `cmake --build app/vst3/build --target MegaTune_VST3 MegaTune_AU MegaTuneTests` |
 | Unit/DSP tests | `ctest --output-on-failure` | `cd app/vst3/build && ctest --output-on-failure` |
-| VST3 validation | pluginval v1.0.3, strictness 8, in-process, GUI tests skipped | `pluginval --strictness-level 8 --validate MegaTune.vst3` |
+| VST3 validation | pluginval v1.0.3, strictness 8, out of process (the default; an in-process scan found no plug-ins on the runner), GUI tests skipped | `pluginval --strictness-level 8 --validate MegaTune.vst3` |
 | AU validation | `auval -v aufx Mgtn AdMs` (after installing the component) | `auval -v aufx Mgtn AdMs` |
 
 Both built bundles (`MegaTune.vst3` and `MegaTune.component`) are uploaded as the
@@ -568,7 +569,7 @@ test a CI build without compiling locally.
 To reproduce the whole pipeline on your own machine in one shot:
 
     cmake -S app/vst3 -B app/vst3/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64
-    cmake --build app/vst3/build --target MegaTune MegaTuneTests --parallel
+    cmake --build app/vst3/build --target MegaTune_VST3 MegaTune_AU MegaTuneTests --parallel
     ( cd app/vst3/build && ctest --output-on-failure )
 
 CI builds arm64-only for speed; the release binaries remain universal (arm64 + x86_64).
