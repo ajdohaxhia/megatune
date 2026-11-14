@@ -243,6 +243,22 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   const double hz=48000.0*(crossings-1)/(last-first),midi=69+12*std::log2(hz/440.0),cents=100*(midi-std::round(midi));
   std::cout<<"Steady tone: "<<hz<<" Hz, "<<cents<<" cents from the note\n";
   if(std::abs(cents)>.2){std::cerr<<"Steady tone is off the note\n";return 127;}}
+ // A jump from a low note to a high one must not leave a hole or a sharp edge. (A sanity check: the
+ // clicks fixed in 0.6.1 only showed up on a real take; verify/clicks.py measures those on a recording.)
+ {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());
+  for(auto* v:q->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v)){if(w->paramID.startsWith("note"))w->setValueNotifyingHost(1.f);if(w->paramID=="speed")w->setValueNotifyingHost(w->convertTo0to1(0.f));}
+  q->setPlayConfigDetails(2,2,48000,256);q->prepareToPlay(48000,256);juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);std::vector<float> in,out;double ph=0;
+  const int latency=q->getLatencySamples();
+  for(int blk=0;blk<420;++blk){for(int i=0;i<256;++i){const int n=blk*256+i;const double hz=n<48000?63.0:351.0;ph+=juce::MathConstants<double>::twoPi*hz/48000.0;
+    float v=0;for(int k=1;k<=6;++k)v+=(float)(std::sin(ph*k+.6*k)/k);v*=.15f;b.setSample(0,i,v);b.setSample(1,i,v);in.push_back(v);}
+   q->processBlock(b,mb);for(int i=0;i<256;++i)out.push_back(b.getSample(0,i));}
+  auto edge=[](const std::vector<float>& s,int from,int to){float worst=0;for(int i=from+2;i<to;++i)worst=juce::jmax(worst,std::abs(s[(size_t)i]-2*s[(size_t)i-1]+s[(size_t)i-2]));return worst;};
+  auto rms=[](const std::vector<float>& s,int from,int n){double e=0;for(int i=0;i<n;++i)e+=(double)s[(size_t)(from+i)]*s[(size_t)(from+i)];return std::sqrt(e/n);};
+  const float inputEdge=edge(in,40000,60000),outputEdge=edge(out,40000+latency,60000+latency);
+  double deepest=1;for(int at=48000;at<56000;at+=144)deepest=std::min(deepest,rms(out,at+latency,288)/(rms(in,at,288)+1e-9));
+  std::cout<<"Note jump: sharpest edge "<<outputEdge/inputEdge<<"x the input's, deepest dip "<<20*std::log10(deepest+1e-9)<<" dB\n";
+  if(outputEdge>2.f*inputEdge){std::cerr<<"Note jump clicks\n";return 130;}
+  if(deepest<.4){std::cerr<<"Note jump leaves a hole\n";return 131;}}
  // Switching bypass while audio is running must cross-fade, not jump.
  {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());juce::RangedAudioParameter* bypassParam=nullptr;
   for(auto* v:q->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v))if(w->paramID=="bypass")bypassParam=w;

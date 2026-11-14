@@ -4,12 +4,15 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch trace, a diagnostic "Why this note?" history, three
 selectable pitch engines, factory and user presets, a doubler and a stereo widener.
 
-> **Status: 0.6.0.** More engine work: steady notes now land exactly on pitch, downward
+> **Status: 0.6.1.** 0.6.1 removes clicks that 0.6.0 introduced at note changes, found on the
+> first real vocal take run through the plug-in; see [What changed in 0.6.1](#what-changed-in-061).
+> 0.6.0 itself was more engine work: steady notes now land exactly on pitch, downward
 > shifts actually reach the lower note, Stereo Width no longer changes the level, and
 > formant preservation has been measured; see [What changed in 0.6.0](#what-changed-in-060).
 > Prebuilt macOS binaries pass `ctest`, `auval`, the VST3 host check and pluginval at
-> strictness 8. **MegaTune has still not been auditioned in a DAW or on real vocals**: every
-> number here comes from synthetic signals. The factory presets are **not tuned by ear** and
+> strictness 8. It has had **one listening pass, on one take** ("sounds good, but there are clicks"; the
+> clicks are what 0.6.1 fixes, and the fix has been measured but not yet listened to). Most
+> numbers here still come from synthetic signals. The factory presets are **not tuned by ear** and
 > builds are **ad-hoc signed, not notarized**. See [Status](#status) before shipping anything.
 
 ---
@@ -64,6 +67,41 @@ their owners.
 Declared latency matches measured impulse onset and cross-correlation lag at 44.1 and
 48 kHz. A live engine switch republishes the correct latency on the next
 `prepareToPlay`; whether a specific DAW re-reads compensation mid-session is **unverified**.
+
+---
+
+## What changed in 0.6.1
+
+The first real vocal take through 0.6.0 sounded right but clicked. Measured on that take
+(150 s, 44.1 kHz), the output had level holes of about 8 ms followed by an abrupt return,
+three to six times per pass, always where a note started or changed.
+
+| Cause | Fix |
+|---|---|
+| 0.6.0 stopped dividing the grain sum by the window sum so that downward shifts would work. That also removed what had been hiding every scheduling irregularity: wherever grains of different sizes met, the level dipped. | The division is back for everything except downward shifts, where the divisor is floored and the floor rises with the size of the shift. Octave-down still works (66 % of the energy on the old harmonics, down from 85 %). |
+| A stretch with no grain at all was silence. | It is filled with dry signal again (not for deep downward shifts, where such gaps are intended). |
+| When the detected period dropped (a jump to a higher note, or the detector leaving a sub-harmonic), the next grain was still scheduled one *old* period ahead. | It is brought forward to one new period from now. |
+| When the period grew, the next grain should already have started and was cut off mid-window. | Its rising half is squeezed into the time that is left, so it starts from zero. |
+| The first frames of a note often report a sub-harmonic or an in-between value (on the take: 57 Hz, then 95 Hz, before settling on 356 Hz), and the tuner acted on them. | A pitch is only acted on once two consecutive frames agree within a semitone; the detector prefers the shortest period among near-equal candidates; and when the octave-slip filter overrides a pitch, the shifter gets the matching period. |
+
+On the take, sharp edges the input does not have (output second difference more than twice
+the input's within 8 ms):
+
+| Setting | 0.5.0 | 0.6.0 | 0.6.1 |
+|---|---|---|---|
+| Default | 1 (2.2x) | 1 (4.2x) | 0 (1.1x) |
+| Hard tune, chromatic | 0 (1.8x) | 0 (1.3x) | 0 (1.1x) |
+| Speed 90 | 1 (2.1x) | 0 (1.3x) | 0 (1.2x) |
+| Low Latency | 1 (2.2x) | 0 (1.7x) | 0 (1.1x) |
+| Radio Ready preset | 2 (3.2x) | 1 (4.1x) | 0 (1.2x) |
+
+Also clean with host-style varying block sizes (1 to 512 samples per call) and on a mono
+bus. This is one take and an offline render; whether it matches what was heard in the DAW
+needs a listen. `verify/clicks.py` runs a high-frequency burst check on synthetic signals or
+on a recording (`clicks.py <bench> <workdir> <mono float32 file> <rate>`); the bench accepts
+`file=` and `varblock=1` for this. The take itself is not in the repository.
+
+The cost: on the synthetic bench the vibrato vowel at Speed 0 reads 1.0 cents instead of 0.4.
 
 ---
 
@@ -410,6 +448,7 @@ target:
 | `bench.py` | tuning error, Doubler level, stereo width and mono compatibility |
 | `stress.py` | tuning error across sample rates, block sizes, mono buses and pitch extremes |
 | `formant_bench.py` | whether the formants stay put when the pitch is shifted |
+| `clicks.py` | high-frequency bursts the input does not have, on synthetic signals or a recording |
 
 ```bash
 python3 verify/bench.py build-cli/MegaTuneBench_artefacts/Release/MegaTuneBench /tmp
@@ -457,7 +496,7 @@ app/
 
 | Item | State |
 |---|---|
-| Pitch accuracy (synthetic vibrato, 0.6.0 bench) | ✅ 0.4¢ mean / 1.0¢ p95 at Speed 0; steady tone 0.0¢ |
+| Pitch accuracy (synthetic vibrato, 0.6.1 bench) | ✅ 1.0¢ mean / 1.9¢ p95 at Speed 0; steady tone 0.0¢ |
 | Speed / Sustain reach the default engine | ✅ regression test |
 | Doubler / Width | ✅ level within 0.1 dB of dry at every setting on the bench; level and mono compatibility in the regression suite |
 | Pitch accuracy (dry vocal) | ⚠️ last measured on 0.3.0 (5.63¢ median); not re-measured since, because the vocal fixture is not in the repo |
@@ -477,7 +516,7 @@ app/
 | Why this note? → Exclude → Undo | ✅ verified on synthetic tone and on a real take |
 | Presets, automation, recall, A/B | ✅ verified |
 | Formant preservation | ✅ measured for -3 to +12 semitones on a synthetic vowel (spectral stretch 0.99 to 1.02; 1.00 is perfect). ⚠️ -6 and -12 are inconclusive: the fit is poor there |
-| **DAW compatibility / listening test** | ❌ not tested in a real host; not auditioned on real vocals |
+| **DAW compatibility / listening test** | ⚠️ one listening pass on one take (0.6.0: sounds good, clicks; fixed in 0.6.1, not yet re-listened); no long session, no other hosts |
 | **Distribution signing** | ❌ ad-hoc only; notarization needs an Apple Developer ID |
 | **Parity with the original DSP** | ❌ not attempted; documented as unknown |
 

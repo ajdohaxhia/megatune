@@ -87,6 +87,11 @@ inline YinPitch detectYin (const float* x, int n, float sampleRate,
         for (int tau = minTau; tau <= maxTau; ++tau)
             if (dn[(size_t) tau] < m) { m = dn[(size_t) tau]; best = tau; }
         if (best < 0 || m > 0.30f) return out;
+        // The deepest dip is often at two or three times the real period (a sub-harmonic),
+        // above all at the start of a note. Take the shortest lag that is nearly as deep.
+        for (int tau = minTau + 1; tau < best; ++tau)
+            if (dn[(size_t) tau] <= m + 0.08f && dn[(size_t) tau] <= dn[(size_t) tau - 1] && dn[(size_t) tau] <= dn[(size_t) tau + 1])
+            { best = tau; break; }
     }
 
     const float centre = dn[(size_t) best];
@@ -198,7 +203,7 @@ public:
         std::fill (wsum.begin(), wsum.end(), 0.0f);
         written = 0; nextCenter = 0.0; lastMark = 0.0;
         period = std::min (maxPeriod, std::max (minPeriod, 200.0));
-        ratio = 1.0; mix = 0.0f; active = false; haveMark = false; filled = false;
+        ratio = 1.0; mix = 0.0f; active = false; haveMark = false;
     }
 
     // Change the dry/wet delay without reallocating (never above the prepared one).
@@ -236,7 +241,7 @@ public:
         const bool want = voiced && std::abs (ratio - 1.0) >= 1.0e-4;
         if (want && ! active)
         {
-            active = true; haveMark = false; filled = false;
+            active = true; haveMark = false;
             nextCenter = (double) t + period;
         }
         else if (! want && active && mix <= 0.0f)
@@ -249,6 +254,12 @@ public:
         float wet[2] = { dry[0], dry[1] };
         if (active)
         {
+            // The next grain was placed one old period ahead. If the period has since dropped
+            // (a note change, or the detector leaving a sub-harmonic), waiting for it leaves a
+            // stretch covered only by the tail of the last wide grain: a dip in level, then a
+            // sudden return. Bring the next grain forward to one new period from now.
+            // (A grain is normally placed at most one period plus one grain spacing ahead.)
+            if (nextCenter - (double) t > period * (1.0 + 1.0 / ratio) + 4.0) nextCenter = (double) t + period;
             int guard = 0;
             while (nextCenter - period <= (double) (t + 1) && guard++ < 16)
             {
@@ -257,18 +268,24 @@ public:
             }
             const size_t pos = (size_t) (t & am);
             const float w = wsum[pos];
+            // The grain sum is divided by the window sum, which keeps the level steady when
+            // grains of different sizes meet (note changes, a period estimate that jumps).
+            // Shifting down is the exception: there the windows are meant to leave gaps, and
+            // dividing through them would re-inflate the periods the window removed and
+            // rebuild the original pitch. So the divisor is floored, and the floor rises to 1
+            // (no division at all) as the shift goes from unison to about three semitones down.
+            const float r = (float) ratio;
+            const float floorW = r >= 1.0f ? fillBelow : std::min (1.0f, fillBelow + (1.0f - fillBelow) * (1.0f - r) * 5.0f);
+            // A stretch with no grain at all is filled with dry signal, so the shifter engages
+            // without a gap and a scheduling hole is never silence. Not for deep downward
+            // shifts, where such stretches are part of the result.
+            const float holeGain = std::min (1.0f, std::max (0.0f, (r - 0.55f) * 10.0f));
+            const float hole = w < fillBelow ? holeGain * (fillBelow - w) / fillBelow : 0.0f;
             for (int c = 0; c < 2; ++c)
             {
-                const float a = acc[c][pos];
-                // Where grains overlap (upward shifts) the sum is divided by the window sum.
-                // Where they do not reach each other (downward shifts) it is left alone:
-                // dividing there re-inflates the neighbouring periods the window removed and
-                // rebuilds the original pitch. Until the first grains arrive, the remainder of
-                // the window is filled with dry signal so the shifter engages without a gap.
-                wet[c] = w >= 1.0f ? a / w : (filled ? a : a + (1.0f - w) * dry[c]);
+                wet[c] = acc[c][pos] / std::max (w, floorW) + hole * dry[c];
                 acc[c][pos] = 0.0f;
             }
-            if (w >= 0.5f) filled = true;
             wsum[pos] = 0.0f;
         }
 
@@ -360,19 +377,25 @@ private:
         }
         lastMark = mark;
 
-        const long long k0 = std::max ((long long) std::ceil (center - pd), t);
+        // When the period has just grown, this grain should have started in the past. Its
+        // rising half is squeezed into the time that is left, so it still starts from zero
+        // instead of being cut off mid-window (an audible click).
+        const double left = std::max (8.0, std::min (pd, center - (double) t));
+        const long long k0 = std::max ((long long) std::ceil (center - left), t);
         const long long k1 = (long long) std::floor (center + pd);
         const double s0 = mark - center + (double) k0;
         const long long a0 = (long long) std::floor (s0);
         const float frac = (float) (s0 - (double) a0);
         const long long oldest = written - ringSize + 2;
         const int rm = ringSize - 1, am = accSize - 1;
-        const double winScale = 3.14159265358979323846 / pd;
+        const double winScale = 3.14159265358979323846 / pd, riseScale = 3.14159265358979323846 / left;
         for (long long k = k0; k <= k1; ++k)
         {
             const long long a = a0 + (k - k0);
             if (a - 1 < 0 || a - 1 < oldest || a + 2 >= written) continue;
-            const float win = 0.5f + 0.5f * (float) std::cos (winScale * ((double) k - center));
+            const double offset = (double) k - center;
+            if (offset < -left) continue;
+            const float win = 0.5f + 0.5f * (float) std::cos ((offset < 0.0 ? riseScale : winScale) * offset);
             const size_t pos = (size_t) (k & am);
             for (int c = 0; c < 2; ++c)
             {
@@ -390,7 +413,8 @@ private:
     double nextCenter = 0.0, period = 200.0, ratio = 1.0, lastMark = 0.0;
     double maxPeriod = 872.0, minPeriod = 34.0;
     float mix = 0.0f, fadeIn = 0.005f, fadeOut = 0.002f;
-    bool active = false, haveMark = false, filled = false;
+    static constexpr float fillBelow = 0.08f;
+    bool active = false, haveMark = false;
 };
 
 // Vocal doubler and stereo widener.

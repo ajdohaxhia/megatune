@@ -1,7 +1,8 @@
 // In-process render bench: drives the processor with a synthetic vocal and
 // writes interleaved float32 stereo, so verify/bench.py can measure it.
 // usage: MegaTuneBench <out.f32> [signal=vowel|sine|glide|notes|noise|breathy] [hz=210] [seconds=4]
-//                      [rate=48000] [vibrato=35] [block=256] [mono=0] [<paramID>=<plain value> ...]
+//                      [rate=48000] [vibrato=35] [block=256] [varblock=0] [mono=0] [file=<mono float32 recording>]
+//                      [<paramID>=<plain value> ...]
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <cmath>
 #include <fstream>
@@ -19,12 +20,21 @@ int main (int argc, char** argv)
     auto num = [&] (const char* k, double d) { return args.count (k) ? args[k].getDoubleValue() : d; };
     const juce::String signal = args.count ("signal") ? args["signal"] : juce::String ("vowel");
     const double sr = num ("rate", 48000), hz = num ("hz", 210), seconds = num ("seconds", 4), vib = num ("vibrato", 35);
-    const int block = (int) num ("block", 256), channels = num ("mono", 0) > 0.5 ? 1 : 2;
-    const int n = (int) (sr * seconds);
+    const int maxBlock = (int) num ("block", 256), channels = num ("mono", 0) > 0.5 ? 1 : 2;
+    // file=<path>: use a mono float32 recording instead of a synthetic signal (rate=<its sample rate>)
+    std::vector<float> recording;
+    if (args.count ("file"))
+    {
+        std::ifstream f (args["file"].toStdString(), std::ios::binary | std::ios::ate);
+        const auto bytes = (size_t) f.tellg(); f.seekg (0);
+        recording.resize (bytes / 4); f.read ((char*) recording.data(), (std::streamsize) (recording.size() * 4));
+    }
+    const int n = recording.empty() ? (int) (sr * seconds) : (int) recording.size();
     std::vector<float> in ((size_t) n);
     std::mt19937 rng (7); std::normal_distribution<float> noise (0.f, 1.f);
     double phase = 0, drift = 0;
-    for (int i = 0; i < n; ++i)
+    if (! recording.empty()) in = recording;
+    else for (int i = 0; i < n; ++i)
     {
         const double t = i / sr;
         double f0 = hz;
@@ -54,19 +64,23 @@ int main (int argc, char** argv)
     for (auto* q : p->getParameters())
         if (auto* w = dynamic_cast<juce::RangedAudioParameter*> (q))
             if (args.count (w->paramID)) w->setValueNotifyingHost (w->convertTo0to1 ((float) args[w->paramID].getDoubleValue()));
-    p->setPlayConfigDetails (channels, channels, sr, block);
-    p->prepareToPlay (sr, block);
-    juce::AudioBuffer<float> buf (channels, block); juce::MidiBuffer midi;
+    // varblock=1: every call gets a different size up to `block`, as FL Studio and some other hosts do
+    const bool varying = num ("varblock", 0) > 0.5; std::mt19937 sizes (3);
+    p->setPlayConfigDetails (channels, channels, sr, maxBlock);
+    p->prepareToPlay (sr, maxBlock);
+    juce::MidiBuffer midi;
     std::ofstream out (argv[1], std::ios::binary); std::ofstream dry (std::string (argv[1]) + ".in", std::ios::binary);
     const auto start = juce::Time::getMillisecondCounterHiRes();
-    for (int pos = 0; pos + block <= n; pos += block)
+    for (int pos = 0, block = maxBlock; pos + maxBlock <= n; pos += block)
     {
+        block = varying ? 1 + (int) (sizes() % (unsigned) maxBlock) : maxBlock;
+        juce::AudioBuffer<float> buf (channels, block);
         for (int c = 0; c < channels; ++c) for (int i = 0; i < block; ++i) buf.setSample (c, i, in[(size_t) (pos + i)]);
         p->processBlock (buf, midi);
         for (int i = 0; i < block; ++i) { const float l = buf.getSample (0, i), r = buf.getSample (channels - 1, i);
                                           out.write ((const char*) &l, 4); out.write ((const char*) &r, 4); dry.write ((const char*) &in[(size_t) (pos + i)], 4); }
     }
     const double ms = juce::Time::getMillisecondCounterHiRes() - start;
-    std::cout << "latency " << p->getLatencySamples() << " realtime x" << (seconds * 1000.0 / ms) << "\n";
+    std::cout << "latency " << p->getLatencySamples() << " realtime x" << (n / sr * 1000.0 / ms) << "\n";
     return 0;
 }
