@@ -14,7 +14,7 @@ concurrency:
 jobs:
   build-test:
     name: Build, test & validate (macOS arm64)
-    runs-on: macos-14
+    runs-on: macos-15
 
     env:
       BUILD_DIR: app/vst3/build
