@@ -1,4 +1,7 @@
 #include <juce_audio_utils/juce_audio_utils.h>
+#if (JUCE_MAJOR_VERSION * 10000 + JUCE_MINOR_VERSION * 100 + JUCE_BUILDNUMBER) < 80013
+ #error "MegaTune requires JUCE 8.0.13 or newer (createEditorAndMakeActive was added in 8.0.13)."
+#endif
 #include <array>
 #include "EditorApi.h"
 #include "TuningRules.h"
