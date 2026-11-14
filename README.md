@@ -6,8 +6,11 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch trace, a diagnostic "Why this note?" history, three
 selectable pitch engines, factory and user presets, a doubler and a stereo widener.
 
-> **Status: 0.7.0.** Mono → Stereo support, and transients (mouth clicks, hard consonants,
-> clipped peaks) now pass through unprocessed; see [What changed in 0.7.0](#what-changed-in-070).
+> **Status: 0.7.1.** An infrastructure-only release: the build is now reproducible from a
+> clean checkout and runs in CI, with no DSP or audio-path change from 0.7.0; see
+> [What changed in 0.7.1](#what-changed-in-071). 0.7.0 added Mono → Stereo support, and
+> transients (mouth clicks, hard consonants, clipped peaks) now pass through unprocessed;
+> see [What changed in 0.7.0](#what-changed-in-070).
 > The clicks reported in Logic were traced to the recordings themselves (see below).
 > 0.6.0 itself was more engine work: steady notes now land exactly on pitch, downward
 > shifts actually reach the lower note, Stereo Width no longer changes the level, and
@@ -71,6 +74,24 @@ their owners.
 Declared latency matches measured impulse onset and cross-correlation lag at 44.1 and
 48 kHz. A live engine switch republishes the correct latency on the next
 `prepareToPlay`; whether a specific DAW re-reads compensation mid-session is **unverified**.
+
+---
+
+## What changed in 0.7.1
+
+Infrastructure only; no DSP or audio-path change from 0.7.0.
+
+- **Reproducible build.** JUCE was pulled in from a hard-coded `/private/tmp/juce` path, so a
+  fresh checkout or a CI runner failed to configure unless JUCE had been cloned there by
+  hand. `app/vst3/CMakeLists.txt` now uses that local path only when it exists and otherwise
+  fetches a pinned JUCE tag (8.0.15, via `MEGATUNE_JUCE_TAG` and `FetchContent`), so the
+  project configures on its own.
+- **JUCE version guard.** `Plugin.cpp` now fails at compile time with a clear `#error` if
+  built against JUCE older than 8.0.13, the release that added `createEditorAndMakeActive`
+  (used by the editor API and the test suite).
+- **Continuous integration.** Every push and pull request to `main` builds, runs `ctest`, and
+  validates with `pluginval` and `auval` on a macOS arm64 runner; see
+  [Development / CI](#development--ci).
 
 ---
 
