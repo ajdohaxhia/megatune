@@ -1,0 +1,123 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Build, test & validate (macOS arm64)
+    runs-on: macos-14
+
+    env:
+      BUILD_DIR: app/vst3/build
+      CMAKE_BUILD_TYPE: Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Print toolchain versions
+        run: |
+          echo "macOS: $(sw_vers -productVersion)"
+          echo "Arch: $(uname -m)"
+          cmake --version
+          clang --version
+          xcodebuild -version || true
+
+      - name: Cache fetched JUCE source
+        uses: actions/cache@v4
+        with:
+          path: app/vst3/build/_deps
+          key: juce-${{ runner.os }}-${{ hashFiles('app/vst3/CMakeLists.txt') }}
+          restore-keys: |
+            juce-${{ runner.os }}-
+
+      - name: Configure
+        run: >
+          cmake -S app/vst3 -B "${BUILD_DIR}"
+          -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}"
+          -DCMAKE_OSX_ARCHITECTURES=arm64
+          -DJUCE_DIR=/nonexistent-force-fetchcontent
+
+      - name: Build plugin and tests
+        run: >
+          cmake --build "${BUILD_DIR}"
+          --config "${CMAKE_BUILD_TYPE}"
+          --target MegaTune MegaTuneTests
+          --parallel
+
+      - name: Run ctest
+        working-directory: ${{ env.BUILD_DIR }}
+        run: ctest --output-on-failure --build-config "${CMAKE_BUILD_TYPE}"
+
+      - name: Locate built VST3 and AU bundles
+        id: locate
+        run: |
+          set -euo pipefail
+          VST3=$(find "${BUILD_DIR}" -name 'MegaTune.vst3' -type d -print -quit)
+          AU=$(find "${BUILD_DIR}" -name 'MegaTune.component' -type d -print -quit)
+          if [ -z "${VST3}" ]; then echo "VST3 bundle not found"; exit 1; fi
+          echo "vst3=${VST3}" >> "$GITHUB_OUTPUT"
+          echo "au=${AU}" >> "$GITHUB_OUTPUT"
+          echo "Found VST3: ${VST3}"
+          echo "Found AU:   ${AU:-<none>}"
+
+      - name: Ad-hoc codesign bundles
+        run: |
+          set -euo pipefail
+          codesign --force --sign - --timestamp=none "${{ steps.locate.outputs.vst3 }}"
+          codesign --verify --verbose "${{ steps.locate.outputs.vst3 }}"
+          if [ -n "${{ steps.locate.outputs.au }}" ]; then
+            codesign --force --sign - --timestamp=none "${{ steps.locate.outputs.au }}"
+            codesign --verify --verbose "${{ steps.locate.outputs.au }}"
+          fi
+
+      - name: Install pluginval
+        run: |
+          set -euo pipefail
+          curl -fsSL -o pluginval.zip \
+            https://github.com/Tracktion/pluginval/releases/download/v1.0.3/pluginval_macOS.zip
+          unzip -o -q pluginval.zip
+          PV="pluginval.app/Contents/MacOS/pluginval"
+          test -x "${PV}" || { echo "pluginval binary not found after unzip"; ls -R .; exit 1; }
+          codesign --force --sign - "pluginval.app" || true
+          echo "PLUGINVAL=${PWD}/${PV}" >> "$GITHUB_ENV"
+
+      - name: Run pluginval (strictness 8)
+        run: |
+          set -euo pipefail
+          "${PLUGINVAL}" \
+            --strictness-level 8 \
+            --validate-in-process \
+            --skip-gui-tests \
+            --validate "${{ steps.locate.outputs.vst3 }}"
+
+      - name: auval (AudioUnit)
+        if: steps.locate.outputs.au != ''
+        run: |
+          set -euo pipefail
+          DEST="${HOME}/Library/Audio/Plug-Ins/Components"
+          mkdir -p "${DEST}"
+          ditto "${{ steps.locate.outputs.au }}" "${DEST}/MegaTune.component"
+          killall -9 AudioComponentRegistrar 2>/dev/null || true
+          auval -a | grep -i megatune || true
+          auval -v aufx Mgtn AdMs
+
+      - name: Upload plugin bundles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: megatune-macos-arm64
+          path: |
+            ${{ steps.locate.outputs.vst3 }}
+            ${{ steps.locate.outputs.au }}
+          if-no-files-found: warn
+          retention-days: 14

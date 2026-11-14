@@ -1,5 +1,7 @@
 # ademusic MegaTune
 
+[![CI](https://github.com/ajdohaxhia/megatune/actions/workflows/ci.yml/badge.svg)](https://github.com/ajdohaxhia/megatune/actions/workflows/ci.yml)
+
 A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUCE VST3 +
 AUv2 plug-in with a live pitch trace, a diagnostic "Why this note?" history, three
 selectable pitch engines, factory and user presets, a doubler and a stereo widener.
@@ -516,6 +518,42 @@ python3 verify/bench.py build-cli/MegaTuneBench_artefacts/Release/MegaTuneBench 
 
 The older `formant_harness.py`, `paired2.py`, `score.py` and `measure.py` are kept from
 earlier audits.
+
+---
+
+## Development / CI
+
+Every push and pull request to `main` runs the full build-and-validate pipeline on a
+macOS arm64 runner, defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+A green badge at the top of this README means the plugin built, its DSP/editor suite
+passed, and both plugin formats validated.
+
+The CI job pins JUCE to the tag in `app/vst3/CMakeLists.txt` (fetched via
+`FetchContent`, cached between runs) and configures a Release build into
+`app/vst3/build`. Its steps mirror the local workflow:
+
+| Stage | CI step | Run it yourself |
+|---|---|---|
+| Configure | `cmake -S app/vst3 -B app/vst3/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64` | same command |
+| Build | targets `MegaTune` and `MegaTuneTests` | `cmake --build app/vst3/build --target MegaTune MegaTuneTests` |
+| Unit/DSP tests | `ctest --output-on-failure` | `cd app/vst3/build && ctest --output-on-failure` |
+| VST3 validation | pluginval v1.0.3, strictness 8, in-process, GUI tests skipped | `pluginval --strictness-level 8 --validate MegaTune.vst3` |
+| AU validation | `auval -v aufx Mgtn AdMs` (after installing the component) | `auval -v aufx Mgtn AdMs` |
+
+Both built bundles (`MegaTune.vst3` and `MegaTune.component`) are uploaded as the
+`megatune-macos-arm64` build artifact with a 14-day retention, so you can download and
+test a CI build without compiling locally.
+
+To reproduce the whole pipeline on your own machine in one shot:
+
+    cmake -S app/vst3 -B app/vst3/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64
+    cmake --build app/vst3/build --target MegaTune MegaTuneTests --parallel
+    ( cd app/vst3/build && ctest --output-on-failure )
+
+CI builds arm64-only for speed; the release binaries remain universal (arm64 + x86_64).
+The accuracy benchmarks under `app/vst3/verify/` are **not** run in CI because their
+audio fixtures are not committed (see [Status](#status)); run those locally when you
+touch the pitch engine.
 
 ---
 
