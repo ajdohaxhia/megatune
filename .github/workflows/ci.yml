@@ -94,11 +94,15 @@ jobs:
       - name: Run pluginval (strictness 8)
         run: |
           set -euo pipefail
+          VST3="${{ steps.locate.outputs.vst3 }}"
+          echo "pluginval arch : $(lipo -archs "${PLUGINVAL}")"
+          echo "plugin arch    : $(lipo -archs "${VST3}/Contents/MacOS/MegaTune")"
+          echo "moduleinfo.json: $(ls -l "${VST3}/Contents/Resources/moduleinfo.json" 2>&1 || true)"
+          codesign --verify --verbose "${VST3}" || true
           "${PLUGINVAL}" \
             --strictness-level 8 \
-            --validate-in-process \
             --skip-gui-tests \
-            --validate "${{ steps.locate.outputs.vst3 }}"
+            --validate "${VST3}"
 
       - name: auval (AudioUnit)
         if: steps.locate.outputs.au != ''
