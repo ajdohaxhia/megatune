@@ -1,6 +1,6 @@
 // In-process render bench: drives the processor with a synthetic vocal and
 // writes interleaved float32 stereo, so verify/bench.py can measure it.
-// usage: MegaTuneBench <out.f32> [signal=vowel|sine|glide|notes|wav] [hz=210] [seconds=4]
+// usage: MegaTuneBench <out.f32> [signal=vowel|sine|glide|notes|noise|breathy] [hz=210] [seconds=4]
 //                      [rate=48000] [vibrato=35] [block=256] [mono=0] [<paramID>=<plain value> ...]
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <cmath>
@@ -45,6 +45,8 @@ int main (int argc, char** argv)
             v += a * std::sin (phase * k + 0.7 * k);
         }
         float s = (float) (0.12 * v) + 0.002f * noise (rng);
+        if (signal == "noise") s = 0.1f * noise (rng);                                           // unvoiced: must pass through untouched
+        if (signal == "breathy") s = (float) (0.12 * v) + 0.03f * noise (rng);                   // voiced with heavy aspiration
         if (signal == "notes" && std::fmod (t, 0.5) > 0.42) s = 0.02f * noise (rng);             // unvoiced gap between notes
         in[(size_t) i] = s;
     }

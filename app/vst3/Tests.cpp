@@ -242,7 +242,7 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   if(crossings<100){std::cerr<<"Steady tone produced no output\n";return 127;}
   const double hz=48000.0*(crossings-1)/(last-first),midi=69+12*std::log2(hz/440.0),cents=100*(midi-std::round(midi));
   std::cout<<"Steady tone: "<<hz<<" Hz, "<<cents<<" cents from the note\n";
-  if(std::abs(cents)>1.0){std::cerr<<"Steady tone is off the note\n";return 127;}}
+  if(std::abs(cents)>.2){std::cerr<<"Steady tone is off the note\n";return 127;}}
  // Switching bypass while audio is running must cross-fade, not jump.
  {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());juce::RangedAudioParameter* bypassParam=nullptr;
   for(auto* v:q->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v))if(w->paramID=="bypass")bypassParam=w;
@@ -568,17 +568,22 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   if(bad.load()!=0){std::cerr<<"decision ring produced inconsistent rows\n";return 68;}
  }
 
- // Width on its own must widen a mono source and cancel in the mono sum.
- {auto run=[&](float width,std::vector<float>& mid,double& side){std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
+ // Width on its own must widen a mono source without colouring the mono sum or changing the level:
+ // the mono sum is the dry signal times one gain (the level match), with nothing added to it.
+ {double power=0;auto run=[&](float width,std::vector<float>& mid,double& side){power=0;std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
    for(auto* v:r->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v)){
     if(w->paramID=="amount")v->setValueNotifyingHost(0.f);if(w->paramID=="width")v->setValueNotifyingHost(width);}
    r->prepareToPlay(48000,256);juce::AudioBuffer<float> b(2,256);juce::MidiBuffer mb;side=0;
-   for(int blk=0;blk<200;++blk){for(int i=0;i<256;++i){const double t=(blk*256+i)/48000.0;const float v=.2f*(float)(std::sin(juce::MathConstants<double>::twoPi*220*t)+.5*std::sin(juce::MathConstants<double>::twoPi*1870*t));b.setSample(0,i,v);b.setSample(1,i,v);}
-    r->processBlock(b,mb);if(blk>60)for(int i=0;i<256;++i){mid.push_back(.5f*(b.getSample(0,i)+b.getSample(1,i)));side+=std::abs(b.getSample(0,i)-b.getSample(1,i));}}};
-  std::vector<float> dryMid,wideMid;double drySide=0,wideSide=0;run(0.f,dryMid,drySide);run(1.f,wideMid,wideSide);
-  double worst=0;for(size_t i=0;i<dryMid.size();++i)worst=std::max(worst,(double)std::abs(dryMid[i]-wideMid[i]));
-  std::cout<<"WIDTH side dry="<<drySide<<" wide="<<wideSide<<" mono-sum deviation="<<worst<<"\n";
-  if(drySide>1.0e-3)return 110;if(wideSide<100)return 111;if(worst>1.0e-4)return 112;}
+   for(int blk=0;blk<400;++blk){for(int i=0;i<256;++i){const double t=(blk*256+i)/48000.0;const float v=.2f*(float)(std::sin(juce::MathConstants<double>::twoPi*220*t)+.5*std::sin(juce::MathConstants<double>::twoPi*1870*t));b.setSample(0,i,v);b.setSample(1,i,v);}
+    r->processBlock(b,mb);if(blk>120)for(int i=0;i<256;++i){power+=b.getSample(0,i)*b.getSample(0,i)+b.getSample(1,i)*b.getSample(1,i);mid.push_back(.5f*(b.getSample(0,i)+b.getSample(1,i)));side+=std::abs(b.getSample(0,i)-b.getSample(1,i));}}};
+  std::vector<float> dryMid,wideMid;double drySide=0,wideSide=0;run(0.f,dryMid,drySide);const double dryPower=power;run(1.f,wideMid,wideSide);const double widePower=power;
+  double dd=0,dw=0;for(size_t i=0;i<dryMid.size();++i){dd+=(double)dryMid[i]*dryMid[i];dw+=(double)dryMid[i]*wideMid[i];}const double gain=dw/dd;
+  double residual=0;for(size_t i=0;i<dryMid.size();++i){const double e=wideMid[i]-gain*dryMid[i];residual+=e*e;}
+  const double residualDb=10*std::log10(residual/dd+1e-20),levelDb=10*std::log10(widePower/dryPower);
+  std::cout<<"WIDTH side dry="<<drySide<<" wide="<<wideSide<<" mono gain="<<gain<<" mono residual="<<residualDb<<" dB level="<<levelDb<<" dB\n";
+  if(drySide>1.0e-3)return 110;if(wideSide<100)return 111;
+  if(gain<.8||gain>1.0001||residualDb>-60){std::cerr<<"Width coloured the mono sum\n";return 112;}
+  if(std::abs(levelDb)>.5){std::cerr<<"Width changed the level\n";return 115;}}
  // Speed must reach the default engine: a slow setting leaves more vibrato than a hard one.
  {auto run=[&](float speed)->double{std::unique_ptr<juce::AudioProcessor> r(createPluginFilter());
    for(auto* v:r->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v)){

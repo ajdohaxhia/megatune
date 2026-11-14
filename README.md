@@ -4,14 +4,13 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four
 selectable pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.5.0.** Engine fixes on top of the 0.4.0 editor and presets: a pitch-mark bug
-> that detuned the output is fixed, the detector covers 55 Hz to 1.2 kHz, bypass cross-fades,
-> large downward shifts no longer leak the original pitch, and the Doubler holds its level;
-> see [What changed in 0.5.0](#what-changed-in-050). Prebuilt macOS binaries pass `ctest`,
-> `auval` and the VST3 host check, but **MegaTune has still not been auditioned in a DAW or
-> on real vocals**: every number here comes from synthetic signals. The factory presets are
-> **not tuned by ear**, **formant preservation is unvalidated**, and builds are **ad-hoc
-> signed, not notarized**. See [Status](#status) before shipping anything.
+> **Status: 0.6.0.** More engine work: steady notes now land exactly on pitch, downward
+> shifts actually reach the lower note, Stereo Width no longer changes the level, and
+> formant preservation has been measured; see [What changed in 0.6.0](#what-changed-in-060).
+> Prebuilt macOS binaries pass `ctest`, `auval`, the VST3 host check and pluginval at
+> strictness 8. **MegaTune has still not been auditioned in a DAW or on real vocals**: every
+> number here comes from synthetic signals. The factory presets are **not tuned by ear** and
+> builds are **ad-hoc signed, not notarized**. See [Status](#status) before shipping anything.
 
 ---
 
@@ -66,6 +65,53 @@ their owners.
 Declared latency matches measured impulse onset and cross-correlation lag at 44.1 and
 48 kHz. A live engine switch republishes the correct latency on the next
 `prepareToPlay`; whether a specific DAW re-reads compensation mid-session is **unverified**.
+
+---
+
+## What changed in 0.6.0
+
+Engine only.
+
+| Problem | Fix |
+|---|---|
+| **A steady note was still 0.4 cents off.** The whole-sample lag for each pitch mark could be chosen one sample away from the true correlation peak, and the sub-sample fit was then clamped short. | The search steps onto the raw peak before fitting. Steady tones from 97 to 470 Hz now measure 0.00 cents of bias. |
+| Pitch marks jittered on low notes and at 96 kHz. The correlation window was rectangular, so whatever sat at its two edges moved the peak. | Tapered window. On the bench the 110 Hz vowel goes from 3.1 to 1.5 cents. |
+| **Shifting down by an octave did almost nothing.** Where grains do not overlap, the sum was divided by the window sum, which rebuilt the periods the window had removed: 99 % of the output energy stayed on the original harmonics. | No division where grains do not overlap. The octave-down output is now standard TD-PSOLA: about 15 % of the energy on the new harmonics, 85 % still on the old ones. It is lower, but thin. |
+| Stereo Width made the signal up to 1.3 dB louder. | A gain that depends only on the Width and Doubler settings undoes the added energy: within 0.08 dB of the dry level on the bench. **Trade-off:** the mono sum used to be identical to the dry signal and is now the dry signal times one gain (0.86 at full Width). Nothing is added to it and nothing rides the signal. |
+
+### Formant preservation, measured
+
+`app/vst3/verify/formant_bench.py` shifts a vowel with a known spectral envelope and fits
+how far the envelope moved. 1.00 means the formants stayed put; the last column is what a
+plain resampling shifter would give.
+
+| Shift | Quality | Low Latency | If not preserved |
+|---|---|---|---|
+| -3 st | 0.99 | 0.98 | 0.84 |
+| +3 st | 1.02 | 1.02 | 1.19 |
+| +6 st | 1.00 | 1.00 | 1.41 |
+| +12 st | 1.00 | 1.00 | 2.00 |
+
+At -6 and -12 the fit is too poor to quote (the output there is the uneven mix described
+above). The Signalsmith engine does not fit well either except at +12, where it reads 2.01,
+as expected from a shifter with formant compensation switched off. One synthetic vowel at
+110 Hz is not a listening test.
+
+### What the remaining error is
+
+A finer meter (instantaneous frequency of the fundamental) shows 2 to 4 cents of fast
+wobble on the vibrato test, but the *input* shows the same amount: it is the noise in the
+test signal, not something the tuner adds. Below 15 Hz, where tracking error lives, the
+output is 0.7 to 1.8 cents from the note.
+
+### Also checked
+
+- pluginval at strictness 8: VST3 and AU pass.
+- White noise passes through bit-exact (nothing is mistaken for a note).
+- A voice with heavy breath noise is still tuned (0.9 cents on the bench).
+- I looked at making the Doubler drift randomly instead of on two sine waves. The two rates
+  per voice already take about 100 seconds to repeat, so there was nothing measurable to
+  fix, and I cannot judge its character without listening.
 
 ---
 
@@ -400,7 +446,7 @@ app/
 
 | Item | State |
 |---|---|
-| Pitch accuracy (synthetic vibrato, 0.5.0 bench) | ✅ 0.5¢ mean / 1.2¢ p95 at Speed 0; steady tone 0.4¢ |
+| Pitch accuracy (synthetic vibrato, 0.6.0 bench) | ✅ 0.4¢ mean / 1.0¢ p95 at Speed 0; steady tone 0.0¢ |
 | Speed / Sustain reach the default engine | ✅ regression test (0.3.1) |
 | Doubler / Width | ✅ measured on the synthetic bench; Width-only mono compatibility in the regression suite |
 | Pitch accuracy (dry vocal) | ⚠️ 5.63¢ median, jumps 4.17 % measured on 0.3.0; **not re-measured on 0.3.1** (fixture not in the repo) |
@@ -411,23 +457,23 @@ app/
 | Negative Speed / zero-Amount Shift | ✅ verified |
 | Non-finite input / reset / channel safety | ✅ verified |
 | Long-session engine/parameter churn | ✅ 4000 blocks verified |
-| AUv2 | ✅ `auval -v aufx Mgtn AdMs` passes on 0.3.1, 0.4.0 and 0.5.0 |
-| pluginval 1.0.4, strictness 8 | ⚠️ passed on 0.3.0 with two known JUCE state-cache tests disabled; not re-run since |
+| AUv2 | ✅ `auval -v aufx Mgtn AdMs` passes on 0.3.1 through 0.6.0 |
+| pluginval, strictness 8 | ✅ VST3 and AU pass on 0.5.0, VST3 on 0.6.0 (one warning on the AU: current program reported as -1 after a program change) |
 | macOS build and test suite | ✅ 0.3.1 and 0.4.0 built universal on macOS (JUCE 8.0.15); `ctest` and the VST3 host check pass |
 | Key lock and user presets | ✅ regression test (0.4.0) |
 | Factory preset values | ⚠️ designed from the control ranges; not tuned by ear |
 | Full parameter state round-trip | ✅ in-process regression |
 | Why this note? → Exclude → Undo | ✅ verified on synthetic tone and on a real take |
 | Presets, automation, recall, A/B | ✅ verified |
-| **Formant preservation** | ❌ **unvalidated** — the estimator misclassifies known test cases |
+| Formant preservation | ✅ measured for -3 to +12 semitones on a synthetic vowel (spectral stretch 0.99 to 1.02; 1.00 is perfect). ⚠️ -6 and -12 are inconclusive: the fit is poor there |
 | **DAW compatibility / listening test** | ❌ not tested in a real host; not auditioned on real vocals |
 | **Distribution signing** | ❌ ad-hoc only; no Developer ID in this environment |
 | **Parity with the original DSP** | ❌ not attempted; documented as unknown |
 
-Known engine limits: the detector range is 55 Hz to 1.2 kHz; Width on its own raises the level by up
-to 1.3 dB (the added side signal; the mono sum is unchanged); below about 130 Hz the bench shows 2 to 3.5
-cents of residual error; polyphonic
-material is out of scope; formant behaviour is still unvalidated (measurement tooling).
+Known engine limits: the detector range is 55 Hz to 1.2 kHz; with Width up, the mono sum is the dry
+signal up to 1.3 dB quieter (the price of holding the stereo level); a full octave down is thin, with
+about 15 % of the energy on the new harmonics; polyphonic
+material is out of scope.
 
 ---
 

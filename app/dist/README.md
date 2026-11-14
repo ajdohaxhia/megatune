@@ -1,4 +1,4 @@
-# ademusic MegaTune 0.5.0 — VST3 + AUv2 (macOS, universal arm64 + x86_64)
+# ademusic MegaTune 0.6.0 — VST3 + AUv2 (macOS, universal arm64 + x86_64)
 
 Install: double-click `Install MegaTune.command`. It copies `MegaTune.vst3` to
 `~/Library/Audio/Plug-Ins/VST3/` and `MegaTune.component` to
@@ -22,6 +22,6 @@ Logic or GarageBand. Both formats share the same editor, presets and DSP.
 
 ## Known limitations
 - Ad-hoc signed, **not notarized**. Gatekeeper may block it on other Macs.
-- Formant preservation is **unvalidated**.
+- Formant preservation is measured on a synthetic vowel only.
 - Mono/stereo vocal tuning only; polyphonic material is out of scope.
 - Validated with `ctest`, `auval` and a headless VST3 host; not yet auditioned in a DAW.

@@ -260,10 +260,12 @@ public:
             for (int c = 0; c < 2; ++c)
             {
                 const float a = acc[c][pos];
-                // Dry signal only fills the gap before the first grains arrive. Later gaps
-                // (large downward shifts leave the windows barely overlapping) fade to
-                // silence instead, so the unshifted pitch never leaks into the output.
-                wet[c] = w >= fillBelow ? a / w : (filled ? a / fillBelow : (a + (fillBelow - w) * dry[c]) / fillBelow);
+                // Where grains overlap (upward shifts) the sum is divided by the window sum.
+                // Where they do not reach each other (downward shifts) it is left alone:
+                // dividing there re-inflates the neighbouring periods the window removed and
+                // rebuilds the original pitch. Until the first grains arrive, the remainder of
+                // the window is filled with dry signal so the shifter engages without a gap.
+                wet[c] = w >= 1.0f ? a / w : (filled ? a : a + (1.0f - w) * dry[c]);
                 acc[c][pos] = 0.0f;
             }
             if (w >= 0.5f) filled = true;
@@ -301,11 +303,15 @@ private:
         for (int delta = -radius; delta <= radius; ++delta)
         {
             float cross = 0.0f, energy = 1.0e-9f;
+            // Tapered window: with a rectangular one, whatever sits at the two edges moves
+            // the peak, which jitters the marks and biases a pure tone.
+            const float slope = 1.0f / (float) p;
             for (int j = -p; j < p; j += step)
             {
+                const float w = 1.0f - slope * (float) std::abs (j);
                 const float a = mono (cand + delta + j);
-                cross += a * mono (ref + j);
-                energy += a * a;
+                cross += w * a * mono (ref + j);
+                energy += w * a * a;
             }
             const float value = cross / std::sqrt (energy);
             raw[delta + radius] = value;
@@ -313,6 +319,10 @@ private:
             if (score > bestScore) { bestScore = score; bestDelta = delta; found = true; }
         }
         if (! found) return candidate;
+        // The preference can pick the lag next to the true peak; step onto the raw peak so the
+        // sub-sample fit below is not clamped half a sample short.
+        if (bestDelta < radius && raw[bestDelta + radius + 1] > raw[bestDelta + radius]) ++bestDelta;
+        else if (bestDelta > -radius && raw[bestDelta + radius - 1] > raw[bestDelta + radius]) --bestDelta;
         float frac = 0.0f;
         if (bestDelta > -radius && bestDelta < radius)
         {
@@ -374,7 +384,6 @@ private:
         }
     }
 
-    static constexpr float fillBelow = 0.08f;
     std::vector<float> ring[2], acc[2], wsum;
     int ringSize = 16384, accSize = 4096, latency = 2048, capacity = 2048;
     long long written = 0;
@@ -460,8 +469,18 @@ public:
         const float near = std::cos (0.78539816f - angle), far = std::sin (0.78539816f - angle);
         const float side = 0.42f * width * (1.0f - 0.8f * amount) * (v[0] - v[1]);
         const float s = 0.5f * (l - r) * (1.0f + 0.6f * width);
-        l = dryGain * (mid + s) + wet * (near * v[0] + far * v[1]) + side;
-        r = dryGain * (mid - s) + wet * (far * v[0] + near * v[1]) - side;
+        const float wl = dryGain * (mid + s) + wet * (near * v[0] + far * v[1]) + side;
+        const float wr = dryGain * (mid - s) + wet * (far * v[0] + near * v[1]) - side;
+        // Widening adds side energy, which used to make the signal up to 1.3 dB louder. The
+        // gain below undoes exactly the energy these terms add for a source whose doubled
+        // voices are as loud as it is and uncorrelated with it (true of a voice; a pure tone
+        // can differ). It depends only on the two controls, so nothing rides the signal and
+        // the mono sum stays the dry signal times one number.
+        const float k = 0.42f * width * (1.0f - 0.8f * amount);
+        const float base = dryGain * dryGain + voicePower * wet * wet;
+        const float added = voicePower * (2.0f * wet * k * (near - far) + 2.0f * k * k);
+        const float gain = std::sqrt (base / (base + added));
+        l = wl * gain; r = wr * gain;
     }
 
 private:
@@ -479,6 +498,7 @@ private:
     double rate = 48000.0;
     int size = 4096, write = 0;
     float amount = 0.0f, width = 0.0f, smooth = 0.001f, hpCoef = 0.98f;
+    static constexpr float voicePower = 0.96f;   // doubled voice vs source, after its 120 Hz high-pass
 };
 
 } // namespace megatune
