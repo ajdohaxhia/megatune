@@ -4,7 +4,9 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch trace, a diagnostic "Why this note?" history, three
 selectable pitch engines, factory and user presets, a doubler and a stereo widener.
 
-> **Status: 0.6.1.** 0.6.1 removes clicks that 0.6.0 introduced at note changes, found on the
+> **Status: 0.6.2.** 0.6.2 reports a real tail length to the host (see
+> [What changed in 0.6.2](#what-changed-in-062)); clicks are **still reported in Logic** and
+> their cause is not yet found. 0.6.1 removes clicks that 0.6.0 introduced at note changes, found on the
 > first real vocal take run through the plug-in; see [What changed in 0.6.1](#what-changed-in-061).
 > 0.6.0 itself was more engine work: steady notes now land exactly on pitch, downward
 > shifts actually reach the lower note, Stereo Width no longer changes the level, and
@@ -67,6 +69,28 @@ their owners.
 Declared latency matches measured impulse onset and cross-correlation lag at 44.1 and
 48 kHz. A live engine switch republishes the correct latency on the next
 `prepareToPlay`; whether a specific DAW re-reads compensation mid-session is **unverified**.
+
+---
+
+## What changed in 0.6.2
+
+Clicks were still reported with 0.6.1 in Logic Pro. They do not reproduce offline: the same
+take rendered through the installed AU in a JUCE host is clean. One host-side defect was
+found and fixed; whether it is the one being heard is **not confirmed**.
+
+- **Tail length.** The plug-in holds its latency's worth of audio (43 ms in Quality) plus the
+  Doubler's delay lines, but reported a tail of zero. A host that stops calling a plug-in as
+  soon as its input ends would cut that audio off and get it back, stale, when processing
+  resumes. The tail is now the current latency plus 60 ms.
+- `MegaTuneBench` prints the slowest single call as a fraction of the time that block
+  represents. On the take at 44.1 kHz: 39 to 45 % at 32-sample blocks, 23 % at 64, under 12 %
+  from 128 up. The average load is a little over 1 % of a core, so the cost is spiky at small
+  buffers.
+
+Other things measured on the take that could be heard as clicks and are not plug-in bugs:
+it reaches full scale in 29 places, and after processing the output exceeds it (28 places
+with the Radio Ready preset; +2.1 dB with Doubler 50 and Width 60), so an output at unity
+gain clips.
 
 ---
 
@@ -516,7 +540,7 @@ app/
 | Why this note? → Exclude → Undo | ✅ verified on synthetic tone and on a real take |
 | Presets, automation, recall, A/B | ✅ verified |
 | Formant preservation | ✅ measured for -3 to +12 semitones on a synthetic vowel (spectral stretch 0.99 to 1.02; 1.00 is perfect). ⚠️ -6 and -12 are inconclusive: the fit is poor there |
-| **DAW compatibility / listening test** | ⚠️ one listening pass on one take (0.6.0: sounds good, clicks; fixed in 0.6.1, not yet re-listened); no long session, no other hosts |
+| **DAW compatibility / listening test** | ❌ Logic Pro: sounds good but **clicks, still present in 0.6.1**; not reproduced offline, cause open |
 | **Distribution signing** | ❌ ad-hoc only; notarization needs an Apple Developer ID |
 | **Parity with the original DSP** | ❌ not attempted; documented as unknown |
 

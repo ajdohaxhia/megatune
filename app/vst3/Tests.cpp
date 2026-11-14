@@ -259,6 +259,10 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   std::cout<<"Note jump: sharpest edge "<<outputEdge/inputEdge<<"x the input's, deepest dip "<<20*std::log10(deepest+1e-9)<<" dB\n";
   if(outputEdge>2.f*inputEdge){std::cerr<<"Note jump clicks\n";return 130;}
   if(deepest<.4){std::cerr<<"Note jump leaves a hole\n";return 131;}}
+ // Hosts that stop calling a silent plug-in rely on the reported tail to let the delayed audio out first.
+ {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());q->setPlayConfigDetails(2,2,48000,256);q->prepareToPlay(48000,256);
+  const double held=q->getLatencySamples()/48000.0;
+  if(q->getTailLengthSeconds()<held+.03){std::cerr<<"Reported tail is shorter than the audio the plug-in holds\n";return 132;}}
  // Switching bypass while audio is running must cross-fade, not jump.
  {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());juce::RangedAudioParameter* bypassParam=nullptr;
   for(auto* v:q->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v))if(w->paramID=="bypass")bypassParam=w;

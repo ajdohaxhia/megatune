@@ -40,7 +40,11 @@ public:
  }
  MegaTune():AudioProcessor(BusesProperties().withInput("Input",juce::AudioChannelSet::stereo(),true).withOutput("Output",juce::AudioChannelSet::stereo(),true)),state(*this,nullptr,"MegaTune",parameters()){const char* ids[]={"speed","sustain","amount","bypass","stabilize","key","doubler","width","reference","lowlatency","shift","range","engine","smith","smithcomp"};for(int i=0;i<15;++i)raw[i]=state.getRawParameterValue(ids[i]);for(int i=0;i<12;++i)noteRaw[i]=state.getRawParameterValue("note"+juce::String(i));}
  const juce::String getName()const override{return "MegaTune";}
- bool acceptsMidi()const override{return false;} bool producesMidi()const override{return false;} double getTailLengthSeconds()const override{return 0;}
+ bool acceptsMidi()const override{return false;} bool producesMidi()const override{return false;}
+ // The plug-in holds its latency's worth of audio plus the Doubler's delay lines. A host that stops
+ // calling it as soon as the input ends (Logic between regions, FL Studio's smart disable) would cut
+ // that off and get it back, stale, when processing resumes: a click at the start of the next phrase.
+ double getTailLengthSeconds()const override{return rate>0?(double)getLatencySamples()/rate+.06:.2;}
  std::atomic<int> currentProgram{0};
  struct FactoryPreset{const char* name;const char* category;const char* about;float speed,sustain,amount,doubler,width;bool stabilize;int key;int mask;};
  static constexpr int numFactoryPresets=32;

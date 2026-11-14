@@ -70,17 +70,20 @@ int main (int argc, char** argv)
     p->prepareToPlay (sr, maxBlock);
     juce::MidiBuffer midi;
     std::ofstream out (argv[1], std::ios::binary); std::ofstream dry (std::string (argv[1]) + ".in", std::ios::binary);
+    double worstBlock = 0;   // slowest single call, as a fraction of the time that block represents
     const auto start = juce::Time::getMillisecondCounterHiRes();
     for (int pos = 0, block = maxBlock; pos + maxBlock <= n; pos += block)
     {
         block = varying ? 1 + (int) (sizes() % (unsigned) maxBlock) : maxBlock;
         juce::AudioBuffer<float> buf (channels, block);
         for (int c = 0; c < channels; ++c) for (int i = 0; i < block; ++i) buf.setSample (c, i, in[(size_t) (pos + i)]);
+        const auto blockStart = juce::Time::getMillisecondCounterHiRes();
         p->processBlock (buf, midi);
+        worstBlock = std::max (worstBlock, (juce::Time::getMillisecondCounterHiRes() - blockStart) / (block * 1000.0 / sr));
         for (int i = 0; i < block; ++i) { const float l = buf.getSample (0, i), r = buf.getSample (channels - 1, i);
                                           out.write ((const char*) &l, 4); out.write ((const char*) &r, 4); dry.write ((const char*) &in[(size_t) (pos + i)], 4); }
     }
     const double ms = juce::Time::getMillisecondCounterHiRes() - start;
-    std::cout << "latency " << p->getLatencySamples() << " realtime x" << (n / sr * 1000.0 / ms) << "\n";
+    std::cout << "latency " << p->getLatencySamples() << " realtime x" << (n / sr * 1000.0 / ms) << " worst_block_load " << worstBlock << "\n";
     return 0;
 }
