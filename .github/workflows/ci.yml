@@ -51,7 +51,7 @@ jobs:
         run: >
           cmake --build "${BUILD_DIR}"
           --config "${CMAKE_BUILD_TYPE}"
-          --target MegaTune MegaTuneTests
+          --target MegaTune_VST3 MegaTune_AU MegaTuneTests
           --parallel
 
       - name: Run ctest
