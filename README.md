@@ -4,14 +4,14 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four
 selectable pitch engines, factory presets and a fully themed editor.
 
-> **Status: 0.4.0.** A reworked editor (live pitch trace, level meters, scale menu, tooltips)
-> and a new preset system (32 factory sounds in categories, user presets, audition before
-> you commit, key lock); see [What changed in 0.4.0](#what-changed-in-040). The audio engine
-> is the one from 0.3.1. Prebuilt macOS binaries pass `ctest`, `auval` and the VST3 host
-> check, but **MegaTune has still not been auditioned in a DAW or on real vocals**, the
-> factory presets are **designed from the control ranges, not tuned by ear**, **formant
-> preservation is unvalidated**, and builds are **ad-hoc signed, not notarized**. See
-> [Status](#status) before shipping anything.
+> **Status: 0.5.0.** Engine fixes on top of the 0.4.0 editor and presets: a pitch-mark bug
+> that detuned the output is fixed, the detector covers 55 Hz to 1.2 kHz, bypass cross-fades,
+> large downward shifts no longer leak the original pitch, and the Doubler holds its level;
+> see [What changed in 0.5.0](#what-changed-in-050). Prebuilt macOS binaries pass `ctest`,
+> `auval` and the VST3 host check, but **MegaTune has still not been auditioned in a DAW or
+> on real vocals**: every number here comes from synthetic signals. The factory presets are
+> **not tuned by ear**, **formant preservation is unvalidated**, and builds are **ad-hoc
+> signed, not notarized**. See [Status](#status) before shipping anything.
 
 ---
 
@@ -59,13 +59,69 @@ their owners.
 | Engine | Latency @ 48 kHz | Notes |
 |---|---|---|
 | Quality | **2048 samples / 42.7 ms** | default; stereo TD-PSOLA with correlation-aligned marks |
-| Low Latency | **512 samples / 10.7 ms** | same engine, shorter delay; the correction lags the audio by ~30 ms |
+| Low Latency | **512 samples / 10.7 ms** | same engine, shorter delay and a shorter pitch-analysis window |
 | TD-PSOLA | 2048 samples | pitch-synchronous overlap-add (also Low Latency) |
 | Signalsmith | **5760 samples / 120 ms** | with optional formant compensation |
 
 Declared latency matches measured impulse onset and cross-correlation lag at 44.1 and
 48 kHz. A live engine switch republishes the correct latency on the next
 `prepareToPlay`; whether a specific DAW re-reads compensation mid-session is **unverified**.
+
+---
+
+## What changed in 0.5.0
+
+Engine only. The editor and presets are those of 0.4.0, apart from the footer, which now
+names the engine the same way the engine menu does.
+
+### Fixed
+
+| Problem | Fix |
+|---|---|
+| **The output was detuned by up to half a sample per period.** Each pitch mark is aligned to the previous one by cross-correlation, but the measured lag was added to the previous mark's *rounded* position, so its fraction was thrown away on every grain. A steady 213 Hz tone came out 2.6 cents flat; the error grows with pitch. | The lag is added to the mark's true position. |
+| The sub-sample part of that alignment was fitted on scores that favour the predicted position, which pulled every mark towards the prediction while the pitch was moving. | The preference only picks the whole-sample lag; the fraction is fitted on the raw correlation. |
+| Notes below 70 Hz or above 1 kHz were treated as unvoiced and passed through untuned. | Detector range is 55 Hz to 1.2 kHz. |
+| Toggling bypass, or automating Amount to zero, switched between tuned and dry audio in one sample (a click). | 5 ms cross-fade; the Doubler and Width fade with it. |
+| With Shift near -12 the grains barely overlap, and the gaps were filled with the dry signal, so the original pitch leaked into the output. | Dry fill is only used before the first grains arrive. |
+| The Doubler dipped the level by 0.9 dB at 50 %. | Equal-power blend: within 0.01 dB of the dry level from 0 to 100 % on the bench. |
+| In Low Latency the pitch was measured on audio about 8 ms older than the audio being corrected. | The analysis span is shortened so it stays centred on the audio leaving the shifter. |
+| The analysis interval and span were fixed in samples, so they halved in time at 96 kHz. | Both are fixed in time (10.7 ms and 32 ms). |
+| The stabilizer released a note at a fixed 0.6 semitones, which is *earlier* than the midpoint when the neighbouring scale note is a whole tone away. | It releases 0.2 semitones past the point where another note becomes closer. |
+| Every parameter was looked up by name several times per sample. | Read once per block. |
+| The footer said "TD-PSOLA" while the engine menu said "Quality". | Same names in both places. |
+
+### Measured, 0.4.0 → 0.5.0
+
+`app/vst3/verify/stress.py` (synthetic vowel, ±35 cent vibrato plus drift, chromatic,
+Speed 0, 48 kHz unless noted). Mean distance from the nearest semitone, in cents:
+
+| Case | 0.4.0 | 0.5.0 |
+|---|---|---|
+| Steady 213 Hz sine | 2.6 | 0.4 |
+| 330 Hz, Quality / Low Latency | 1.5 / 1.5 | 0.6 / 0.4 |
+| 520 Hz, Quality / Low Latency | 1.5 / 2.0 | 1.0 / 0.4 |
+| 700 Hz, Quality / Low Latency | 2.8 / 4.1 | 1.2 / 1.0 |
+| 1100 Hz, Quality / Low Latency | 1.5 / 2.4 | 1.1 / 0.8 |
+| 210 Hz at 44.1 kHz, Quality / Low Latency | 2.1 / 1.1 | 1.0 / 2.0 |
+| 210 Hz at 88.2 kHz, Quality / Low Latency | 1.8 / 1.5 | 0.6 / 0.5 |
+| 210 Hz at 96 kHz, Quality / Low Latency | 2.4 / 0.6 | 2.1 / 0.5 |
+| 98 Hz, Quality / Low Latency | 2.8 / 2.4 | 2.9 / 2.5 |
+
+| | 0.4.0 | 0.5.0 |
+|---|---|---|
+| Shift -12: output periodicity / frames tracked as voiced | 0.965 / 93 % | 0.993 / 100 % |
+| Doubler 50 %, level vs dry | -0.86 dB | -0.01 dB |
+| Doubler 100 %, level vs dry | -0.49 dB | +0.01 dB |
+
+Not everything moved. Low notes (around 100 Hz) and Quality at 96 kHz are unchanged, and
+Low Latency at 44.1 kHz measured worse in this run (1.1 → 2.0); repeated runs at other
+pitches scatter between 0.4 and 2 cents with no pattern, so differences of a cent in this
+table are within the noise of the method. The 900 Hz case is left out because the bench's
+own tracker cannot follow that signal (it reports 28 cents of error on the *input*).
+
+New regression checks: a steady off-pitch tone lands within 1 cent of the note (fails on
+0.4.0 at -2.6 cents), a bypass toggle does not step the signal, and the Doubler holds its
+level within 0.5 dB at 25, 50, 75 and 100 %.
 
 ---
 
@@ -344,7 +400,7 @@ app/
 
 | Item | State |
 |---|---|
-| Pitch accuracy (synthetic vibrato, 0.3.1 bench) | ✅ 0.6¢ mean / 1.5¢ p95 at Speed 0 |
+| Pitch accuracy (synthetic vibrato, 0.5.0 bench) | ✅ 0.5¢ mean / 1.2¢ p95 at Speed 0; steady tone 0.4¢ |
 | Speed / Sustain reach the default engine | ✅ regression test (0.3.1) |
 | Doubler / Width | ✅ measured on the synthetic bench; Width-only mono compatibility in the regression suite |
 | Pitch accuracy (dry vocal) | ⚠️ 5.63¢ median, jumps 4.17 % measured on 0.3.0; **not re-measured on 0.3.1** (fixture not in the repo) |
@@ -355,7 +411,7 @@ app/
 | Negative Speed / zero-Amount Shift | ✅ verified |
 | Non-finite input / reset / channel safety | ✅ verified |
 | Long-session engine/parameter churn | ✅ 4000 blocks verified |
-| AUv2 | ✅ `auval -v aufx Mgtn AdMs` passes on 0.3.1 and 0.4.0 |
+| AUv2 | ✅ `auval -v aufx Mgtn AdMs` passes on 0.3.1, 0.4.0 and 0.5.0 |
 | pluginval 1.0.4, strictness 8 | ⚠️ passed on 0.3.0 with two known JUCE state-cache tests disabled; not re-run since |
 | macOS build and test suite | ✅ 0.3.1 and 0.4.0 built universal on macOS (JUCE 8.0.15); `ctest` and the VST3 host check pass |
 | Key lock and user presets | ✅ regression test (0.4.0) |
@@ -368,8 +424,9 @@ app/
 | **Distribution signing** | ❌ ad-hoc only; no Developer ID in this environment |
 | **Parity with the original DSP** | ❌ not attempted; documented as unknown |
 
-Known engine limits: the detector range is 70 Hz to 1 kHz; in Low Latency the correction
-lags the audio by about 30 ms, so fast vibrato is tracked less tightly than in Quality; polyphonic
+Known engine limits: the detector range is 55 Hz to 1.2 kHz; Width on its own raises the level by up
+to 1.3 dB (the added side signal; the mono sum is unchanged); below about 130 Hz the bench shows 2 to 3.5
+cents of residual error; polyphonic
 material is out of scope; formant behaviour is still unvalidated (measurement tooling).
 
 ---

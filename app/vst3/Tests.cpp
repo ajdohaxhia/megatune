@@ -231,6 +231,35 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   if(std::abs(speedBack-137.f)>.5f){std::cerr<<"User preset lost Speed: "<<speedBack<<"\n";return 124;}
   if(keyBack!=5){std::cerr<<"User preset changed the key while key lock is on\n";return 125;}
   if(!removed||megatune::loadUserPreset(*q,probe)){std::cerr<<"User preset was not deleted\n";return 126;}}
+ // A steady off-pitch tone must land on the note, not near it. Pitch marks used to lose their
+ // sub-sample position on every grain, which left this tone 2.6 cents flat.
+ {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());
+  for(auto* v:q->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v)){if(w->paramID.startsWith("note"))w->setValueNotifyingHost(1.f);if(w->paramID=="speed")w->setValueNotifyingHost(w->convertTo0to1(0.f));}
+  q->setPlayConfigDetails(2,2,48000,256);q->prepareToPlay(48000,256);juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);std::vector<double> out;double ph=0;
+  for(int blk=0;blk<750;++blk){for(int i=0;i<256;++i){ph+=juce::MathConstants<double>::twoPi*213.0/48000.0;const float v=.3f*(float)std::sin(ph);b.setSample(0,i,v);b.setSample(1,i,v);}
+   q->processBlock(b,mb);if(blk>=375)for(int i=0;i<256;++i)out.push_back(b.getSample(0,i));}
+  double first=-1,last=-1;int crossings=0;for(size_t i=1;i<out.size();++i)if(out[i-1]<0&&out[i]>=0){const double at=(double)(i-1)+(-out[i-1])/(out[i]-out[i-1]);if(first<0)first=at;last=at;++crossings;}
+  if(crossings<100){std::cerr<<"Steady tone produced no output\n";return 127;}
+  const double hz=48000.0*(crossings-1)/(last-first),midi=69+12*std::log2(hz/440.0),cents=100*(midi-std::round(midi));
+  std::cout<<"Steady tone: "<<hz<<" Hz, "<<cents<<" cents from the note\n";
+  if(std::abs(cents)>1.0){std::cerr<<"Steady tone is off the note\n";return 127;}}
+ // Switching bypass while audio is running must cross-fade, not jump.
+ {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());juce::RangedAudioParameter* bypassParam=nullptr;
+  for(auto* v:q->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v))if(w->paramID=="bypass")bypassParam=w;
+  q->setPlayConfigDetails(2,2,48000,256);q->prepareToPlay(48000,256);juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);double ph=0;float previous=0,jump=0;
+  for(int blk=0;blk<340;++blk){if(blk==200)bypassParam->setValueNotifyingHost(1.f);if(blk==260)bypassParam->setValueNotifyingHost(0.f);
+   for(int i=0;i<256;++i){ph+=juce::MathConstants<double>::twoPi*432.0/48000.0;const float v=.3f*(float)std::sin(ph);b.setSample(0,i,v);b.setSample(1,i,v);}
+   q->processBlock(b,mb);for(int i=0;i<256;++i){const float v=b.getSample(0,i);if(blk>=150)jump=juce::jmax(jump,std::abs(v-previous));previous=v;}}
+  std::cout<<"Bypass toggle: largest sample step "<<jump<<" (a clean 0.3 tone steps 0.017)\n";
+  if(jump>.04f){std::cerr<<"Bypass toggle clicks\n";return 128;}}
+ // The Doubler is a blend: turning it up must not change the level.
+ for(float amountPercent:{25.f,50.f,75.f,100.f}){std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());
+  for(auto* v:q->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v)){if(w->paramID=="amount")w->setValueNotifyingHost(0.f);if(w->paramID=="doubler")w->setValueNotifyingHost(w->convertTo0to1(amountPercent));}
+  q->setPlayConfigDetails(2,2,48000,256);q->prepareToPlay(48000,256);juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);juce::Random noise(11);double in2=0,out2=0;
+  for(int blk=0;blk<600;++blk){for(int i=0;i<256;++i){const float v=.2f*(noise.nextFloat()*2.f-1.f);b.setSample(0,i,v);b.setSample(1,i,v);if(blk>=100)in2+=2.0*v*v;}
+   q->processBlock(b,mb);if(blk>=100)for(int i=0;i<256;++i)for(int c=0;c<2;++c)out2+=b.getSample(c,i)*b.getSample(c,i);}
+  const double db=10*std::log10(out2/in2);std::cout<<"Doubler "<<amountPercent<<"%: level "<<db<<" dB\n";
+  if(std::abs(db)>.5){std::cerr<<"Doubler changes the level\n";return 129;}}
  if(!(megaTuneSmoothingSeconds(-3,0,0)<megaTuneSmoothingSeconds(25,0,0))){std::cerr<<"Negative Speed must tighten faster than the default\n";return 51;}
  {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());juce::MidiBuffer ev;juce::AudioBuffer<float> b(2,256);
   for(int program=0;program<q->getNumPrograms();++program){q->setCurrentProgram(program);q->prepareToPlay(48000,256);

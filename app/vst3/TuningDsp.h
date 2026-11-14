@@ -198,7 +198,7 @@ public:
         std::fill (wsum.begin(), wsum.end(), 0.0f);
         written = 0; nextCenter = 0.0; lastMark = 0.0;
         period = std::min (maxPeriod, std::max (minPeriod, 200.0));
-        ratio = 1.0; mix = 0.0f; active = false; haveMark = false;
+        ratio = 1.0; mix = 0.0f; active = false; haveMark = false; filled = false;
     }
 
     // Change the dry/wet delay without reallocating (never above the prepared one).
@@ -236,7 +236,7 @@ public:
         const bool want = voiced && std::abs (ratio - 1.0) >= 1.0e-4;
         if (want && ! active)
         {
-            active = true; haveMark = false;
+            active = true; haveMark = false; filled = false;
             nextCenter = (double) t + period;
         }
         else if (! want && active && mix <= 0.0f)
@@ -260,9 +260,13 @@ public:
             for (int c = 0; c < 2; ++c)
             {
                 const float a = acc[c][pos];
-                wet[c] = w >= fillBelow ? a / w : (a + (fillBelow - w) * dry[c]) / fillBelow;
+                // Dry signal only fills the gap before the first grains arrive. Later gaps
+                // (large downward shifts leave the windows barely overlapping) fade to
+                // silence instead, so the unshifted pitch never leaks into the output.
+                wet[c] = w >= fillBelow ? a / w : (filled ? a / fillBelow : (a + (fillBelow - w) * dry[c]) / fillBelow);
                 acc[c][pos] = 0.0f;
             }
+            if (w >= 0.5f) filled = true;
             wsum[pos] = 0.0f;
         }
 
@@ -288,9 +292,12 @@ private:
         radius = (int) std::min<long long> (radius, newest - cand);
         if (radius < 1 || ref - p < oldest || cand - radius - p < oldest) return candidate;
         const int step = p > 256 ? 2 : 1;
-        float bestScore = 0.0f, scores[3] = { 0.0f, 0.0f, 0.0f };
-        int bestDelta = 0; bool found = false;
-        float prev = 0.0f; bool havePrev = false, needNext = false;
+        // The predicted position gets a mild preference when choosing the whole-sample lag, so
+        // noise cannot make the marks wander. The sub-sample part is then fitted on the raw
+        // correlation: fitting it on the biased scores pulls every mark towards the prediction
+        // and detunes the output whenever the source pitch is moving.
+        float raw[2 * 240 + 1];
+        float bestScore = 0.0f; int bestDelta = 0; bool found = false;
         for (int delta = -radius; delta <= radius; ++delta)
         {
             float cross = 0.0f, energy = 1.0e-9f;
@@ -300,23 +307,24 @@ private:
                 cross += a * mono (ref + j);
                 energy += a * a;
             }
-            // mild preference for the predicted position keeps noise from wandering
-            const float bias = 1.0f - 0.08f * (float) std::abs (delta) / (float) radius;
-            const float score = cross / std::sqrt (energy) * bias;
-            if (needNext) { scores[2] = score; needNext = false; }
-            if (score > bestScore)
-            {
-                bestScore = score; bestDelta = delta; found = true;
-                scores[0] = havePrev ? prev : score; scores[1] = score; scores[2] = score;
-                needNext = true;
-            }
-            prev = score; havePrev = true;
+            const float value = cross / std::sqrt (energy);
+            raw[delta + radius] = value;
+            const float score = value * (1.0f - 0.08f * (float) std::abs (delta) / (float) radius);
+            if (score > bestScore) { bestScore = score; bestDelta = delta; found = true; }
         }
         if (! found) return candidate;
-        const float denom = scores[0] - 2.0f * scores[1] + scores[2];
-        float frac = std::abs (denom) > 1.0e-12f ? 0.5f * (scores[0] - scores[2]) / denom : 0.0f;
-        frac = std::min (0.5f, std::max (-0.5f, frac));
-        return (double) (cand + bestDelta) + (double) frac;
+        float frac = 0.0f;
+        if (bestDelta > -radius && bestDelta < radius)
+        {
+            const float y0 = raw[bestDelta + radius - 1], y1 = raw[bestDelta + radius], y2 = raw[bestDelta + radius + 1];
+            const float denom = y0 - 2.0f * y1 + y2;
+            if (denom < -1.0e-12f) frac = std::min (0.5f, std::max (-0.5f, 0.5f * (y0 - y2) / denom));
+        }
+        // The lag is measured between windows at whole-sample positions, so it has to be
+        // added to the reference's true (fractional) position. Returning cand + delta alone
+        // drops the reference's fraction on every grain and detunes the output by up to
+        // half a sample per period.
+        return reference + (double) (cand - ref + bestDelta) + (double) frac;
     }
 
     void addGrain (double center, long long t)
@@ -373,7 +381,7 @@ private:
     double nextCenter = 0.0, period = 200.0, ratio = 1.0, lastMark = 0.0;
     double maxPeriod = 872.0, minPeriod = 34.0;
     float mix = 0.0f, fadeIn = 0.005f, fadeOut = 0.002f;
-    bool active = false, haveMark = false;
+    bool active = false, haveMark = false, filled = false;
 };
 
 // Vocal doubler and stereo widener.
@@ -438,8 +446,11 @@ public:
 
         if (amount < 1.0e-5f && width < 1.0e-5f) return;   // exact pass-through when off
 
-        const float dryGain = 1.0f - 0.30f * amount;
-        const float wet = 0.66f * amount;
+        // Equal-power blend: the dry voice falls to 0.70 while the two doubles rise, so the
+        // level stays put across the whole control instead of dipping in the middle.
+        const float blend = 0.795f * amount;
+        const float dryGain = std::cos (blend);
+        const float wet = 1.04f * std::sin (blend);
         if (! stereo)
         {
             l = dryGain * l + wet * 0.7071f * (v[0] + v[1]);

@@ -107,7 +107,7 @@ public:
   if(getUserPresetName()==name)setUserPresetName({});return true;}
 void changeProgramName(int,const juce::String&)override{}
  bool isBusesLayoutSupported(const BusesLayout& l)const override{return l.getMainInputChannelSet()==l.getMainOutputChannelSet()&&(l.getMainOutputChannelSet()==juce::AudioChannelSet::mono()||l.getMainOutputChannelSet()==juce::AudioChannelSet::stereo());}
- void prepareToPlay(double r,int samplesPerBlock)override {rate=r;write=0;analysisCount=0;phase=0;ratio=1;target=0;lastNote=0;heldSeconds=0;currentTargetNote=0;psolaVoiced=false;voicedHold=0;pitchCount=0;for(auto& c:ring)c.fill(0); history.fill(0);hist=0;lowLatencyActive=value("lowlatency")>.5f;window=lowLatencyActive?512:2048;setLatencySamples(window);yinWorkspace.ensure(512);psola.prepare(2048,r);psola.setLatency(window);doubler.prepare(r);if(!smithReady||smithRate!=r){smith.presetDefault(2,(float)rate);smithReady=true;smithRate=r;}smith.reset();smithLatency=smith.inputLatency()+smith.outputLatency();if(value("smith")>.5f&&!lowLatencyActive)setLatencySamples(smithLatency);const int staging=juce::jmax(8192,samplesPerBlock);sIn[0].assign((size_t)staging,0.f);sIn[1].assign((size_t)staging,0.f);sOut[0].assign((size_t)staging,0.f);sOut[1].assign((size_t)staging,0.f);}
+ void prepareToPlay(double r,int samplesPerBlock)override {rate=r;write=0;analysisCount=0;phase=0;ratio=1;target=0;lastNote=0;heldSeconds=0;currentTargetNote=0;psolaVoiced=false;voicedHold=0;pitchCount=0;for(auto& c:ring)c.fill(0); history.fill(0);hist=0;lowLatencyActive=value("lowlatency")>.5f;window=lowLatencyActive?512:2048;setLatencySamples(window);yinWorkspace.ensure(512);hop=juce::jmax(64,(int)std::lround(r*hopSeconds));refineSpan=juce::jmax(256,(int)std::lround(r*.032));refineScratch.assign((size_t)(refineSpan+(int)(r/50.0)+96),0.f);bypassMix=value("bypass")>.5f?1.f:0.f;dryMix=(bypassMix>.5f||(value("amount")==0&&value("shift")==0))?1.f:0.f;targetRatio=1;ratioFor=0;psola.prepare(2048,r);psola.setLatency(window);doubler.prepare(r);if(!smithReady||smithRate!=r){smith.presetDefault(2,(float)rate);smithReady=true;smithRate=r;}smith.reset();smithLatency=smith.inputLatency()+smith.outputLatency();if(value("smith")>.5f&&!lowLatencyActive)setLatencySamples(smithLatency);const int staging=juce::jmax(8192,samplesPerBlock);sIn[0].assign((size_t)staging,0.f);sIn[1].assign((size_t)staging,0.f);sOut[0].assign((size_t)staging,0.f);sOut[1].assign((size_t)staging,0.f);}
  void releaseResources()override{}
  void reset()override{write=0;hist=0;analysisCount=0;phase=0;ratio=1;target=0;lastNote=0;heldSeconds=0;currentTargetNote=0;pitch=0;outputPitch=0;level=0;outputLevel=0;pitchCount=0;pitchHist[0]=pitchHist[1]=pitchHist[2]=0;psolaPeriod=200;psolaVoiced=false;voicedHold=0;for(auto& c:ring)c.fill(0);history.fill(0);psola.reset();doubler.reset();if(smithReady)smith.reset();}
  float value(const char* id) const{const char* ids[]={"speed","sustain","amount","bypass","stabilize","key","doubler","width","reference","lowlatency","shift","range","engine","smith","smithcomp"};for(int i=0;i<15;++i)if(std::strcmp(id,ids[i])==0)return raw[i]->load();auto* v=state.getRawParameterValue(id);return v?v->load():0;}
@@ -148,21 +148,24 @@ void changeProgramName(int,const juce::String&)override{}
   for(int i=0;i<n;++i){float s=0;const int base=hist-1-i*stride+16384*16;for(int k=0;k<stride;++k)s+=history[(size_t)((base-k)%16384)];x[i]=s/(float)stride;energy+=x[i]*x[i];}
   if(energy/n<0.00001f){pitch=0;target=0;lastNote=0;heldSeconds=0;pitchCount=0;currentTargetNote=0;recordDecision(0,0,R_UNVOICED);return;}
   const float sr=(float)rate/stride;
-  const auto yin=megatune::detectYin(x.data(),n,sr,70.f,1000.f,.15f,yinWorkspace);
+  const auto yin=megatune::detectYin(x.data(),n,sr,55.f,1200.f,.15f,yinWorkspace);
   if(!yin.voiced){pitch=0;target=0;lastNote=0;heldSeconds=0;pitchCount=0;currentTargetNote=0;recordDecision(0,0,R_UNVOICED);return;}
   // Refine the period on the full-rate signal, on a span centred on the audio that
   // is leaving the shifter right now (write - latency), so the correction lines up
   // with the grains it is applied to instead of running ahead of them.
   float period=(float)rate/juce::jmax(1.f,yin.hz);
-  {const int radius=stride+2;const int coarse=(int)std::lround(period);const int span=juce::jmin(1536,(int)refineScratch.size()-coarse-radius-2);
-   if(span>=256){const int total=span+coarse+radius+2;const int offset=juce::jlimit(0,16384-total-1,window-total/2);
+  {const int coarse=(int)std::lround(period);const int radius=juce::jlimit(stride+2,30,(int)std::ceil(period*.035f));
+   // The span is centred on the audio leaving the shifter. In Low Latency that leaves room for less than
+   // the full span, so it is shortened rather than letting the estimate lag the grains it corrects.
+   int span=juce::jmin(refineSpan,(int)refineScratch.size()-coarse-radius-2,2*window-coarse-radius-2);span=juce::jmax(span,juce::jmin(256,(int)refineScratch.size()-coarse-radius-2));
+   if(span>=128){const int total=span+coarse+radius+2;const int offset=juce::jlimit(0,16384-total-1,window-total/2);
     for(int i=0;i<total;++i)refineScratch[(size_t)i]=history[(size_t)((hist-1-offset-i+16384*4)%16384)];
     period=megatune::refinePeriod(refineScratch.data(),span,period,radius);}}
   const float hz=(float)rate/juce::jmax(2.f,period);
   float midi=69+12*std::log2(hz/juce::jmax(1.f,value("reference")));pitch=midi;
   if(pitchCount<3)pitchHist[pitchCount++]=midi;else{pitchHist[0]=pitchHist[1];pitchHist[1]=pitchHist[2];pitchHist[2]=midi;const float lo=std::min(pitchHist[0],std::min(pitchHist[1],pitchHist[2])),hi=std::max(pitchHist[0],std::max(pitchHist[1],pitchHist[2]));const float med=pitchHist[0]+pitchHist[1]+pitchHist[2]-lo-hi;if(std::abs(midi-med)>1.5f)midi=med;} // median only rejects octave slips; it no longer delays every frame
   float distance=100;int nearest=0;for(int i=(int)std::floor(midi)-12;i<=(int)std::ceil(midi)+12;++i)if(noteValue((i-(int)value("key")+24)%12)>.5f&&std::abs(i-midi)<distance){distance=std::abs(i-midi);nearest=i;}
-  if(distance==100){target=0;lastNote=0;heldSeconds=0;currentTargetNote=0;recordDecision(midi,0,R_NONOTE);return;}if(value("stabilize")>.5f&&lastNote>0&&std::abs(midi-lastNote)<.6f&&noteValue((lastNote-(int)value("key")+24)%12)>.5f)nearest=lastNote;{unsigned m=0;for(int q=0;q<12;++q)if(noteRaw[q]->load()>.5f)m|=1u<<q;megatune::debugMask.store(m);megatune::debugNearest.store(nearest);megatune::debugMidi.store((int)std::lround(midi*100.f));megatune::debugKey.store((int)value("key"));}const int previousNote=lastNote;if(nearest!=lastNote)heldSeconds=0;const bool stabilizeOn=value("stabilize")>.5f;lastNote=nearest;currentTargetNote=nearest;const bool held=(stabilizeOn&&nearest>0&&nearest==previousNote);const float correction=(float)(nearest-midi);const bool outOfRange=std::abs(correction)>value("range");
+  if(distance==100){target=0;lastNote=0;heldSeconds=0;currentTargetNote=0;recordDecision(midi,0,R_NONOTE);return;}if(value("stabilize")>.5f&&lastNote>0&&std::abs(midi-lastNote)<distance+.2f&&noteValue((lastNote-(int)value("key")+24)%12)>.5f)nearest=lastNote;{unsigned m=0;for(int q=0;q<12;++q)if(noteRaw[q]->load()>.5f)m|=1u<<q;megatune::debugMask.store(m);megatune::debugNearest.store(nearest);megatune::debugMidi.store((int)std::lround(midi*100.f));megatune::debugKey.store((int)value("key"));}const int previousNote=lastNote;if(nearest!=lastNote)heldSeconds=0;const bool stabilizeOn=value("stabilize")>.5f;lastNote=nearest;currentTargetNote=nearest;const bool held=(stabilizeOn&&nearest>0&&nearest==previousNote);const float correction=(float)(nearest-midi);const bool outOfRange=std::abs(correction)>value("range");
   target=(outOfRange?0.f:correction)*value("amount")*.01f+value("shift");
   recordDecision(midi,(float)nearest,outOfRange?R_RANGE:(held?R_HELD:R_NEAREST));psolaPeriod=period;psola.setPeriod(psolaPeriod);voicedHold=(int)(rate*0.06);
  }
@@ -180,12 +183,12 @@ void changeProgramName(int,const juce::String&)override{}
     return;}
    const int channels=juce::jmin(2,b.getNumChannels());if(channels<=0)return;const int second=juce::jmin(1,channels-1);float peak=0;
    for(int i=0;i<n;++i){float mono=0;for(int c=0;c<channels;++c){const float v=b.getSample(c,i);ring[c][write]=std::isfinite(v)?v:0.f;mono+=ring[c][write]/channels;peak=juce::jmax(peak,std::abs(ring[c][write]));}
-    history[hist]=mono;hist=(hist+1)%16384;if(++analysisCount>=512){analysisCount=0;analyse();}write=(write+1)%ringSize;
+    history[hist]=mono;hist=(hist+1)%16384;if(++analysisCount>=hop){analysisCount=0;analyse();}write=(write+1)%ringSize;
     const float in0=b.getSample(0,i),in1=b.getSample(second,i);sIn[0][i]=std::isfinite(in0)?in0:0.f;sIn[1][i]=std::isfinite(in1)?in1:0.f;}
    if(lastNote>0)heldSeconds=juce::jmin(1.f,heldSeconds+(float)n/(float)rate);
    {const float blend=megaTuneRatioBlend(value("speed"),value("sustain"),heldSeconds,(float)rate);ratio+=(std::pow(2.f,target/12)-ratio)*(1.f-std::pow(1.f-blend,(float)n));}
    smith.setTransposeSemitones(12.f*std::log2(juce::jmax(.001f,ratio)),0.f);
-   smith.setFormantSemitones(0.f,false); // formant compensation disabled: measured to cancel pitch shift (see audit)
+   dryMix=bypassMix=0;smith.setFormantSemitones(0.f,false); // formant compensation disabled: measured to cancel pitch shift (see audit)
    const float* ip[2]={sIn[0].data(),sIn[1].data()};float* op[2]={sOut[0].data(),sOut[1].data()};
    smith.process(ip,n,op,n);
    float outPeak=0;const float dblAmount=value("doubler")*.01f,dblWidth=value("width")*.01f;
@@ -197,33 +200,42 @@ void changeProgramName(int,const juce::String&)override{}
    return;}
 
 
-  juce::ScopedNoDenormals no;const int channels=juce::jmin(2,b.getNumChannels());if(channels<=0)return;float peak=0,outPeak=0;bool bypass=hostBypass||value("bypass")>.5f;
+  juce::ScopedNoDenormals no;const int channels=juce::jmin(2,b.getNumChannels());if(channels<=0)return;float peak=0,outPeak=0;const bool bypass=hostBypass||value("bypass")>.5f;
   const int requestedWindow=value("lowlatency")>.5f?512:2048;
   if(smithActive){if(getLatencySamples()!=smithLatency)setLatencySamples(smithLatency);}
   else if(requestedWindow!=window){window=requestedWindow;lowLatencyActive=window==512;setLatencySamples(window);psola.setLatency(window);}
   const int half=window/2;const int dryDelay=smithActive?smithLatency:window;
+  // Parameters are read once per block; the fades below keep a change from clicking.
+  const float speedV=value("speed"),sustainV=value("sustain"),amountV=value("amount"),shiftV=value("shift"),doublerV=value("doubler")*.01f,widthV=value("width")*.01f;
+  const bool psolaEngine=value("engine")>.5f;const float dryTarget=(bypass||(amountV==0&&shiftV==0))?1.f:0.f,bypassTarget=bypass?1.f:0.f,fadeStep=1.f/(float)(.005*rate);
+  if(smithActive)dryMix=bypassMix=1.f; // only reached bypassed: the Signalsmith path has a different delay, so no cross-fade
+  float blend=0;
   for(int i=0;i<b.getNumSamples();++i){float mono=0;for(int c=0;c<channels;++c){float v=b.getSample(c,i);ring[c][write]=std::isfinite(v)?v:0;mono+=ring[c][write]/channels;peak=juce::jmax(peak,std::abs(ring[c][write]));}history[hist]=mono;hist=(hist+1)%16384;
-   if(++analysisCount>=512){analysisCount=0;analyse();}
+   if(++analysisCount>=hop){analysisCount=0;analyse();}
    if(lastNote>0)heldSeconds=juce::jmin(1.f,heldSeconds+1.f/(float)rate);
-   const float blend=megaTuneRatioBlend(value("speed"),value("sustain"),heldSeconds,(float)rate);ratio+=(std::pow(2.f,target/12)-ratio)*blend;
+   if((i&15)==0)blend=megaTuneRatioBlend(speedV,sustainV,heldSeconds,(float)rate);
+   if(target!=ratioFor){ratioFor=target;targetRatio=std::pow(2.f,target/12);}
+   ratio+=(targetRatio-ratio)*blend;
    phase+=1-ratio;while(phase<0)phase+=window;while(phase>=window)phase-=window;
    if(voicedHold>0)--voicedHold;psolaVoiced=voicedHold>0;
+   dryMix+=juce::jlimit(-fadeStep,fadeStep,dryTarget-dryMix);bypassMix+=juce::jlimit(-fadeStep,fadeStep,bypassTarget-bypassMix);
    const int second=channels>1?1:0;const float psIn[2]={ring[0][write],ring[second][write]};float ps[2];
    psola.setRatio(ratio);psola.process(psIn,ps,psolaVoiced);   // Speed-smoothed ratio drives the shifter
    float outs[2]={0,0};
    for(int c=0;c<channels;++c){auto read=[&](float delay){float pos=write-delay;while(pos<0)pos+=ringSize;int a=(int)pos;float t=pos-a;
      auto tap=[&](int k){return ring[c][(a+k+ringSize)%ringSize];};float y0=tap(-1),y1=tap(0),y2=tap(1),y3=tap(2);
      return y1+.5f*t*(y2-y0+t*(2.f*y0-5.f*y1+4.f*y2-y3+t*(3.f*(y1-y2)+y3-y0)));};float out;
-    if(bypass||(value("amount")==0&&value("shift")==0))out=read(dryDelay);
-    else if(value("engine")>.5f)out=ps[c];
-    else if(lowLatencyActive){float p2=std::fmod(phase+half,(float)window);float w=.5f-.5f*std::cos(juce::MathConstants<float>::twoPi*phase/window);out=read(half+phase)*w+read(half+p2)*(1-w);}
-    else{const float base=(float)(half+window/4);float acc=0;for(int k=0;k<4;++k){float g=std::fmod(phase+k*window*.25f,(float)window);float wt=.5f-.5f*std::cos(juce::MathConstants<float>::twoPi*g/window);acc+=wt*read(base+g);}out=acc*.5f;}
+    if(dryMix>=1.f)out=read((float)dryDelay);
+    else{float wet;if(psolaEngine)wet=ps[c];
+     else if(lowLatencyActive){float p2=std::fmod(phase+half,(float)window);float w=.5f-.5f*std::cos(juce::MathConstants<float>::twoPi*phase/window);wet=read(half+phase)*w+read(half+p2)*(1-w);}
+     else{const float base=(float)(half+window/4);float acc=0;for(int k=0;k<4;++k){float g=std::fmod(phase+k*window*.25f,(float)window);float wt=.5f-.5f*std::cos(juce::MathConstants<float>::twoPi*g/window);acc+=wt*read(base+g);}wet=acc*.5f;}
+     out=dryMix<=0.f?wet:wet+dryMix*(read((float)dryDelay)-wet);}
     outs[c]=out;}
    if(channels==1)outs[1]=outs[0];
-   doubler.process(outs[0],outs[1],bypass?0.f:value("doubler")*.01f,bypass?0.f:value("width")*.01f,channels>1);
+   doubler.process(outs[0],outs[1],doublerV*(1.f-bypassMix),widthV*(1.f-bypassMix),channels>1);
    for(int c=0;c<channels;++c){outPeak=juce::jmax(outPeak,std::abs(outs[c]));b.setSample(c,i,outs[c]);}
    write=(write+1)%ringSize;
-  }level=peak;outputLevel=outPeak;float detected=pitch.load();outputPitch=detected>0?detected+((bypass||value("amount")==0)?0.f:12.f*std::log2(juce::jmax(.001f,ratio))):0.f;
+  }level=peak;outputLevel=outPeak;float detected=pitch.load();outputPitch=detected>0?detected+((bypass||amountV==0)?0.f:12.f*std::log2(juce::jmax(.001f,ratio))):0.f;
  }
  bool hasEditor()const override{return true;}juce::AudioProcessorEditor* createEditor()override;
  void getStateInformation(juce::MemoryBlock& m)override{auto saved=state.copyState();saved.setProperty("factoryProgram",currentProgram.load(),nullptr);saved.setProperty("keepKey",keepKey.load(),nullptr);saved.setProperty("userPreset",getUserPresetName(),nullptr);auto xml=saved.createXml();copyXmlToBinary(*xml,m);}
@@ -231,7 +243,7 @@ void changeProgramName(int,const juce::String&)override{}
 private:
  mutable juce::SpinLock nameLock;juce::String userPresetName;
  std::array<std::atomic<float>*,15> raw{};std::array<std::atomic<float>*,12> noteRaw{};
- double rate=44100;int write=0,hist=0,analysisCount=0,lastNote=0,window=2048,pitchCount=0;float pitchHist[3]{};megatune::StereoPsola psola;megatune::StereoDoubler doubler;std::array<float,4096> refineScratch{};float psolaPeriod=200.f;bool psolaVoiced=false;int voicedHold=0;signalsmith::stretch::SignalsmithStretch<float> smith;bool smithReady=false;double smithRate=0;std::vector<float> sIn[2],sOut[2];int smithLatency=0;megatune::YinWorkspace yinWorkspace;bool lowLatencyActive=false;float phase=0,ratio=1,target=0,heldSeconds=0;
+ double rate=44100;int write=0,hist=0,analysisCount=0,lastNote=0,window=2048,pitchCount=0;float pitchHist[3]{};megatune::StereoPsola psola;megatune::StereoDoubler doubler;std::vector<float> refineScratch;int hop=256,refineSpan=1536;float dryMix=0,bypassMix=0,targetRatio=1,ratioFor=0;static constexpr double hopSeconds=0.010667;float psolaPeriod=200.f;bool psolaVoiced=false;int voicedHold=0;signalsmith::stretch::SignalsmithStretch<float> smith;bool smithReady=false;double smithRate=0;std::vector<float> sIn[2],sOut[2];int smithLatency=0;megatune::YinWorkspace yinWorkspace;bool lowLatencyActive=false;float phase=0,ratio=1,target=0,heldSeconds=0;
  static constexpr int ringSize=131072;std::array<std::array<float,ringSize>,2> ring{};std::array<float,16384> history{};
 };
 class TunerLook final:public juce::LookAndFeel_V4 {
@@ -756,7 +768,7 @@ public:
   // footer
   g.setColour(line);g.fillRect(0,1028,1480,1);
   g.setColour(muted);g.setFont(juce::Font(11.f));g.drawText("ENGINE",40,1038,56,18,juce::Justification::left);
-  g.setColour(ink);g.setFont(juce::Font(16.f,juce::Font::bold));g.drawText(proc.value("smith")>.5f?"Signalsmith":proc.value("engine")>.5f?"TD-PSOLA":proc.value("lowlatency")>.5f?"Low Latency":"Quality",104,1036,170,22,juce::Justification::left);
+  g.setColour(ink);g.setFont(juce::Font(16.f,juce::Font::bold));g.drawText(proc.value("smith")>.5f&&proc.value("lowlatency")<=.5f?"Signalsmith":proc.value("lowlatency")>.5f?"Low Latency":proc.value("engine")>.5f?"Quality":"Quality (classic)",104,1036,170,22,juce::Justification::left);
   g.setColour(line);g.fillRect(280,1038,1,18);
   g.setColour(muted);g.setFont(juce::Font(14.f));g.drawText("ademusic MegaTune v"+juce::String(JucePlugin_VersionString),300,1036,260,22,juce::Justification::left);
   g.setColour(line);g.fillRect(520,1038,1,18);

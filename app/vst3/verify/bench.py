@@ -67,7 +67,9 @@ tuning("off-pitch notes speed=0", signal="notes", hz=220, speed=0, vibrato=15, *
 tuning("off-pitch notes speed=25", signal="notes", hz=220, speed=25, vibrato=15, **chrom)
 tuning("glide speed=0", signal="glide", hz=200, speed=0, vibrato=0, **chrom)
 tuning("vowel +3 st shift", signal="vowel", speed=0, shift=3, **chrom)
+tuning("vowel -12 st shift", signal="vowel", speed=0, shift=-12, **chrom)
+tuning("steady sine 213 Hz speed=0", signal="sine", hz=213, speed=0, **chrom)
 tuning("vowel amount=0 (dry reference)", signal="vowel", amount=0, **chrom)
 print("== Doubler / Width (tuning off, mono source on a stereo bus) ==")
-for d, w in ((0, 0), (50, 0), (100, 0), (0, 50), (0, 100), (65, 100), (100, 100)):
+for d, w in ((0, 0), (25, 0), (50, 0), (75, 0), (100, 0), (0, 50), (0, 100), (65, 100), (100, 100)):
     stereo(f"doubler={d} width={w}", signal="vowel", doubler=d, width=w)
