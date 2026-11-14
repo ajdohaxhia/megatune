@@ -110,7 +110,9 @@ public:
  bool deleteUserPreset(const juce::String& name){const auto file=userPresetDir().getChildFile(name+".megatune");if(!file.existsAsFile()||!file.deleteFile())return false;
   if(getUserPresetName()==name)setUserPresetName({});return true;}
 void changeProgramName(int,const juce::String&)override{}
- bool isBusesLayoutSupported(const BusesLayout& l)const override{return l.getMainInputChannelSet()==l.getMainOutputChannelSet()&&(l.getMainOutputChannelSet()==juce::AudioChannelSet::mono()||l.getMainOutputChannelSet()==juce::AudioChannelSet::stereo());}
+ bool isBusesLayoutSupported(const BusesLayout& l)const override{const auto in=l.getMainInputChannelSet(),out=l.getMainOutputChannelSet();
+  // mono -> mono, stereo -> stereo, and mono -> stereo so a mono vocal can come out doubled and wide
+  return (in==out&&(out==juce::AudioChannelSet::mono()||out==juce::AudioChannelSet::stereo()))||(in==juce::AudioChannelSet::mono()&&out==juce::AudioChannelSet::stereo());}
  void prepareToPlay(double r,int samplesPerBlock)override {rate=r;write=0;analysisCount=0;phase=0;ratio=1;target=0;lastNote=0;heldSeconds=0;currentTargetNote=0;psolaVoiced=false;voicedHold=0;pitchCount=0;for(auto& c:ring)c.fill(0); history.fill(0);hist=0;lowLatencyActive=value("lowlatency")>.5f;window=lowLatencyActive?512:2048;setLatencySamples(window);yinWorkspace.ensure(512);hop=juce::jmax(64,(int)std::lround(r*hopSeconds));refineSpan=juce::jmax(256,(int)std::lround(r*.032));refineScratch.assign((size_t)(refineSpan+(int)(r/50.0)+96),0.f);bypassMix=value("bypass")>.5f?1.f:0.f;dryMix=(bypassMix>.5f||(value("amount")==0&&value("shift")==0))?1.f:0.f;targetRatio=1;ratioFor=0;psola.prepare(2048,r);psola.setLatency(window);doubler.prepare(r);if(!smithReady||smithRate!=r){smith.presetDefault(2,(float)rate);smithReady=true;smithRate=r;}smith.reset();smithLatency=smith.inputLatency()+smith.outputLatency();if(value("smith")>.5f&&!lowLatencyActive)setLatencySamples(smithLatency);const int staging=juce::jmax(8192,samplesPerBlock);sIn[0].assign((size_t)staging,0.f);sIn[1].assign((size_t)staging,0.f);sOut[0].assign((size_t)staging,0.f);sOut[1].assign((size_t)staging,0.f);}
  void releaseResources()override{}
  void reset()override{write=0;hist=0;analysisCount=0;phase=0;ratio=1;target=0;lastNote=0;heldSeconds=0;currentTargetNote=0;pitch=0;outputPitch=0;level=0;outputLevel=0;pitchCount=0;settleMidi=0;pitchHist[0]=pitchHist[1]=pitchHist[2]=0;psolaPeriod=200;psolaVoiced=false;voicedHold=0;for(auto& c:ring)c.fill(0);history.fill(0);psola.reset();doubler.reset();if(smithReady)smith.reset();}
@@ -177,8 +179,11 @@ void changeProgramName(int,const juce::String&)override{}
   target=(outOfRange?0.f:correction)*value("amount")*.01f+value("shift");
   recordDecision(midi,(float)nearest,outOfRange?R_RANGE:(held?R_HELD:R_NEAREST));psolaPeriod=period;psola.setPeriod(psolaPeriod);voicedHold=(int)(rate*0.06);
  }
- void processBlock(juce::AudioBuffer<float>& b,juce::MidiBuffer&)override{processAudio(b,false);}
- void processBlockBypassed(juce::AudioBuffer<float>& b,juce::MidiBuffer&)override{processAudio(b,true);}
+ void processBlock(juce::AudioBuffer<float>& b,juce::MidiBuffer&)override{spreadMono(b);processAudio(b,false);}
+ void processBlockBypassed(juce::AudioBuffer<float>& b,juce::MidiBuffer&)override{spreadMono(b);processAudio(b,true);}
+ // Mono in, stereo out: the host leaves the second channel undefined, so the mono input is copied
+ // into it and the rest of the plug-in runs as stereo (Doubler and Width then work as on a stereo track).
+ void spreadMono(juce::AudioBuffer<float>& b){if(getTotalNumInputChannels()==1&&getTotalNumOutputChannels()>=2&&b.getNumChannels()>=2)b.copyFrom(1,0,b,0,0,b.getNumSamples());}
  void processAudio(juce::AudioBuffer<float>& b,bool hostBypass){
   const bool smithActive=value("smith")>.5f&&!lowLatencyActive;
   if(!hostBypass&&value("bypass")<=.5f&&smithActive){const int n=b.getNumSamples();

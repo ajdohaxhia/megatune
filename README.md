@@ -4,10 +4,9 @@ A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUC
 AUv2 plug-in with a live pitch trace, a diagnostic "Why this note?" history, three
 selectable pitch engines, factory and user presets, a doubler and a stereo widener.
 
-> **Status: 0.6.2.** 0.6.2 reports a real tail length to the host (see
-> [What changed in 0.6.2](#what-changed-in-062)); clicks are **still reported in Logic** and
-> their cause is not yet found. 0.6.1 removes clicks that 0.6.0 introduced at note changes, found on the
-> first real vocal take run through the plug-in; see [What changed in 0.6.1](#what-changed-in-061).
+> **Status: 0.7.0.** Mono → Stereo support, and transients (mouth clicks, hard consonants,
+> clipped peaks) now pass through unprocessed; see [What changed in 0.7.0](#what-changed-in-070).
+> The clicks reported in Logic were traced to the recordings themselves (see below).
 > 0.6.0 itself was more engine work: steady notes now land exactly on pitch, downward
 > shifts actually reach the lower note, Stereo Width no longer changes the level, and
 > formant preservation has been measured; see [What changed in 0.6.0](#what-changed-in-060).
@@ -45,6 +44,7 @@ their owners.
 | Area | What you get |
 |---|---|
 | Pitch engines | Quality (TD-PSOLA), Low Latency (TD-PSOLA, 512), Signalsmith Stretch |
+| Channels | Mono, Stereo, and Mono → Stereo |
 | Controls | Speed, Sustain, Amount, Doubler, Stereo Width, Key, Scale, Shift, Range, Pitch Reference (A4) |
 | Doubler | Two extra voices, each with its own 15/24 ms offset and slowly drifting detune of a few cents |
 | Stereo Width | Pans the doubled voices apart and, on its own, widens a mono vocal with a side signal that cancels in mono |
@@ -69,6 +69,42 @@ their owners.
 Declared latency matches measured impulse onset and cross-correlation lag at 44.1 and
 48 kHz. A live engine switch republishes the correct latency on the next
 `prepareToPlay`; whether a specific DAW re-reads compensation mid-session is **unverified**.
+
+---
+
+## What changed in 0.7.0
+
+### The clicks reported in Logic
+
+Two Logic bounces were analysed against their dry takes at the moments where clicks were
+heard (around 23, 25.5 and 61.5 s in one, 13.5 s in the other):
+
+- **Every click is already in the dry recording.** Some are mouth clicks and hard consonant
+  onsets; at 62.4 and 63.1 s the take was clipped while recording (the waveform reaches
+  +0.95 and drops to +0.55 in one sample).
+- **MegaTune does not make them louder.** Rendered offline with the same settings, the 260
+  sharpest transients in the second take come out 2.9 dB *less* prominent than in the dry
+  (median). In the Logic bounce they were 1 to 3 dB more prominent; that bounce had a noise
+  suppressor (NS1) before MegaTune, which lowers the noise around the clicks.
+- **MegaTune was loaded as Dual Mono.** Logic ran two independent copies, one per channel. Fed
+  the same voice, they tuned it separately and their outputs were almost uncorrelated
+  (median L/R correlation 0.05), which sounds unstable and phasey in stereo. Use the Mono or
+  the new Mono → Stereo version on a mono vocal, and Stereo on a stereo track.
+
+### Changes
+
+- **Transient pass-through.** A grain covers two periods, so a sharp transient is copied
+  into the grains around it and can be heard as several ticks, some before the real one.
+  Transients are now detected as they enter, and for one and a half periods either side the
+  output takes the delayed dry signal instead (1.5 ms cross-fades). On the take this touches
+  1.4 % of voiced time; transients keep their original prominence (median -1.1 dB instead of
+  -2.9 dB) and the worst pre-echo case drops from +14.2 to +5.6 dB. Tuning numbers on the
+  synthetic bench are unchanged.
+- **Mono → Stereo.** The plug-in accepts a mono input with a stereo output, so on a mono vocal
+  track Logic offers MegaTune *Mono → Stereo*: Doubler and Width then work as on a stereo
+  track. Regression test: Width 0 gives identical channels, Width 100 a wide, balanced image,
+  and the second output never carries whatever the host left in it.
+- `verify/clicks.py` and `MegaTuneBench file=` / `varblock=1` were used for this analysis.
 
 ---
 
@@ -540,7 +576,7 @@ app/
 | Why this note? → Exclude → Undo | ✅ verified on synthetic tone and on a real take |
 | Presets, automation, recall, A/B | ✅ verified |
 | Formant preservation | ✅ measured for -3 to +12 semitones on a synthetic vowel (spectral stretch 0.99 to 1.02; 1.00 is perfect). ⚠️ -6 and -12 are inconclusive: the fit is poor there |
-| **DAW compatibility / listening test** | ❌ Logic Pro: sounds good but **clicks, still present in 0.6.1**; not reproduced offline, cause open |
+| **DAW compatibility / listening test** | ⚠️ Logic Pro: sounds good; the clicks heard were traced to the recordings (0.7.0 notes); 0.7.0 not yet listened to |
 | **Distribution signing** | ❌ ad-hoc only; notarization needs an Apple Developer ID |
 | **Parity with the original DSP** | ❌ not attempted; documented as unknown |
 

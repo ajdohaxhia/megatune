@@ -259,6 +259,20 @@ juce::ScopedJuceInitialiser_GUI init;std::unique_ptr<juce::AudioProcessor> p(cre
   std::cout<<"Note jump: sharpest edge "<<outputEdge/inputEdge<<"x the input's, deepest dip "<<20*std::log10(deepest+1e-9)<<" dB\n";
   if(outputEdge>2.f*inputEdge){std::cerr<<"Note jump clicks\n";return 130;}
   if(deepest<.4){std::cerr<<"Note jump leaves a hole\n";return 131;}}
+ // Mono in, stereo out: the layout is accepted, the second output is never host garbage, Width 0 gives
+ // identical channels and Width 100 a wide image at a balanced level.
+ for(float widthValue:{0.f,1.f}){std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());
+  juce::AudioProcessor::BusesLayout layout;layout.inputBuses.add(juce::AudioChannelSet::mono());layout.outputBuses.add(juce::AudioChannelSet::stereo());
+  if(!q->setBusesLayout(layout)){std::cerr<<"Mono to stereo layout rejected\n";return 133;}
+  for(auto* v:q->getParameters())if(auto* w=dynamic_cast<juce::RangedAudioParameter*>(v)){if(w->paramID=="width")w->setValueNotifyingHost(widthValue);if(w->paramID=="amount")w->setValueNotifyingHost(0.f);}
+  q->prepareToPlay(48000,256);juce::MidiBuffer mb;juce::AudioBuffer<float> b(2,256);double l2=0,r2=0,side=0;juce::Random noise(5);float lp=0;
+  for(int blk=0;blk<400;++blk){for(int i=0;i<256;++i){lp+=.2f*(noise.nextFloat()*2.f-1.f-lp);b.setSample(0,i,.5f*lp);b.setSample(1,i,123.f);} // channel 1 holds host garbage
+   q->processBlock(b,mb);if(blk>150)for(int i=0;i<256;++i){const float L=b.getSample(0,i),R=b.getSample(1,i);l2+=L*L;r2+=R*R;side+=(L-R)*(L-R);}}
+  const double balance=10*std::log10(l2/r2),sideDb=10*std::log10(side/(l2+r2)+1e-20);
+  std::cout<<"Mono to stereo, Width "<<widthValue*100<<"%: L/R balance "<<balance<<" dB, side "<<sideDb<<" dB\n";
+  if(std::abs(balance)>.5){std::cerr<<"Mono to stereo outputs are unbalanced\n";return 134;}
+  if(widthValue==0.f&&sideDb>-100){std::cerr<<"Mono to stereo channels differ with Width 0\n";return 135;}
+  if(widthValue==1.f&&sideDb<-15){std::cerr<<"Width does nothing with a mono input\n";return 136;}}
  // Hosts that stop calling a silent plug-in rely on the reported tail to let the delayed audio out first.
  {std::unique_ptr<juce::AudioProcessor> q(createPluginFilter());q->setPlayConfigDetails(2,2,48000,256);q->prepareToPlay(48000,256);
   const double held=q->getLatencySamples()/48000.0;

@@ -1,4 +1,4 @@
-# ademusic MegaTune 0.6.2 — VST3 + AUv2 (macOS, universal arm64 + x86_64)
+# ademusic MegaTune 0.7.0 — VST3 + AUv2 (macOS, universal arm64 + x86_64)
 
 Install: double-click `Install MegaTune.command`. It copies `MegaTune.vst3` to
 `~/Library/Audio/Plug-Ins/VST3/` and `MegaTune.component` to

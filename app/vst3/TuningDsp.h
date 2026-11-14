@@ -190,6 +190,10 @@ public:
         wsum.assign ((size_t) accSize, 0.0f);
         fadeIn = (float) (1.0 / (0.004 * sampleRate));
         fadeOut = (float) (1.0 / (0.012 * sampleRate));
+        tFast = (float) (1.0 - std::exp (-1.0 / (0.0007 * sampleRate)));
+        tSlow = (float) (1.0 - std::exp (-1.0 / (0.040 * sampleRate)));
+        tRamp = (float) (1.0 / (0.0015 * sampleRate));
+        tMargin = (int) (0.002 * sampleRate);
         reset();
     }
 
@@ -202,6 +206,7 @@ public:
         }
         std::fill (wsum.begin(), wsum.end(), 0.0f);
         written = 0; nextCenter = 0.0; lastMark = 0.0;
+        tPrev = tFastE = tSlowE = 0.0f; tDry = 0.0f; tHead = tTail = 0; tHold = 0;
         period = std::min (maxPeriod, std::max (minPeriod, 200.0));
         ratio = 1.0; mix = 0.0f; active = false; haveMark = false;
     }
@@ -230,6 +235,36 @@ public:
         ring[0][(size_t) (t & rm)] = in[0];
         ring[1][(size_t) (t & rm)] = in[1];
         ++written;
+
+        // Transient pass-through. A grain spans two periods, so a mouth click, a hard consonant
+        // or a clipped peak gets copied into the grains around it and is heard as several ticks,
+        // some of them before the real one. Transients are found here, as they enter, and for a
+        // short window around each one the output takes the delayed dry signal instead. That
+        // window starts and ends one and a half periods away from the transient, so no grain
+        // that contains it is heard. The latency is the lookahead that makes this possible.
+        {
+            const float m = in[0] + in[1];
+            const float e = (m - tPrev) * (m - tPrev); tPrev = m;
+            tFastE += (e - tFastE) * tFast;
+            tSlowE += (e - tSlowE) * tSlow;
+            if (tHold > 0) --tHold;
+            if (tHold == 0 && tFastE > 10.0f * tSlowE && tFastE > 2.0e-5f)
+            {
+                const double reach = std::min (1.5 * std::max (minPeriod, std::min (maxPeriod, period)), (double) latency - tMargin - 2);
+                const long long from = t - (long long) reach - tMargin, to = t + (long long) reach + tMargin;
+                const int last = (tTail + 15) & 15;
+                if (tTail != tHead && from <= windows[last][1]) windows[last][1] = std::max (windows[last][1], to);
+                else if (((tTail + 1) & 15) != tHead) { windows[tTail][0] = from; windows[tTail][1] = to; tTail = (tTail + 1) & 15; }
+                tHold = tMargin;
+            }
+        }
+        bool inTransient = false;
+        {
+            const long long source = t - latency;           // the input sample leaving the shifter now
+            while (tHead != tTail && windows[tHead][1] < source) tHead = (tHead + 1) & 15;
+            inTransient = tHead != tTail && windows[tHead][0] <= source;
+            tDry = inTransient ? std::min (1.0f, tDry + tRamp) : std::max (0.0f, tDry - tRamp);
+        }
 
         float dry[2] = { 0.0f, 0.0f };
         if (t >= latency)
@@ -290,8 +325,9 @@ public:
         }
 
         mix = want ? std::min (1.0f, mix + fadeIn) : std::max (0.0f, mix - fadeOut);
-        out[0] = dry[0] + mix * (wet[0] - dry[0]);
-        out[1] = dry[1] + mix * (wet[1] - dry[1]);
+        const float shifted = mix * (1.0f - tDry);
+        out[0] = dry[0] + shifted * (wet[0] - dry[0]);
+        out[1] = dry[1] + shifted * (wet[1] - dry[1]);
     }
 
 private:
@@ -413,6 +449,10 @@ private:
     double nextCenter = 0.0, period = 200.0, ratio = 1.0, lastMark = 0.0;
     double maxPeriod = 872.0, minPeriod = 34.0;
     float mix = 0.0f, fadeIn = 0.005f, fadeOut = 0.002f;
+    // transient pass-through state
+    float tPrev = 0.0f, tFastE = 0.0f, tSlowE = 0.0f, tFast = 0.03f, tSlow = 0.0005f, tDry = 0.0f, tRamp = 0.014f;
+    long long windows[16][2] = {};
+    int tHead = 0, tTail = 0, tHold = 0, tMargin = 96;
     static constexpr float fillBelow = 0.08f;
     bool active = false, haveMark = false;
 };
