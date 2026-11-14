@@ -1,8 +1,8 @@
 # ademusic MegaTune
 
 A clean-room reconstruction of the **Slate Digital MetaTune** vocal tuner: a JUCE VST3 +
-AUv2 plug-in with a live pitch monitor, a diagnostic "Why this note?" history, four
-selectable pitch engines, factory presets and a fully themed editor.
+AUv2 plug-in with a live pitch trace, a diagnostic "Why this note?" history, three
+selectable pitch engines, factory and user presets, a doubler and a stereo widener.
 
 > **Status: 0.6.0.** More engine work: steady notes now land exactly on pitch, downward
 > shifts actually reach the lower note, Stereo Width no longer changes the level, and
@@ -59,8 +59,7 @@ their owners.
 |---|---|---|
 | Quality | **2048 samples / 42.7 ms** | default; stereo TD-PSOLA with correlation-aligned marks |
 | Low Latency | **512 samples / 10.7 ms** | same engine, shorter delay and a shorter pitch-analysis window |
-| TD-PSOLA | 2048 samples | pitch-synchronous overlap-add (also Low Latency) |
-| Signalsmith | **5760 samples / 120 ms** | with optional formant compensation |
+| Signalsmith | **5760 samples / 120 ms** | experimental; formant compensation is switched off because it was measured to cancel the pitch shift |
 
 Declared latency matches measured impulse onset and cross-correlation lag at 44.1 and
 48 kHz. A live engine switch republishes the correct latency on the next
@@ -316,7 +315,7 @@ Uninstall: delete `~/Library/Audio/Plug-Ins/VST3/MegaTune.vst3` and
 
 Requirements: macOS, CMake ≥ 3.22, a C++17 toolchain, JUCE sources **8.0.13 or newer**
 (the test suite calls `createEditorAndMakeActive`, which older 8.0.x does not have;
-8.0.15 is the version used for 0.3.1).
+8.0.15 is the version the releases are built with).
 
 ```bash
 git clone --depth 1 -b 8.0.15 https://github.com/juce-framework/JUCE.git ~/juce
@@ -343,8 +342,7 @@ cmake -S . -B build-universal -DCMAKE_BUILD_TYPE=Release -DJUCE_DIR=/path/to/juc
 cmake --build build-universal -j 8
 ```
 
-Signing for distribution (requires an Apple Developer ID — not available in this
-environment):
+Signing for distribution (requires an Apple Developer ID):
 
 ```bash
 codesign --force --deep --options runtime --sign "Developer ID Application: …" MegaTune.vst3
@@ -368,7 +366,7 @@ The suite covers, among others:
 - state round-trip, bypass, latency-aligned dry path, preset navigation, A/B, Undo/Redo
 - 32 presets render finite audio; key lock on and off; user preset save, load and delete
 - Range limiting, breath/uviolation gate, stereo-linked detection
-- engine switching republishes latency (2048 ↔ 5760 ↔ 128)
+- engine switching republishes latency (2048 ↔ 5760 ↔ 512)
 - Signalsmith latency rescales after a 48 → 96 kHz sample-rate change
 - 16384-sample host blocks stay inside the staging buffers
 - a prepared analysis window performs no heap allocations
@@ -381,18 +379,20 @@ The suite covers, among others:
 - the engine × sample-rate × block-size matrix produces finite audio
 - 4000-block engine/parameter churn remains finite
 - **Why this note?** end-to-end: 432 Hz tone A4 → exclude A → G♯4 → Undo → A4
-- Width alone widens a mono source and leaves the mono sum unchanged (0.3.1)
-- Speed reaches the default engine: a slow setting leaves more vibrato than a hard one (0.3.1)
+- Width alone widens a mono source, holds the level, and leaves the mono sum a scaled copy of the dry signal
+- a steady off-pitch tone lands within 0.2 cents of the note
+- a bypass toggle does not step the signal; the Doubler holds its level at every setting
+- Speed reaches the default engine: a slow setting leaves more vibrato than a hard one
 - 490 Hz disabled-target control (with and without Note Stabilizer)
 - real-take target change: at 17.71 s of the dry fixture, excluding G retargets
   110/110 analysed blocks and Undo restores it bit-identically
 
-Pluginval 1.0.4 at strictness 8 passes with its `Plugin state restoration` and
-`Discrete parameter state restoration` tests disabled. Those two hit a known JUCE
-host-proxy cache issue for discrete parameters: the plugin restores the correct
-step, but the host-side proxy keeps the last random normalised value until its
-next asynchronous refresh. An in-process test round-trips every parameter through
-state instead.
+pluginval at strictness 8 passes with all of its tests enabled (VST3 on 0.6.0; the AU was
+last run on 0.5.0):
+
+```bash
+/Applications/pluginval.app/Contents/MacOS/pluginval --strictness-level 8 --validate MegaTune.vst3
+```
 
 Host-level checks (load, instantiate, parameters, audio, editor) run through
 `app/vst3/host/`:
@@ -402,10 +402,21 @@ MegaTuneHostCheck /path/to/MegaTune.vst3
 auval -v aufx Mgtn AdMs          # after installing the AU component
 ```
 
-Measurement harnesses used during development live in `app/vst3/verify/`
-(`formant_harness.py`, `paired2.py`, `score.py`, `measure.py`), plus `bench.py`, which
-drives the in-process `MegaTuneBench` target to measure tuning error, doubler level and
-stereo width / mono compatibility.
+Measurement scripts live in `app/vst3/verify/` and drive the in-process `MegaTuneBench`
+target:
+
+| Script | Measures |
+|---|---|
+| `bench.py` | tuning error, Doubler level, stereo width and mono compatibility |
+| `stress.py` | tuning error across sample rates, block sizes, mono buses and pitch extremes |
+| `formant_bench.py` | whether the formants stay put when the pitch is shifted |
+
+```bash
+python3 verify/bench.py build-cli/MegaTuneBench_artefacts/Release/MegaTuneBench /tmp
+```
+
+The older `formant_harness.py`, `paired2.py`, `score.py` and `measure.py` are kept from
+earlier audits.
 
 ---
 
@@ -422,7 +433,7 @@ app/
     CMakeLists.txt     JUCE plug-in target + tests
     build.sh           build + test + package + ad-hoc sign
     host/              VST3 host check, WAV renderer, latency probe
-    verify/            measurement scripts, MegaTuneBench render bench (Bench.cpp + bench.py)
+    verify/            MegaTuneBench render bench (Bench.cpp) and the measurement scripts
     third_party/       vendored Signalsmith Stretch + Linear (MIT)
   dist/                installer, universal VST3 + AUv2, README
   MECHANICS.md         recovered semantics, evidence and open questions
@@ -447,9 +458,9 @@ app/
 | Item | State |
 |---|---|
 | Pitch accuracy (synthetic vibrato, 0.6.0 bench) | ✅ 0.4¢ mean / 1.0¢ p95 at Speed 0; steady tone 0.0¢ |
-| Speed / Sustain reach the default engine | ✅ regression test (0.3.1) |
-| Doubler / Width | ✅ measured on the synthetic bench; Width-only mono compatibility in the regression suite |
-| Pitch accuracy (dry vocal) | ⚠️ 5.63¢ median, jumps 4.17 % measured on 0.3.0; **not re-measured on 0.3.1** (fixture not in the repo) |
+| Speed / Sustain reach the default engine | ✅ regression test |
+| Doubler / Width | ✅ level within 0.1 dB of dry at every setting on the bench; level and mono compatibility in the regression suite |
+| Pitch accuracy (dry vocal) | ⚠️ last measured on 0.3.0 (5.63¢ median); not re-measured since, because the vocal fixture is not in the repo |
 | Low latency | ✅ 512 samples (10.7 ms); tunes 200 Hz correctly |
 | Large host blocks / sample-rate changes | ✅ 16384-sample block and 48 → 96 kHz verified |
 | Audio-thread allocations in analysis | ✅ none after prepare |
@@ -459,15 +470,15 @@ app/
 | Long-session engine/parameter churn | ✅ 4000 blocks verified |
 | AUv2 | ✅ `auval -v aufx Mgtn AdMs` passes on 0.3.1 through 0.6.0 |
 | pluginval, strictness 8 | ✅ VST3 and AU pass on 0.5.0, VST3 on 0.6.0 (one warning on the AU: current program reported as -1 after a program change) |
-| macOS build and test suite | ✅ 0.3.1 and 0.4.0 built universal on macOS (JUCE 8.0.15); `ctest` and the VST3 host check pass |
-| Key lock and user presets | ✅ regression test (0.4.0) |
+| macOS build and test suite | ✅ every release since 0.3.1 is built universal on macOS (JUCE 8.0.15); `ctest` and the VST3 host check pass |
+| Key lock and user presets | ✅ regression test |
 | Factory preset values | ⚠️ designed from the control ranges; not tuned by ear |
 | Full parameter state round-trip | ✅ in-process regression |
 | Why this note? → Exclude → Undo | ✅ verified on synthetic tone and on a real take |
 | Presets, automation, recall, A/B | ✅ verified |
 | Formant preservation | ✅ measured for -3 to +12 semitones on a synthetic vowel (spectral stretch 0.99 to 1.02; 1.00 is perfect). ⚠️ -6 and -12 are inconclusive: the fit is poor there |
 | **DAW compatibility / listening test** | ❌ not tested in a real host; not auditioned on real vocals |
-| **Distribution signing** | ❌ ad-hoc only; no Developer ID in this environment |
+| **Distribution signing** | ❌ ad-hoc only; notarization needs an Apple Developer ID |
 | **Parity with the original DSP** | ❌ not attempted; documented as unknown |
 
 Known engine limits: the detector range is 55 Hz to 1.2 kHz; with Width up, the mono sum is the dry
@@ -490,13 +501,14 @@ material is out of scope.
 
 ## Roadmap
 
-1. A formant estimator that classifies known-drift fixtures correctly, then re-score
-   TD-PSOLA and Signalsmith at ±3/±6 semitones.
-2. Verify host latency re-compensation when switching engines during playback.
-3. DAW compatibility matrix (Logic, Ableton, Reaper, Cubase) and long-session stability.
-4. Developer ID signing + notarization for public distribution.
+1. A listening pass on real vocals, and factory presets tuned by ear.
+2. A formant measurement that also works for large downward shifts and for the Signalsmith
+   engine, and a fuller-sounding octave-down shift.
+3. Verify host latency re-compensation when switching engines during playback.
+4. DAW compatibility matrix (Logic, Ableton, Reaper, Cubase) and long-session stability.
+5. Developer ID signing + notarization for public distribution.
 
 ---
 
-*Built with the DeepSeek Harness, JUCE 8.0.15 and Signalsmith Stretch. Every numeric claim
-above is reproducible from the scripts in `app/vst3/verify/`.*
+*Built with JUCE 8.0.15 and Signalsmith Stretch. Every numeric claim above is reproducible
+from the scripts in `app/vst3/verify/`.*
